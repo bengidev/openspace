@@ -5,20 +5,19 @@
 [![macOS](https://img.shields.io/badge/macOS-14.6%2B-blue.svg)](https://apple.com/macos)
 [![iOS](https://img.shields.io/badge/iOS-17.6%2B-blue.svg)](https://apple.com/ios)
 [![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-orange.svg)](https://developer.apple.com/xcode/swiftui/)
-[![SwiftData](https://img.shields.io/badge/Persistence-SwiftData-red.svg)](https://developer.apple.com/xcode/swiftdata/)
 [![Testing](https://img.shields.io/badge/Testing-Swift%20Testing-lightgrey.svg)](https://developer.apple.com/documentation/testing)
 
 OpenSpace is intended to become a native workspace for chatting with multiple AI providers through a local-first, bring-your-own-key approach.
 
-The repository does **not** implement that product yet. At the moment, this project is still the default Xcode SwiftUI + SwiftData starter app: one sample `Item` model, one sample list/detail screen, and starter unit/UI test templates.
+The repository does **not** implement that product yet. The current codebase is a SwiftUI prototype centered on a first-run onboarding experience and a minimal placeholder shell after onboarding completes.
 
 ## Current State
 
 - Built with **SwiftUI**
-- Uses **SwiftData** for the sample persistence layer
 - Targets **iOS 17.6+** and **macOS 14.6+**
+- Uses `@AppStorage` to track first-run onboarding completion
 - Includes starter tests with **Swift Testing** and **XCTest UI Testing**
-- Contains a simple add/delete timestamp example, not an AI chat workflow
+- Focuses on onboarding visuals, not on a real AI workspace yet
 
 ## What This Repo Is Not Yet
 
@@ -26,7 +25,7 @@ The repository does **not** implement that product yet. At the moment, this proj
 - Not a multi-provider chat workspace
 - Not using TCA
 - Not storing API keys in Keychain
-- Not integrating OpenAI, Anthropic, xAI, Moonshot, or other providers yet
+- Not integrating provider SDKs or persistence models yet
 
 ## Repository Layout
 
@@ -45,7 +44,7 @@ The repository does **not** implement that product yet. At the moment, this proj
    ```
 2. Open `OpenSpace.xcodeproj` in Xcode
 3. Run the `OpenSpace` scheme on iOS Simulator or macOS
-4. Use the starter app as the baseline before introducing real AI product layers
+4. Iterate on the onboarding prototype before introducing real workspace and provider layers
 
 ## Documentation Notes
 

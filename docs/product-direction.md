@@ -10,9 +10,9 @@ That vision is still valid. It just needs to be described as a **roadmap**, not 
 
 ## Recommended Evolution Path
 
-### 1. Replace the sample data model
+### 1. Introduce real workspace models
 
-Move from the starter `Item` model to application-specific models such as:
+Move from the current onboarding-only prototype to application-specific models such as:
 
 - `Provider`
 - `Conversation`
@@ -37,9 +37,9 @@ Avoid wiring UI directly to provider-specific APIs. Add a small service boundary
 - error normalization
 - streaming support hooks
 
-### 4. Replace the starter UI
+### 4. Replace the placeholder post-onboarding shell
 
-The current timestamp list should eventually become a real workspace shell:
+The current onboarding flow should eventually hand off into a real workspace shell:
 
 - sidebar or conversation list
 - thread detail view
@@ -69,7 +69,7 @@ What exists in the repository now.
 
 ### Near-term roadmap
 
-What is likely to be built next from the existing baseline.
+What is likely to be built next from the existing onboarding baseline.
 
 ### Long-term vision
 
