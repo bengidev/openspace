@@ -42,6 +42,12 @@ enum ThemeColor {
 
   // MARK: - Semantic
   static let destructive = Color("DestructiveColor")
+
+  // MARK: - Frosted Surfaces
+  static let glassTint = accent300.opacity(0.18)
+  static let glassHighlight = accent100.opacity(0.24)
+  static let glassShadow = Color.black.opacity(0.32)
+  static let glow = accent.opacity(0.18)
 }
 
 // MARK: - View Extensions
@@ -54,5 +60,30 @@ extension View {
       .background(ThemeColor.backgroundPrimary)
       .tint(ThemeColor.accent)
       .preferredColorScheme(.dark)
+  }
+
+  /// Applies a frosted glass treatment with subtle tint, stroke, and shadow.
+  func openSpaceGlassPanel(
+    cornerRadius: CGFloat = 28,
+    tint: Color = ThemeColor.glassTint,
+    stroke: Color = ThemeColor.glassHighlight
+  ) -> some View {
+    let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
+    return self
+      .background(.ultraThinMaterial, in: shape)
+      .background(shape.fill(tint))
+      .overlay(
+        shape
+          .strokeBorder(
+            LinearGradient(
+              colors: [stroke, ThemeColor.accent100.opacity(0.05)],
+              startPoint: .topLeading,
+              endPoint: .bottomTrailing
+            ),
+            lineWidth: 1
+          )
+      )
+      .shadow(color: ThemeColor.glassShadow, radius: 30, x: 0, y: 22)
   }
 }
