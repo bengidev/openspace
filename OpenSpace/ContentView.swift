@@ -20,12 +20,17 @@ struct ContentView: View {
             Text(
               "Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))"
             )
+            .foregroundStyle(ThemeColor.textPrimary)
           } label: {
             Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+              .foregroundStyle(ThemeColor.textPrimary)
           }
+          .listRowBackground(ThemeColor.surface)
         }
         .onDelete(perform: deleteItems)
       }
+      .scrollContentBackground(.hidden)
+      .background(ThemeColor.backgroundPrimary)
       #if os(macOS)
         .navigationSplitViewColumnWidth(min: 180, ideal: 200)
       #endif
@@ -33,14 +38,18 @@ struct ContentView: View {
         #if os(iOS)
           ToolbarItem(placement: .navigationBarTrailing) {
             EditButton()
+              .tint(ThemeColor.accent)
           }
         #endif
         ToolbarItem {
           Button(action: addItem) {
             Label("Add Item", systemImage: "plus")
+              .foregroundStyle(ThemeColor.accent)
           }
         }
       }
+      .navigationTitle("OpenSpace")
+      .foregroundStyle(ThemeColor.textPrimary)
     }
   }
 
@@ -69,6 +78,7 @@ private struct NavigationViewWrapper<Content: View>: View {
         content()
       } detail: {
         Text("Select an item")
+          .foregroundStyle(ThemeColor.textSecondary)
       }
     #else
       content()
@@ -79,4 +89,5 @@ private struct NavigationViewWrapper<Content: View>: View {
 #Preview {
   ContentView()
     .modelContainer(for: Item.self, inMemory: true)
+    .openSpaceTheme()
 }
