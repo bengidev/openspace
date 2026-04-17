@@ -12,7 +12,7 @@ import SwiftUI
 struct OpenSpaceApp: App {
   var sharedModelContainer: ModelContainer = {
     let schema = Schema([
-      Item.self,
+      Item.self
     ])
     let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -24,9 +24,11 @@ struct OpenSpaceApp: App {
   }()
 
   init() {
-    // Configure the global tint color for the entire app
-    let accent = UIColor(ThemeColor.accent)
-    UIView.appearance().tintColor = accent
+    // Configure the global tint color for the entire app (UIKit only)
+    #if os(iOS)
+      let accent = UIColor(ThemeColor.accent)
+      UIView.appearance().tintColor = accent
+    #endif
   }
 
   var body: some Scene {
