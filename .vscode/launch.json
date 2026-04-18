@@ -11,6 +11,12 @@
       "sourceLanguages": [
         "swift"
       ]
+    },
+    {
+      "name": "Run OpenSpace (iOS Simulator)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bash \"${workspaceFolder}/.vscode/run-ios-simulator.sh\""
     }
   ]
 }

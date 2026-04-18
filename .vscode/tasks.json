@@ -30,6 +30,48 @@
         "panel": "shared",
         "clear": true
       }
+    },
+    {
+      "label": "Build OpenSpace (iOS Simulator Debug)",
+      "type": "process",
+      "command": "xcodebuild",
+      "args": [
+        "-project",
+        "OpenSpace.xcodeproj",
+        "-scheme",
+        "OpenSpace",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "generic/platform=iOS Simulator",
+        "-derivedDataPath",
+        "${workspaceFolder}/.vscode/DerivedData-iOS",
+        "build"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Run OpenSpace (iOS Simulator)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/run-ios-simulator.sh"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
     }
   ]
 }
