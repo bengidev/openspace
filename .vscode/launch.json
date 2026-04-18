@@ -13,6 +13,20 @@
       ]
     },
     {
+      "name": "Debug OpenSpace (iOS Simulator Attach)",
+      "type": "lldb",
+      "request": "attach",
+      "program": "${workspaceFolder}/.vscode/DerivedData-iOS/Build/Products/Debug-iphonesimulator/OpenSpace.app/OpenSpace",
+      "pid": "${command:pickMyProcess}",
+      "preLaunchTask": "Prepare OpenSpace (iOS Simulator for Attach)",
+      "initCommands": [
+        "platform select ios-simulator"
+      ],
+      "sourceLanguages": [
+        "swift"
+      ]
+    },
+    {
       "name": "Run OpenSpace (iOS Simulator)",
       "type": "node-terminal",
       "request": "launch",

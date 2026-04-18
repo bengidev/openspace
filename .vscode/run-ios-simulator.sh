@@ -6,6 +6,12 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DERIVED_DATA_PATH="$ROOT_DIR/.vscode/DerivedData-iOS"
 APP_PATH="$DERIVED_DATA_PATH/Build/Products/Debug-iphonesimulator/OpenSpace.app"
 BUNDLE_ID="io.github.bengidev.OpenSpace"
+PID_FILE="$ROOT_DIR/.vscode/ios-sim-debug.pid"
+WAIT_FOR_DEBUGGER=0
+
+if [[ "${1:-}" == "--wait-for-debugger" ]]; then
+  WAIT_FOR_DEBUGGER=1
+fi
 
 pick_simulator_udid() {
   local booted_udid
@@ -49,4 +55,12 @@ echo "Installing on simulator $SIMULATOR_UDID..."
 xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
 echo "Launching $BUNDLE_ID..."
+if [[ "$WAIT_FOR_DEBUGGER" -eq 1 ]]; then
+  LAUNCH_OUTPUT="$(xcrun simctl launch --wait-for-debugger --terminate-running-process "$SIMULATOR_UDID" "$BUNDLE_ID")"
+  printf '%s\n' "$LAUNCH_OUTPUT" | awk -F ': ' 'NF > 1 { print $NF }' > "$PID_FILE"
+  echo "$LAUNCH_OUTPUT"
+  echo "Debugger attach is ready. If VSCode asks for a process, pick OpenSpace or the PID in $PID_FILE."
+  exit 0
+fi
+
 exec xcrun simctl launch --console-pty --terminate-running-process "$SIMULATOR_UDID" "$BUNDLE_ID"

@@ -72,6 +72,23 @@
         "panel": "shared",
         "clear": true
       }
+    },
+    {
+      "label": "Prepare OpenSpace (iOS Simulator for Attach)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/run-ios-simulator.sh",
+        "--wait-for-debugger"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
     }
   ]
 }
