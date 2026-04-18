@@ -15,5 +15,6 @@
 	"workspace": "/Users/beng/Documents/iOS Projects/OpenSpace/OpenSpace/OpenSpace.xcodeproj/project.xcworkspace",
 	"build_root": "/Users/beng/Library/Developer/Xcode/DerivedData/OpenSpace-ddiosuvynerxhfawnnahikuckcfl",
 	"scheme": "OpenSpace",
-	"kind": "xcode"
+	"kind": "manual",
+	"indexStorePath": "/Users/beng/Library/Developer/Xcode/DerivedData/OpenSpace-ddiosuvynerxhfawnnahikuckcfl/Index.noindex/DataStore"
 }
