@@ -14,6 +14,7 @@ The current architecture intentionally does less:
 - one onboarding feature
 - one minimal post-onboarding placeholder
 - one shared theme file
+- one platform-specific onboarding render tree split into small files per Apple platform
 
 This is the correct level of structure for the current prototype.
 
@@ -23,6 +24,10 @@ This is the correct level of structure for the current prototype.
 OpenSpaceApp
   -> AppRootView
        -> OnboardingView
+            -> OnboardingAbstractView
+                 -> Views/iOS/OnboardingIOSView
+                 -> Views/iPad/OnboardingIPadView
+                 -> Views/Mac/OnboardingMacView
        -> WorkspacePlaceholderView
 ```
 
@@ -35,7 +40,16 @@ OpenSpaceApp
   Owns app-level presentation state for first-run flow using `@AppStorage("hasCompletedOnboarding")`.
 
 - `OnboardingView`
-  Owns the first-run visual experience and CTA.
+  Owns the first-run facade, shared onboarding state, and handoff into the platform-specific render tree.
+
+- `OnboardingAbstractView`
+  Resolves the active Apple-platform implementation and hands off to the concrete onboarding subtree for that platform.
+
+- `Features/Onboarding/Views/iOS`, `Views/iPad`, `Views/Mac`
+  Hold the concrete onboarding implementations. Each platform folder can contain multiple small subviews such as root layout, header, hero, and footer.
+
+- `Features/Onboarding/Views/Shared`
+  Holds reusable onboarding UI parts and supporting types that should stay consistent across platform implementations.
 
 - `OnboardingVisuals`
   Holds reusable visual building blocks for the onboarding surface.
@@ -64,6 +78,8 @@ There is no current need for:
 
 Those layers would mostly add ceremony right now.
 
+The exception is platform rendering inside onboarding. Since the app already targets iPhone, iPad, and macOS in one codebase, a facade plus abstract platform handoff is justified: it lets the feature keep one shared state flow while each platform owns its own composable view subtree.
+
 ### 3. It keeps the next refactor obvious
 
 When the workspace shell becomes real, the next architectural split is clear:
@@ -81,7 +97,7 @@ That evolution can happen when the code actually needs it.
 
 ## Recommended Folder Direction
 
-The current repository is still small enough that a flat source layout is acceptable. As more screens are added, move toward this lightweight structure:
+The repository now has the basic lightweight split in place. As more screens are added, keep evolving in this direction:
 
 ```text
 OpenSpace/
@@ -91,19 +107,32 @@ OpenSpace/
 ├── Features/
 │   ├── Onboarding/
 │   │   ├── OnboardingView.swift
+│   │   ├── Views/
+│   │   │   ├── OnboardingAbstractView.swift
+│   │   │   ├── Shared/
+│   │   │   │   ├── OnboardingPlatformVariant.swift
+│   │   │   │   ├── OnboardingRenderContext.swift
+│   │   │   │   └── OnboardingSharedComponents.swift
+│   │   │   ├── iOS/
+│   │   │   ├── iPad/
+│   │   │   └── Mac/
 │   │   └── OnboardingVisuals.swift
 │   └── Workspace/
 │       └── WorkspacePlaceholderView.swift
-└── Theme/
-    └── ThemeColors.swift
+└── Shared/
+    └── Theme/
+        └── ThemeColors.swift
 ```
 
-That is enough structure for the next stage without importing heavyweight patterns too early.
+That remains enough structure for the next stage without importing heavyweight patterns too early. If more multiplatform features start to diverge in render trees the same way, the onboarding pattern can be repeated feature-by-feature instead of pushing platform branches into the entire app root.
 
 ## Architectural Rules For The Next Phase
 
 - Keep app-level flow state in one place.
 - Keep onboarding visuals separate from onboarding flow state.
+- Keep multiplatform render variation below the feature container, not above it.
+- Use one facade entry and one abstract platform handoff per feature before branching into concrete platform folders.
+- When one feature subview becomes large, split that subview into its own `Views/<Part>/` folder with separate concrete files per platform.
 - Do not introduce persistence until real data needs to survive app launches.
 - Do not introduce TCA unless multiple interacting features and async effects make state coordination hard to reason about.
 - Keep documentation aligned with the code that actually exists.
