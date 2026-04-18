@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build OpenSpace (macOS Debug)",
+      "type": "process",
+      "command": "xcodebuild",
+      "args": [
+        "-project",
+        "OpenSpace.xcodeproj",
+        "-scheme",
+        "OpenSpace",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=macOS",
+        "-derivedDataPath",
+        "${workspaceFolder}/.vscode/DerivedData",
+        "build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}
