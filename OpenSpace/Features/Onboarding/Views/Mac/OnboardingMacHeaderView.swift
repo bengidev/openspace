@@ -35,7 +35,7 @@ struct OnboardingMacHeaderView: View {
         .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19).opacity(0.72))
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Capsule().fill(Color.white.opacity(0.42)))
+        .background(Capsule().fill(Color.white.opacity(0.28)))
     }
   }
 }
