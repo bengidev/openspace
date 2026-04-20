@@ -145,7 +145,12 @@ struct OnboardingHeroPanel<Content: View>: View {
             lineWidth: 1
           )
       )
-      .shadow(color: Color.black.opacity(0.25), radius: 36, x: 0, y: 24)
+      .shadow(
+        color: Color.black.opacity(style == .desktopCanvas ? 0.16 : 0.25),
+        radius: style == .desktopCanvas ? 18 : 36,
+        x: 0,
+        y: style == .desktopCanvas ? 12 : 24
+      )
   }
 }
 
