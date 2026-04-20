@@ -26,7 +26,7 @@ struct OnboardingMacView: View {
             hasAppeared: context.hasAppeared,
             reduceMotion: context.reduceMotion
           )
-          .padding(.horizontal, 22)
+          .padding(.horizontal, 28)
 
           Spacer(minLength: 104)
 
