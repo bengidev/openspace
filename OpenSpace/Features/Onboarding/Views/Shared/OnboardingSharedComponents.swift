@@ -38,7 +38,7 @@ struct OnboardingPlatformPanel<Content: View>: View {
     .animation(.easeOut(duration: 0.9), value: context.hasAppeared)
     .modifier(
       FloatingPanelEffect(
-        isActive: context.isAnimated
+        isActive: context.isAnimated && variant.usesFloatingPanelEffect
       )
     )
   }
