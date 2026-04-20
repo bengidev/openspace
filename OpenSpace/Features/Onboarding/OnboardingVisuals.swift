@@ -136,8 +136,8 @@ struct OnboardingHeroPanel<Content: View>: View {
           .strokeBorder(
             LinearGradient(
               colors: [
-                Color.white.opacity(0.46),
-                Color.white.opacity(0.08),
+                Color.white.opacity(style == .desktopCanvas ? 0.28 : 0.46),
+                Color.white.opacity(style == .desktopCanvas ? 0.05 : 0.08),
               ],
               startPoint: .top,
               endPoint: .bottom
