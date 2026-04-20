@@ -30,7 +30,7 @@ struct OnboardingMacHeaderView: View {
 
       Spacer()
 
-      Text("ABSTRACT VIEW")
+      Text("DESKTOP SURFACE")
         .font(.caption2.monospaced().weight(.medium))
         .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19).opacity(0.72))
         .padding(.horizontal, 12)
