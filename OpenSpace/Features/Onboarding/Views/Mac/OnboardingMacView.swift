@@ -40,20 +40,18 @@ struct OnboardingMacView: View {
 
           VStack(alignment: .leading, spacing: 18) {
             OnboardingMacFooterView(context: context)
+
+            OnboardingSupportingNote(
+              text: "The macOS family leans into desktop posture: wider hierarchy, stronger information scent, and room for durable workspace chrome without changing onboarding logic.",
+              hasAppeared: context.hasAppeared,
+              alignment: .leading,
+              maxWidth: 840
+            )
           }
           .padding(.horizontal, 28)
           .padding(.bottom, 26)
         }
       }
-
-      OnboardingSupportingNote(
-        text: "The macOS family leans into desktop posture: wider hierarchy, stronger information scent, and room for durable workspace chrome without changing onboarding logic.",
-        hasAppeared: context.hasAppeared,
-        alignment: .leading,
-        maxWidth: 840
-      )
-      .padding(.horizontal, 28)
-      .padding(.bottom, 20)
     }
   }
 }
