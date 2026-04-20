@@ -28,9 +28,9 @@ struct OnboardingPlatformPanel<Content: View>: View {
       cornerRadius: variant.panelCornerRadius
     ) {
       content
-        .frame(minHeight: variant.panelMinHeight)
+        .frame(minHeight: context.panelMinHeight)
     }
-    .frame(maxWidth: variant.panelMaxWidth)
+    .frame(maxWidth: context.panelMaxWidth)
     .padding(.horizontal, variant.panelHorizontalPadding)
     .opacity(context.hasAppeared ? 1 : 0)
     .offset(y: context.hasAppeared ? 0 : 26)
@@ -60,38 +60,72 @@ struct OnboardingHeaderChromeView: View {
   }
 
   var body: some View {
-    HStack {
-      Button {} label: {
-        Image(systemName: "plus")
-          .font(.system(size: 16, weight: .medium))
-          .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
-          .frame(width: buttonSize, height: buttonSize)
-          .background(Circle().fill(Color.white.opacity(0.62)))
-      }
-      .buttonStyle(.plain)
-      .accessibilityLabel("OpenSpace mark")
-
-      Spacer()
-
-      Text(centerText)
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Capsule().fill(Color.white.opacity(badgeOpacity)))
-
-      Spacer()
-
-      Button {} label: {
-        Image(systemName: "waveform.path.ecg")
-          .font(.system(size: 15, weight: .medium))
-          .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
-          .frame(width: buttonSize, height: buttonSize)
-          .background(Circle().fill(Color.white.opacity(0.62)))
-      }
-      .buttonStyle(.plain)
-      .accessibilityLabel("Ambient activity indicator")
+    ViewThatFits(in: .horizontal) {
+      regularChrome
+      compactChrome
     }
+  }
+
+  private var regularChrome: some View {
+    HStack {
+      leadingButton
+
+      Spacer(minLength: 12)
+
+      centerBadge
+
+      Spacer(minLength: 12)
+
+      trailingButton
+    }
+  }
+
+  private var compactChrome: some View {
+    VStack(spacing: 12) {
+      HStack {
+        leadingButton
+        Spacer(minLength: 12)
+        trailingButton
+      }
+
+      centerBadge
+        .frame(maxWidth: .infinity)
+    }
+  }
+
+  private var leadingButton: some View {
+    Button {} label: {
+      Image(systemName: "plus")
+        .font(.system(size: 16, weight: .medium))
+        .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
+        .frame(width: buttonSize, height: buttonSize)
+        .background(Circle().fill(Color.white.opacity(0.62)))
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel("OpenSpace mark")
+  }
+
+  private var centerBadge: some View {
+    Text(centerText)
+      .font(.caption.weight(.semibold))
+      .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
+      .lineLimit(1)
+      .minimumScaleFactor(0.8)
+      .padding(.horizontal, 12)
+      .padding(.vertical, 8)
+      .background(Capsule().fill(Color.white.opacity(badgeOpacity)))
+  }
+
+  private var trailingButton: some View {
+    Button {} label: {
+      Image(systemName: "waveform.path.ecg")
+        .font(.system(size: 15, weight: .medium))
+        .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
+        .frame(width: buttonSize, height: buttonSize)
+        .background(Circle().fill(Color.white.opacity(0.62)))
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel("Ambient activity indicator")
   }
 }
 
@@ -191,16 +225,10 @@ struct OnboardingMetadataBar: View {
   let alignment: Alignment
 
   var body: some View {
-    HStack {
-      ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
-        if index > 0 {
-          Spacer(minLength: 12)
-        }
-
-        Text(label)
-      }
+    ViewThatFits(in: .horizontal) {
+      horizontalBar
+      verticalBar
     }
-    .frame(maxWidth: .infinity, alignment: alignment)
     .font(.caption2.monospaced())
     .foregroundStyle(Color.white.opacity(0.32))
     .opacity(hasAppeared ? 1 : 0)
@@ -209,13 +237,41 @@ struct OnboardingMetadataBar: View {
       value: hasAppeared
     )
   }
+
+  private var horizontalBar: some View {
+    HStack {
+      ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
+        if index > 0 {
+          Spacer(minLength: 12)
+        }
+
+        labelView(label)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: alignment)
+  }
+
+  private var verticalBar: some View {
+    VStack(spacing: 8) {
+      ForEach(labels, id: \.self) { label in
+        labelView(label)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: alignment)
+  }
+
+  private func labelView(_ label: String) -> some View {
+    Text(label)
+      .lineLimit(1)
+      .minimumScaleFactor(0.78)
+  }
 }
 
 struct OnboardingSupportingNote: View {
   let text: String
   let hasAppeared: Bool
   let alignment: TextAlignment
-  let maxWidth: CGFloat
+  let maxWidth: CGFloat?
 
   var body: some View {
     Text(text)
@@ -290,6 +346,8 @@ struct OnboardingSignalPill: View {
       Text(label)
         .font(.caption)
         .foregroundStyle(Color.white.opacity(0.75))
+        .multilineTextAlignment(.leading)
+        .fixedSize(horizontal: false, vertical: true)
     }
     .padding(.horizontal, 14)
     .padding(.vertical, 8)
