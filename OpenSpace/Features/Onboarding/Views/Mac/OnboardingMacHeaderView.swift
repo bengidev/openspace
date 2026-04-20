@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingMacHeaderView: View {
   var body: some View {
-    HStack(spacing: 14) {
+    HStack(spacing: 16) {
       HStack(spacing: 7) {
         Circle()
           .fill(Color(red: 0.95, green: 0.42, blue: 0.35))
