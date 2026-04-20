@@ -68,4 +68,5 @@ build.log
 # VSCode local build output
 .vscode/DerivedData/
 .vscode/DerivedData-iOS/
+.vscode/DerivedData-check/
 .vscode/*.pid
