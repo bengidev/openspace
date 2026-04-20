@@ -16,7 +16,7 @@ struct OnboardingMacHeaderView: View {
         .frame(width: 38, height: 38)
         .background(Circle().fill(Color.white.opacity(0.5)))
 
-      Text("OpenSpace for macOS")
+      Text("OpenSpace")
         .font(.caption.weight(.semibold))
         .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
         .padding(.horizontal, 12)
