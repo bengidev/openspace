@@ -18,7 +18,7 @@ struct OnboardingMacView: View {
           .padding(.horizontal, 28)
           .padding(.top, 28)
 
-        Spacer(minLength: 44)
+        Spacer(minLength: context.topSectionSpacing)
 
         OnboardingMacCapabilityStrip(
           chips: context.capabilityChips,
@@ -27,7 +27,7 @@ struct OnboardingMacView: View {
         )
         .padding(.horizontal, 28)
 
-        Spacer(minLength: 104)
+        Spacer(minLength: context.heroSectionSpacing)
 
         OnboardingMacHeroView(
           context: context,
@@ -35,7 +35,7 @@ struct OnboardingMacView: View {
         )
         .padding(.horizontal, 32)
 
-        Spacer(minLength: 44)
+        Spacer(minLength: context.topSectionSpacing)
 
         VStack(alignment: .leading, spacing: 18) {
           OnboardingMacFooterView(context: context)
@@ -48,7 +48,7 @@ struct OnboardingMacView: View {
             text: "The macOS family leans into desktop posture: wider hierarchy, stronger information scent, and room for durable workspace chrome without changing onboarding logic.",
             hasAppeared: context.hasAppeared,
             alignment: .leading,
-            maxWidth: 840
+            maxWidth: context.supportingNoteMaxWidth
           )
         }
         .padding(.horizontal, 28)
