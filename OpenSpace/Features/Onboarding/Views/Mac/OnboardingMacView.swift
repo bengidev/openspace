@@ -36,7 +36,7 @@ struct OnboardingMacView: View {
           )
           .padding(.horizontal, 32)
 
-          Spacer(minLength: 52)
+          Spacer(minLength: 44)
 
           OnboardingMacFooterView(context: context)
             .padding(.horizontal, 24)
