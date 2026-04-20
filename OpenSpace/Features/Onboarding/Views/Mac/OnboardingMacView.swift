@@ -12,8 +12,7 @@ struct OnboardingMacView: View {
   let onContinue: () -> Void
 
   var body: some View {
-    VStack(spacing: 28) {
-      OnboardingPlatformPanel(variant: .mac, context: context) {
+    OnboardingPlatformPanel(variant: .mac, context: context) {
         VStack(spacing: 0) {
           OnboardingMacHeaderView()
             .padding(.horizontal, 28)
@@ -55,7 +54,6 @@ struct OnboardingMacView: View {
           .padding(.horizontal, 28)
           .padding(.bottom, 26)
         }
-      }
     }
   }
 }
