@@ -16,12 +16,15 @@ struct OnboardingMacHeaderView: View {
         .frame(width: 38, height: 38)
         .background(Circle().fill(Color.white.opacity(0.5)))
 
-      Text("OpenSpace")
-        .font(.headline.weight(.semibold))
-        .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15))
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Capsule().fill(Color.white.opacity(0.56)))
+      VStack(alignment: .leading, spacing: 2) {
+        Text("OpenSpace")
+          .font(.headline.weight(.semibold))
+          .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15))
+
+        Text("macOS onboarding surface")
+          .font(.caption)
+          .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19).opacity(0.7))
+      }
 
       Spacer()
 
