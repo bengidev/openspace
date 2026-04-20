@@ -30,7 +30,7 @@ enum OnboardingPlatformVariant {
     case .ipad:
       980
     case .mac:
-      1080
+      1200
     }
   }
 
