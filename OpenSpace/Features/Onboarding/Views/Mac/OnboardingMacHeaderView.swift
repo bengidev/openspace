@@ -10,15 +10,11 @@ import SwiftUI
 struct OnboardingMacHeaderView: View {
   var body: some View {
     HStack(spacing: 16) {
-      HStack(spacing: 7) {
-        Circle()
-          .fill(Color(red: 0.95, green: 0.42, blue: 0.35))
-        Circle()
-          .fill(Color(red: 0.96, green: 0.74, blue: 0.26))
-        Circle()
-          .fill(Color(red: 0.35, green: 0.77, blue: 0.36))
-      }
-      .frame(width: 44, height: 12)
+      Image(systemName: "sparkles.rectangle.stack.fill")
+        .font(.system(size: 16, weight: .semibold))
+        .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15))
+        .frame(width: 38, height: 38)
+        .background(Circle().fill(Color.white.opacity(0.5)))
 
       Text("OpenSpace for macOS")
         .font(.caption.weight(.semibold))
