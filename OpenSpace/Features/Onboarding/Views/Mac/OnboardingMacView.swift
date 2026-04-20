@@ -13,10 +13,10 @@ struct OnboardingMacView: View {
 
   var body: some View {
     OnboardingPlatformPanel(variant: .mac, context: context) {
-        VStack(spacing: 0) {
-          OnboardingMacHeaderView()
-            .padding(.horizontal, 28)
-            .padding(.top, 28)
+      VStack(spacing: 0) {
+        OnboardingMacHeaderView()
+          .padding(.horizontal, 28)
+          .padding(.top, 28)
 
           Spacer(minLength: 44)
 
@@ -53,7 +53,7 @@ struct OnboardingMacView: View {
           }
           .padding(.horizontal, 28)
           .padding(.bottom, 26)
-        }
+      }
     }
   }
 }
