@@ -12,14 +12,17 @@ struct OnboardingIOSHeroView: View {
   let onContinue: () -> Void
 
   var body: some View {
-    VStack(spacing: 18) {
+    VStack(spacing: context.heroContentSpacing) {
       OnboardingSignalPill(isAnimated: context.isAnimated)
 
       VStack(spacing: 10) {
         Text("Calm Systems for Fast Builders")
-          .font(.system(size: 38, weight: .medium, design: .default))
+          .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.center)
           .foregroundStyle(Color.white)
+          .frame(maxWidth: context.heroTextMaxWidth)
+          .lineLimit(4)
+          .minimumScaleFactor(0.8)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 18)
           .animation(
@@ -28,10 +31,10 @@ struct OnboardingIOSHeroView: View {
           )
 
         Text("Bring code, prompts, and image generation into one local-first workspace that feels composed even when the work is not.")
-          .font(.subheadline)
+          .font(context.heroSubtitleFont)
           .multilineTextAlignment(.center)
           .foregroundStyle(Color.white.opacity(0.72))
-          .frame(maxWidth: 520)
+          .frame(maxWidth: context.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
           .animation(
