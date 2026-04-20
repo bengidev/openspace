@@ -41,6 +41,10 @@ struct OnboardingMacView: View {
           VStack(alignment: .leading, spacing: 18) {
             OnboardingMacFooterView(context: context)
 
+            Rectangle()
+              .fill(Color.white.opacity(0.08))
+              .frame(height: 1)
+
             OnboardingSupportingNote(
               text: "The macOS family leans into desktop posture: wider hierarchy, stronger information scent, and room for durable workspace chrome without changing onboarding logic.",
               hasAppeared: context.hasAppeared,
