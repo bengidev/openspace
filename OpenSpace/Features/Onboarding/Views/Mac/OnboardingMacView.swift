@@ -17,7 +17,7 @@ struct OnboardingMacView: View {
         VStack(spacing: 0) {
           OnboardingMacHeaderView()
             .padding(.horizontal, 28)
-            .padding(.top, 22)
+            .padding(.top, 28)
 
           Spacer(minLength: 44)
 
