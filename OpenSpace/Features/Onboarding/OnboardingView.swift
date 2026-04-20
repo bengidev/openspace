@@ -30,33 +30,46 @@ struct OnboardingView: View {
     #endif
   }
 
-  private var renderContext: OnboardingRenderContext {
+  private func renderContext(
+    for size: CGSize,
+    variant: OnboardingPlatformVariant
+  ) -> OnboardingRenderContext {
     OnboardingRenderContext(
+      variant: variant,
       capabilityChips: capabilityChips,
+      containerSize: size,
       hasAppeared: hasAppeared,
       reduceMotion: reduceMotion
     )
   }
 
   var body: some View {
-    let context = renderContext
+    let variant = platformVariant
 
-    ZStack {
-      OnboardingBackdrop(isAnimated: context.isAnimated)
+    GeometryReader { proxy in
+      let context = renderContext(for: proxy.size, variant: variant)
 
-      ScrollView(.vertical, showsIndicators: false) {
-        VStack(spacing: 28) {
-          Spacer(minLength: 18)
+      ZStack {
+        OnboardingBackdrop(isAnimated: context.isAnimated)
 
-          OnboardingAbstractView(
-            variant: platformVariant,
-            context: context,
-            onContinue: onContinue
+        ScrollView(.vertical, showsIndicators: false) {
+          VStack(spacing: 28) {
+            Spacer(minLength: 18)
+
+            OnboardingAbstractView(
+              variant: variant,
+              context: context,
+              onContinue: onContinue
+            )
+          }
+          .frame(
+            maxWidth: .infinity,
+            minHeight: max(proxy.size.height - 20, 0),
+            alignment: .top
           )
         }
-        .frame(maxWidth: .infinity)
+        .safeAreaPadding(.vertical, 10)
       }
-      .safeAreaPadding(.vertical, 10)
     }
     .task {
       guard !hasAppeared else { return }
