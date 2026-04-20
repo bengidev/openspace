@@ -34,7 +34,7 @@ struct OnboardingMacView: View {
             context: context,
             onContinue: onContinue
           )
-          .padding(.horizontal, 28)
+          .padding(.horizontal, 32)
 
           Spacer(minLength: 52)
 
