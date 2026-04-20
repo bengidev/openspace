@@ -38,9 +38,11 @@ struct OnboardingMacView: View {
 
           Spacer(minLength: 44)
 
-          OnboardingMacFooterView(context: context)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 22)
+          VStack(alignment: .leading, spacing: 18) {
+            OnboardingMacFooterView(context: context)
+          }
+          .padding(.horizontal, 28)
+          .padding(.bottom, 26)
         }
       }
 
