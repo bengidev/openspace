@@ -337,7 +337,7 @@ struct FloatingPanelEffect: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .offset(y: isFloating ? -4 : 4)
+      .offset(y: isActive ? (isFloating ? -4 : 4) : 0)
       .task(id: isActive) {
         guard isActive else {
           isFloating = false
