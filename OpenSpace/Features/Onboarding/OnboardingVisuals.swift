@@ -117,7 +117,7 @@ struct OnboardingHeroPanel<Content: View>: View {
 
           PinstripeOverlay(stripeColor: Color.white.opacity(0.18), stripeSpacing: 3.4, stripeWidth: 0.55)
             .mask(shape.fill(.white))
-            .opacity(0.32)
+            .opacity(style == .desktopCanvas ? 0.18 : 0.32)
 
           LinearGradient(
             colors: [
