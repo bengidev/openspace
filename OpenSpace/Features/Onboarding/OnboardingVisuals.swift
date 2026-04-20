@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum OnboardingHeroPanelStyle {
+  case floatingShowcase
+  case desktopCanvas
+}
+
 struct OnboardingBackdrop: View {
   let isAnimated: Bool
   @State private var driftPhase = false
