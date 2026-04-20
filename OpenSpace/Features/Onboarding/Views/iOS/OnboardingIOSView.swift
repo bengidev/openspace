@@ -19,7 +19,7 @@ struct OnboardingIOSView: View {
             .padding(.horizontal, 22)
             .padding(.top, 22)
 
-          Spacer(minLength: 44)
+          Spacer(minLength: context.topSectionSpacing)
 
           OnboardingHorizontalCapabilityStrip(
             chips: context.capabilityChips,
@@ -30,7 +30,7 @@ struct OnboardingIOSView: View {
           )
           .padding(.horizontal, 22)
 
-          Spacer(minLength: 104)
+          Spacer(minLength: context.heroSectionSpacing)
 
           OnboardingIOSHeroView(
             context: context,
@@ -38,7 +38,7 @@ struct OnboardingIOSView: View {
           )
           .padding(.horizontal, 28)
 
-          Spacer(minLength: 52)
+          Spacer(minLength: context.footerSectionSpacing)
 
           OnboardingIOSFooterView(context: context)
             .padding(.horizontal, 24)
@@ -50,7 +50,7 @@ struct OnboardingIOSView: View {
         text: "OpenSpace is designed for developers who move between coding, visual ideation, and model orchestration.",
         hasAppeared: context.hasAppeared,
         alignment: .center,
-        maxWidth: 620
+        maxWidth: context.supportingNoteMaxWidth
       )
       .padding(.horizontal, 28)
       .padding(.bottom, 20)
