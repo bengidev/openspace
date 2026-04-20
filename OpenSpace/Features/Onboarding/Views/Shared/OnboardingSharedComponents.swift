@@ -23,7 +23,10 @@ struct OnboardingPlatformPanel<Content: View>: View {
   }
 
   var body: some View {
-    OnboardingHeroPanel(cornerRadius: variant.panelCornerRadius) {
+    OnboardingHeroPanel(
+      style: variant.panelStyle,
+      cornerRadius: variant.panelCornerRadius
+    ) {
       content
         .frame(minHeight: variant.panelMinHeight)
     }

@@ -44,4 +44,31 @@ enum OnboardingPlatformVariant {
       640
     }
   }
+
+  var panelStyle: OnboardingHeroPanelStyle {
+    switch self {
+    case .mac:
+      .desktopCanvas
+    case .ios, .ipad:
+      .floatingShowcase
+    }
+  }
+
+  var panelHorizontalPadding: CGFloat {
+    switch self {
+    case .mac:
+      12
+    case .ios, .ipad:
+      18
+    }
+  }
+
+  var usesFloatingPanelEffect: Bool {
+    switch self {
+    case .mac:
+      false
+    case .ios, .ipad:
+      true
+    }
+  }
 }

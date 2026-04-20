@@ -72,12 +72,35 @@ struct OnboardingBackdrop: View {
 }
 
 struct OnboardingHeroPanel<Content: View>: View {
+  let style: OnboardingHeroPanelStyle
   let cornerRadius: CGFloat
   @ViewBuilder let content: Content
 
-  init(cornerRadius: CGFloat = 32, @ViewBuilder content: () -> Content) {
+  init(
+    style: OnboardingHeroPanelStyle = .floatingShowcase,
+    cornerRadius: CGFloat = 32,
+    @ViewBuilder content: () -> Content
+  ) {
+    self.style = style
     self.cornerRadius = cornerRadius
     self.content = content()
+  }
+
+  private var backgroundColors: [Color] {
+    switch style {
+    case .floatingShowcase:
+      [
+        Color.white.opacity(0.94),
+        Color(red: 0.88, green: 0.92, blue: 0.93).opacity(0.9),
+        Color(red: 0.08, green: 0.17, blue: 0.21).opacity(0.92),
+      ]
+    case .desktopCanvas:
+      [
+        Color.white.opacity(0.9),
+        Color(red: 0.82, green: 0.88, blue: 0.9).opacity(0.82),
+        Color(red: 0.07, green: 0.15, blue: 0.18).opacity(0.94),
+      ]
+    }
   }
 
   var body: some View {
@@ -87,11 +110,7 @@ struct OnboardingHeroPanel<Content: View>: View {
       .background(
         ZStack {
           LinearGradient(
-            colors: [
-              Color.white.opacity(0.94),
-              Color(red: 0.88, green: 0.92, blue: 0.93).opacity(0.9),
-              Color(red: 0.08, green: 0.17, blue: 0.21).opacity(0.92),
-            ],
+            colors: backgroundColors,
             startPoint: .top,
             endPoint: .bottom
           )
