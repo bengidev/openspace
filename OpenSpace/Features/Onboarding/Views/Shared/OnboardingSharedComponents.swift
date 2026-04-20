@@ -31,7 +31,7 @@ struct OnboardingPlatformPanel<Content: View>: View {
         .frame(minHeight: variant.panelMinHeight)
     }
     .frame(maxWidth: variant.panelMaxWidth)
-    .padding(.horizontal, 18)
+    .padding(.horizontal, variant.panelHorizontalPadding)
     .opacity(context.hasAppeared ? 1 : 0)
     .offset(y: context.hasAppeared ? 0 : 26)
     .scaleEffect(context.reduceMotion ? 1 : (context.hasAppeared ? 1 : 0.985))
