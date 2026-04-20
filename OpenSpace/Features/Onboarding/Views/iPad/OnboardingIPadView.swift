@@ -19,7 +19,7 @@ struct OnboardingIPadView: View {
             .padding(.horizontal, 22)
             .padding(.top, 22)
 
-          Spacer(minLength: 44)
+          Spacer(minLength: context.topSectionSpacing)
 
           OnboardingHorizontalCapabilityStrip(
             chips: context.capabilityChips + ["Multiplatform", "Local-First"],
@@ -30,7 +30,7 @@ struct OnboardingIPadView: View {
           )
           .padding(.horizontal, 22)
 
-          Spacer(minLength: 104)
+          Spacer(minLength: context.heroSectionSpacing)
 
           OnboardingIPadHeroView(
             context: context,
@@ -38,7 +38,7 @@ struct OnboardingIPadView: View {
           )
           .padding(.horizontal, 28)
 
-          Spacer(minLength: 52)
+          Spacer(minLength: context.footerSectionSpacing)
 
           OnboardingIPadFooterView(context: context)
             .padding(.horizontal, 24)
@@ -50,7 +50,7 @@ struct OnboardingIPadView: View {
         text: "The iPad family can afford broader composition, denser capability cues, and more persistent ambient context while keeping the same onboarding intent.",
         hasAppeared: context.hasAppeared,
         alignment: .center,
-        maxWidth: 760
+        maxWidth: context.supportingNoteMaxWidth
       )
       .padding(.horizontal, 28)
       .padding(.bottom, 20)
