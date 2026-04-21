@@ -24,29 +24,100 @@ struct OnboardingRenderContext {
   }
 
   var panelMinHeight: CGFloat {
-    let reservedHeight: CGFloat = usesCondensedSpacing ? 120 : 88
-    let viewportDrivenHeight = max(420, containerSize.height - reservedHeight)
-    return min(variant.panelMinHeight, viewportDrivenHeight)
+    switch variant {
+    case .mac:
+      let minimumHeight: CGFloat = usesStackedMacHero ? 428 : 452
+      let preferredHeight = containerSize.height * (usesCondensedSpacing ? 0.46 : 0.5)
+      return min(max(minimumHeight, preferredHeight), 548)
+    case .ios, .ipad:
+      let reservedHeight: CGFloat = usesCondensedSpacing ? 120 : 88
+      let viewportDrivenHeight = max(420, containerSize.height - reservedHeight)
+      return min(variant.panelMinHeight, viewportDrivenHeight)
+    }
   }
 
   var topSectionSpacing: CGFloat {
-    isCompactHeight ? 28 : 44
+    isCompactHeight ? 16 : 24
   }
 
   var heroSectionSpacing: CGFloat {
-    usesCondensedSpacing ? 52 : 104
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 14 : 18
+    case .ios, .ipad:
+      return usesCondensedSpacing ? 24 : 56
+    }
   }
 
   var footerSectionSpacing: CGFloat {
-    usesCondensedSpacing ? 28 : 52
+    usesCondensedSpacing ? 16 : 28
   }
 
   var heroStackSpacing: CGFloat {
-    usesCondensedSpacing ? 18 : 28
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 12 : 16
+    case .ios, .ipad:
+      return usesCondensedSpacing ? 14 : 20
+    }
   }
 
   var heroContentSpacing: CGFloat {
-    usesCondensedSpacing ? 14 : 18
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 8 : 12
+    case .ios, .ipad:
+      return usesCondensedSpacing ? 10 : 14
+    }
+  }
+
+  var desktopPanelPadding: CGFloat {
+    switch variant {
+    case .mac:
+      return usesStackedMacHero ? 18 : 24
+    case .ios, .ipad:
+      return 0
+    }
+  }
+
+  var desktopSectionSpacing: CGFloat {
+    switch variant {
+    case .mac:
+      return usesStackedMacHero ? 10 : 12
+    case .ios, .ipad:
+      return topSectionSpacing
+    }
+  }
+
+  var desktopSidebarWidth: CGFloat {
+    min(max(panelMaxWidth * 0.31, 340), 410)
+  }
+
+  var macSpacingAfterCapabilities: CGFloat {
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 6 : 10
+    case .ios, .ipad:
+      return 0
+    }
+  }
+
+  var macSpacingAfterHeroCopy: CGFloat {
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 8 : 12
+    case .ios, .ipad:
+      return 0
+    }
+  }
+
+  var macSpacingBeforeFooter: CGFloat {
+    switch variant {
+    case .mac:
+      return usesCondensedSpacing ? 8 : 12
+    case .ios, .ipad:
+      return 0
+    }
   }
 
   var heroTitleSize: CGFloat {
@@ -57,11 +128,11 @@ struct OnboardingRenderContext {
       containerSize.width < 900 ? 40 : 46
     case .mac:
       if containerSize.width < 860 {
-        34
+        28
       } else if containerSize.width < 1080 {
-        42
+        32
       } else {
-        48
+        36
       }
     }
   }
@@ -127,7 +198,7 @@ struct OnboardingRenderContext {
     case .ipad:
       820
     case .mac:
-      760
+      680
     }
   }
 
@@ -138,7 +209,7 @@ struct OnboardingRenderContext {
     case .ipad:
       820
     case .mac:
-      980
+      1120
     }
   }
 
