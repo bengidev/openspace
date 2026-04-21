@@ -13,47 +13,34 @@ struct OnboardingMacView: View {
 
   var body: some View {
     OnboardingPlatformPanel(variant: .mac, context: context) {
-      VStack(spacing: 0) {
+      VStack(alignment: .leading, spacing: context.desktopSectionSpacing) {
         OnboardingMacHeaderView()
-          .padding(.horizontal, 28)
-          .padding(.top, 28)
-
-        Spacer(minLength: context.topSectionSpacing)
-
-        OnboardingMacCapabilityStrip(
-          chips: context.capabilityChips,
-          hasAppeared: context.hasAppeared,
-          reduceMotion: context.reduceMotion
-        )
-        .padding(.horizontal, 28)
-
-        Spacer(minLength: context.heroSectionSpacing)
 
         OnboardingMacHeroView(
           context: context,
           onContinue: onContinue
         )
-        .padding(.horizontal, 32)
 
-        Spacer(minLength: context.topSectionSpacing)
-
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 10) {
           OnboardingMacFooterView(context: context)
 
-          Rectangle()
-            .fill(Color.white.opacity(0.08))
-            .frame(height: 1)
-
           OnboardingSupportingNote(
-            text: "The macOS family leans into desktop posture: wider hierarchy, stronger information scent, and room for durable workspace chrome without changing onboarding logic.",
+            text: "The macOS surface leans into dense desktop posture: shared onboarding logic, stronger workspace framing, and room for durable chrome without feeling heavy.",
             hasAppeared: context.hasAppeared,
             alignment: .leading,
             maxWidth: context.supportingNoteMaxWidth
           )
         }
-        .padding(.horizontal, 28)
-        .padding(.bottom, 26)
+        .padding(.top, context.macSpacingBeforeFooter)
+        .overlay(alignment: .top) {
+          Rectangle()
+            .fill(Color.white.opacity(0.08))
+            .frame(height: 1)
+        }
       }
+      .padding(.horizontal, context.desktopPanelPadding)
+      .padding(.top, max(context.desktopPanelPadding - 4, 12))
+      .padding(.bottom, max(context.desktopPanelPadding - 20, 6))
     }
   }
 }
