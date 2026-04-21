@@ -24,6 +24,9 @@ struct AppRootView: View {
             hasCompletedOnboarding = true
           }
         }
+        #if os(macOS)
+          .frame(minWidth: 980, idealWidth: 1120, minHeight: 620, idealHeight: 620)
+        #endif
       }
     }
   }
