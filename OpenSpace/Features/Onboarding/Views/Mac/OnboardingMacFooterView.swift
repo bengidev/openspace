@@ -13,7 +13,7 @@ struct OnboardingMacFooterView: View {
   var body: some View {
     OnboardingMetadataBar(
       labels: [
-        "MAC WORKBENCH",
+        "LOCAL-FIRST WORKBENCH",
         "DESKTOP DENSITY",
         "MULTI-WINDOW READY",
       ],
