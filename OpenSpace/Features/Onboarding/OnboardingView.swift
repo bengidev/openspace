@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 struct OnboardingView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -52,30 +55,58 @@ struct OnboardingView: View {
       ZStack {
         OnboardingBackdrop(isAnimated: context.isAnimated)
 
-        ScrollView(.vertical, showsIndicators: false) {
-          VStack(spacing: 28) {
-            Spacer(minLength: 18)
-
+        switch variant {
+        case .mac:
+          VStack(spacing: 0) {
             OnboardingAbstractView(
               variant: variant,
               context: context,
               onContinue: onContinue
             )
+
+            Spacer(minLength: 0)
           }
-          .frame(
-            maxWidth: .infinity,
-            minHeight: max(proxy.size.height - 20, 0),
-            alignment: .top
-          )
+          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        case .ios, .ipad:
+          ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 28) {
+              Spacer(minLength: 18)
+
+              OnboardingAbstractView(
+                variant: variant,
+                context: context,
+                onContinue: onContinue
+              )
+            }
+            .frame(
+              maxWidth: .infinity,
+              minHeight: max(proxy.size.height - 20, 0),
+              alignment: .top
+            )
+          }
+          .safeAreaPadding(.vertical, 10)
         }
-        .safeAreaPadding(.vertical, 10)
       }
     }
     .task {
       guard !hasAppeared else { return }
       hasAppeared = true
+      #if os(macOS)
+        configureMacWindow()
+      #endif
     }
   }
+
+  #if os(macOS)
+    private func configureMacWindow() {
+      DispatchQueue.main.async {
+        guard let window = NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first else { return }
+        let minimumSize = NSSize(width: 980, height: 620)
+        window.minSize = minimumSize
+        window.setContentSize(NSSize(width: 1120, height: 620))
+      }
+    }
+  #endif
 }
 
 #Preview {
