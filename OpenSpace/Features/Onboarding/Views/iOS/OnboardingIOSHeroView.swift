@@ -33,7 +33,7 @@ struct OnboardingIOSHeroView: View {
         Text("Bring code, prompts, and image generation into one local-first workspace that feels composed even when the work is not.")
           .font(context.heroSubtitleFont)
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white.opacity(0.72))
+          .foregroundStyle(Color.white.opacity(0.88))
           .frame(maxWidth: context.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)

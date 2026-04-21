@@ -36,7 +36,7 @@ struct OnboardingIPadHeroView: View {
         Text("The iPad variant keeps the same onboarding state and intent, but produces a broader family of components with more room for hierarchy and capability context.")
           .font(context.heroSubtitleFont)
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white.opacity(0.72))
+          .foregroundStyle(Color.white.opacity(0.88))
           .frame(maxWidth: context.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
