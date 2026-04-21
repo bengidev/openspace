@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B65B6F7B2F9731E200746526 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B65B6F7A2F9731E200746526 /* ComposableArchitecture */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B62D07C92F90865F00334BB1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B65B6F7B2F9731E200746526 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +105,7 @@
 			buildConfigurationList = B62D07DC2F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpace" */;
 			buildPhases = (
 				B62D07B52F90865E00334BB1 /* Sources */,
+				B6F100012FA0000000000001 /* SwiftFormat OpenSpace */,
 				B62D07B62F90865E00334BB1 /* Frameworks */,
 				B62D07B72F90865E00334BB1 /* Resources */,
 			);
@@ -112,6 +118,7 @@
 			);
 			name = OpenSpace;
 			packageProductDependencies = (
+				B65B6F7A2F9731E200746526 /* ComposableArchitecture */,
 			);
 			productName = OpenSpace;
 			productReference = B62D07B92F90865E00334BB1 /* OpenSpace.app */;
@@ -122,6 +129,7 @@
 			buildConfigurationList = B62D07DF2F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpaceTests" */;
 			buildPhases = (
 				B62D07C42F90865F00334BB1 /* Sources */,
+				B6F100022FA0000000000001 /* SwiftFormat OpenSpaceTests */,
 				B62D07C52F90865F00334BB1 /* Frameworks */,
 				B62D07C62F90865F00334BB1 /* Resources */,
 			);
@@ -145,6 +153,7 @@
 			buildConfigurationList = B62D07E22F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpaceUITests" */;
 			buildPhases = (
 				B62D07CE2F90865F00334BB1 /* Sources */,
+				B6F100032FA0000000000001 /* SwiftFormat OpenSpaceUITests */,
 				B62D07CF2F90865F00334BB1 /* Frameworks */,
 				B62D07D02F90865F00334BB1 /* Resources */,
 			);
@@ -195,6 +204,9 @@
 			);
 			mainGroup = B62D07B02F90865E00334BB1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B65B6F792F9731E200746526 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B62D07BA2F90865E00334BB1 /* Products */;
 			projectDirPath = "";
@@ -230,6 +242,69 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B6F100012FA0000000000001 /* SwiftFormat OpenSpace */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftFormat OpenSpace";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpace\"";
+			showEnvVarsInLog = 0;
+		};
+		B6F100022FA0000000000001 /* SwiftFormat OpenSpaceTests */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftFormat OpenSpaceTests";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceTests\"";
+			showEnvVarsInLog = 0;
+		};
+		B6F100032FA0000000000001 /* SwiftFormat OpenSpaceUITests */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftFormat OpenSpaceUITests";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceUITests\"";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B62D07B52F90865E00334BB1 /* Sources */ = {
@@ -307,7 +382,7 @@
 				DEVELOPMENT_TEAM = 2N64875GLV;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -369,7 +444,7 @@
 				DEVELOPMENT_TEAM = 2N64875GLV;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -619,6 +694,27 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B65B6F792F9731E200746526 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.25.5;
+			};
+			traits = (
+			);
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B65B6F7A2F9731E200746526 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B65B6F792F9731E200746526 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B62D07B12F90865E00334BB1 /* Project object */;
 }
