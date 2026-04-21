@@ -1,0 +1,106 @@
+--acronyms ID,URL,UUID
+--allman false
+--anonymousforeach convert
+--assetliterals visual-width
+--asynccapturing 
+--beforemarks 
+--binarygrouping 4,8
+--callsiteparen balanced
+--categorymark "MARK: %c"
+--classthreshold 0
+--closingparen balanced
+--closurevoid remove
+--commas always
+--complexattrs preserve
+--computedvarattrs preserve
+--condassignment always
+--conflictmarkers reject
+--dateformat system
+--decimalgrouping 3,6
+--doccomments before-declarations
+--elseposition same-line
+--emptybraces no-space
+--enumnamespaces structs-only
+--enumthreshold 0
+--exponentcase lowercase
+--exponentgrouping disabled
+--extensionacl on-extension
+--extensionlength 0
+--extensionmark "MARK: - %t + %c"
+--fractiongrouping disabled
+--fragment false
+--funcattributes preserve
+--generictypes 
+--groupblanklines true
+--groupedextension "MARK: %c"
+--guardelse same-line
+--header ignore
+--hexgrouping 4,8
+--hexliteralcase uppercase
+--ifdef indent
+--importgrouping alpha
+--indent 4
+--indentcase false
+--indentstrings false
+--inferredtypes always
+--initcodernil false
+--inlinedforeach ignore
+--lifecycle 
+--lineaftermarks true
+--linebreaks lf
+--markcategories true
+--markextensions always
+--marktypes always
+--maxwidth 120
+--modifierorder 
+--nevertrailing 
+--nilinit remove
+--noncomplexattrs 
+--nospaceoperators 
+--nowrapoperators 
+--octalgrouping 4,8
+--operatorfunc spaced
+--organizationmode type
+--organizetypes actor,class,enum,struct
+--patternlet hoist
+--preservedecls 
+--preservedsymbols Package
+--propertytypes infer-locals-only
+--ranges spaced
+--self insert
+--selfrequired 
+--semicolons never
+--shortoptionals always
+--smarttabs enabled
+--someany true
+--sortedpatterns 
+--storedvarattrs preserve
+--stripunusedargs unnamed-only
+--structthreshold 0
+--tabwidth unspecified
+--throwcapturing 
+--timezone system
+--trailingclosures 
+--trimwhitespace always
+--typeattributes preserve
+--typeblanklines remove
+--typedelimiter space-after
+--typemark "MARK: - %t"
+--typemarks 
+--typeorder 
+--visibilitymarks 
+--visibilityorder 
+--voidtype void
+--wraparguments preserve
+--wrapcollections preserve
+--wrapconditions preserve
+--wrapeffects preserve
+--wrapenumcases always
+--wrapparameters preserve
+--wrapreturntype preserve
+--wrapternary default
+--wraptypealiases preserve
+--xcodeindentation enabled
+--yodaswap always
+--disable andOperator,blankLinesBetweenChainedFunctions,preferKeyPath,redundantGet,redundantLet,redundantParens,redundantRawValues,redundantReturn,sortDeclarations,sortTypealiases,wrap,wrapArguments
+--enable acronyms,blankLineAfterSwitchCase,blankLinesBetweenImports,docComments,markTypes,organizeDeclarations,wrapEnumCases,wrapMultilineConditionalAssignment
