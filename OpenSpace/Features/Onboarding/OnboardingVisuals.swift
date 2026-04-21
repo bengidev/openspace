@@ -96,9 +96,9 @@ struct OnboardingHeroPanel<Content: View>: View {
       ]
     case .desktopCanvas:
       [
-        Color.white.opacity(0.9),
-        Color(red: 0.82, green: 0.88, blue: 0.9).opacity(0.82),
-        Color(red: 0.07, green: 0.15, blue: 0.18).opacity(0.94),
+        Color.white.opacity(0.82),
+        Color(red: 0.78, green: 0.85, blue: 0.88).opacity(0.72),
+        Color(red: 0.06, green: 0.14, blue: 0.17).opacity(0.97),
       ]
     }
   }
@@ -128,6 +128,39 @@ struct OnboardingHeroPanel<Content: View>: View {
             startPoint: .top,
             endPoint: .bottom
           )
+
+          if style == .desktopCanvas {
+            LinearGradient(
+              colors: [
+                Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.78),
+                Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.28),
+                .clear,
+              ],
+              startPoint: .top,
+              endPoint: .bottom
+            )
+
+            RadialGradient(
+              colors: [
+                Color(red: 0.12, green: 0.19, blue: 0.22).opacity(0.26),
+                .clear,
+              ],
+              center: .leading,
+              startRadius: 48,
+              endRadius: 420
+            )
+            .offset(x: -72, y: 22)
+
+            LinearGradient(
+              colors: [
+                Color.clear,
+                Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.14),
+                Color(red: 0.01, green: 0.06, blue: 0.09).opacity(0.24),
+              ],
+              startPoint: .top,
+              endPoint: .bottom
+            )
+          }
         }
         .clipShape(shape)
       )
@@ -142,14 +175,14 @@ struct OnboardingHeroPanel<Content: View>: View {
               startPoint: .top,
               endPoint: .bottom
             ),
-            lineWidth: 1
+            lineWidth: style == .desktopCanvas ? 0 : 1
           )
       )
       .shadow(
-        color: Color.black.opacity(style == .desktopCanvas ? 0.16 : 0.25),
-        radius: style == .desktopCanvas ? 18 : 36,
+        color: Color.black.opacity(style == .desktopCanvas ? 0.0 : 0.25),
+        radius: style == .desktopCanvas ? 0 : 36,
         x: 0,
-        y: style == .desktopCanvas ? 12 : 24
+        y: style == .desktopCanvas ? 0 : 24
       )
   }
 }
