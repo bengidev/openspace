@@ -28,7 +28,11 @@ struct OnboardingPlatformPanel<Content: View>: View {
       cornerRadius: variant.panelCornerRadius
     ) {
       content
-        .frame(minHeight: context.panelMinHeight)
+        .frame(
+          maxWidth: .infinity,
+          minHeight: context.panelMinHeight,
+          alignment: variant == .mac ? .topLeading : .center
+        )
     }
     .frame(maxWidth: context.panelMaxWidth)
     .padding(.horizontal, variant.panelHorizontalPadding)
@@ -160,18 +164,18 @@ struct OnboardingMacCapabilityStrip: View {
   let reduceMotion: Bool
 
   private let columns = [
-    GridItem(.adaptive(minimum: 110), spacing: 10),
+    GridItem(.adaptive(minimum: 84), spacing: 8),
   ]
 
   var body: some View {
-    LazyVGrid(columns: columns, alignment: .leading, spacing: 10) {
+    LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
       ForEach(Array(chips.enumerated()), id: \.element) { index, chip in
         OnboardingCapabilityChip(
           title: chip,
           isVisible: hasAppeared,
           reduceMotion: reduceMotion,
           delay: Double(index) * 0.06,
-          horizontalPadding: 12
+          horizontalPadding: 9
         )
       }
     }
@@ -183,15 +187,34 @@ struct OnboardingPrimaryButton: View {
   let title: String
   let hasAppeared: Bool
   let reduceMotion: Bool
+  let minWidth: CGFloat?
+  let minHeight: CGFloat
   let action: () -> Void
+
+  init(
+    title: String,
+    hasAppeared: Bool,
+    reduceMotion: Bool,
+    minWidth: CGFloat? = nil,
+    minHeight: CGFloat = 48,
+    action: @escaping () -> Void
+  ) {
+    self.title = title
+    self.hasAppeared = hasAppeared
+    self.reduceMotion = reduceMotion
+    self.minWidth = minWidth
+    self.minHeight = minHeight
+    self.action = action
+  }
 
   var body: some View {
     Button(action: action) {
       Text(title)
-        .font(.subheadline.weight(.semibold))
+        .font(.title3.weight(.semibold))
         .foregroundStyle(Color(red: 0.06, green: 0.12, blue: 0.14))
-        .padding(.horizontal, 24)
-        .padding(.vertical, 14)
+        .frame(minWidth: minWidth, minHeight: minHeight)
+        .padding(.horizontal, 28)
+        .padding(.vertical, 18)
         .background(
           Capsule()
             .fill(Color.white)
@@ -203,9 +226,9 @@ struct OnboardingPrimaryButton: View {
     .opacity(hasAppeared ? 1 : 0)
     .shadow(
       color: Color.white.opacity(reduceMotion ? 0.08 : 0.16),
-      radius: hasAppeared ? 14 : 0,
+      radius: hasAppeared ? 12 : 0,
       x: 0,
-      y: 6
+      y: 5
     )
     .animation(
       .easeOut(duration: 0.75).delay(reduceMotion ? 0 : 0.38),
@@ -230,7 +253,7 @@ struct OnboardingMetadataBar: View {
       verticalBar
     }
     .font(.caption2.monospaced())
-    .foregroundStyle(Color.white.opacity(0.32))
+    .foregroundStyle(Color.white.opacity(0.48))
     .opacity(hasAppeared ? 1 : 0)
     .animation(
       .easeOut(duration: 0.8).delay(0.48),
@@ -276,7 +299,7 @@ struct OnboardingSupportingNote: View {
   var body: some View {
     Text(text)
       .font(.footnote)
-      .foregroundStyle(Color.white.opacity(0.56))
+      .foregroundStyle(Color.white.opacity(0.72))
       .multilineTextAlignment(alignment)
       .frame(maxWidth: maxWidth)
       .frame(maxWidth: .infinity, alignment: frameAlignment)
@@ -312,10 +335,10 @@ struct OnboardingCapabilityChip: View {
       .font(.caption)
       .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
       .padding(.horizontal, horizontalPadding)
-      .padding(.vertical, 8)
+      .padding(.vertical, 6)
       .background(
         Capsule()
-          .fill(Color.white.opacity(0.56))
+          .fill(Color.white.opacity(0.68))
       )
       .opacity(isVisible ? 1 : 0)
       .offset(y: isVisible ? 0 : 10)
@@ -345,7 +368,7 @@ struct OnboardingSignalPill: View {
 
       Text(label)
         .font(.caption)
-        .foregroundStyle(Color.white.opacity(0.75))
+        .foregroundStyle(Color.white.opacity(0.88))
         .multilineTextAlignment(.leading)
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -353,11 +376,7 @@ struct OnboardingSignalPill: View {
     .padding(.vertical, 8)
     .background(
       Capsule()
-        .fill(Color.white.opacity(0.08))
-    )
-    .overlay(
-      Capsule()
-        .strokeBorder(Color.white.opacity(0.16), lineWidth: 0.8)
+        .fill(Color.white.opacity(0.12))
     )
   }
 }
