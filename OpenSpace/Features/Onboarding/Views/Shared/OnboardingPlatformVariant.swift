@@ -19,7 +19,7 @@ enum OnboardingPlatformVariant {
     case .ipad:
       38
     case .mac:
-      40
+      0
     }
   }
 
@@ -30,7 +30,7 @@ enum OnboardingPlatformVariant {
     case .ipad:
       980
     case .mac:
-      1200
+      .infinity
     }
   }
 
@@ -41,7 +41,7 @@ enum OnboardingPlatformVariant {
     case .ipad:
       680
     case .mac:
-      640
+      460
     }
   }
 
@@ -57,7 +57,7 @@ enum OnboardingPlatformVariant {
   var panelHorizontalPadding: CGFloat {
     switch self {
     case .mac:
-      12
+      0
     case .ios, .ipad:
       18
     }
