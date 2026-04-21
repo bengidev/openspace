@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct OpenSpaceApp: App {
@@ -22,5 +23,8 @@ struct OpenSpaceApp: App {
       AppRootView()
         .openSpaceTheme()
     }
+    #if os(macOS)
+      .defaultSize(width: 1120, height: 620)
+    #endif
   }
 }
