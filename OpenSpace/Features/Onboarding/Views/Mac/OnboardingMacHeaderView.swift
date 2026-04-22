@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct OnboardingMacHeaderView: View {
+  @Environment(\.colorScheme) private var colorScheme
+
   var body: some View {
     ViewThatFits(in: .horizontal) {
       regularHeader
@@ -44,18 +46,18 @@ struct OnboardingMacHeaderView: View {
     HStack(spacing: 12) {
       Image(systemName: "sparkles.rectangle.stack.fill")
         .font(.system(size: 14, weight: .semibold))
-        .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15))
+        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
         .frame(width: 34, height: 34)
-        .background(Circle().fill(Color.white.opacity(0.54)))
+        .background(Circle().fill(ThemeColor.chromeFill(for: colorScheme)))
 
       VStack(alignment: .leading, spacing: 4) {
         Text("OpenSpace")
           .font(.subheadline.weight(.semibold))
-          .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15))
+          .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
 
         Text("Compact macOS onboarding for local, multi-provider work")
           .font(.caption)
-          .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19).opacity(0.72))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
           .lineLimit(1)
           .minimumScaleFactor(0.8)
       }
@@ -66,10 +68,10 @@ struct OnboardingMacHeaderView: View {
   private func headerBadge(_ title: String) -> some View {
     Text(title)
       .font(.caption2.monospaced().weight(.medium))
-      .foregroundStyle(Color(red: 0.08, green: 0.13, blue: 0.15).opacity(0.92))
+      .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
       .padding(.horizontal, 10)
       .padding(.vertical, 6)
-      .background(Capsule().fill(Color.white.opacity(0.42)))
+      .background(Capsule().fill(ThemeColor.chromeFill(for: colorScheme, emphasis: 0.95)))
       .lineLimit(1)
       .minimumScaleFactor(0.85)
       .accessibilityIdentifier("onboarding.mac.header.badge.\(title.lowercased().replacingOccurrences(of: " ", with: "-"))")
