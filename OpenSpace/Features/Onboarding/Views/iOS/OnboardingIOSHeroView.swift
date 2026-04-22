@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingIOSHeroView: View {
+  @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
@@ -22,7 +23,7 @@ struct OnboardingIOSHeroView: View {
         Text("Calm Systems for Fast Builders")
           .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white)
+          .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
           .frame(maxWidth: context.heroTextMaxWidth)
           .lineLimit(4)
           .minimumScaleFactor(0.8)
@@ -37,7 +38,7 @@ struct OnboardingIOSHeroView: View {
         Text("Bring code, prompts, and image generation into one local-first workspace that feels composed even when the work is not.")
           .font(context.heroSubtitleFont)
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white.opacity(0.88))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
           .frame(maxWidth: context.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
