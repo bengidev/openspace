@@ -17,6 +17,7 @@ struct OnboardingMacHeroView: View {
       stackedLayout
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityIdentifier("onboarding.mac.hero")
   }
 
   private var wideLayout: some View {
@@ -39,14 +40,16 @@ struct OnboardingMacHeroView: View {
     VStack(alignment: .leading, spacing: context.heroContentSpacing) {
       OnboardingSignalPill(
         isAnimated: context.isAnimated,
-        label: "A desktop workbench for coding, image generation, and local AI setup"
+        label: "A desktop workbench for coding, image generation, and local AI setup",
+        identifierPrefix: "onboarding.mac.hero.signal"
       )
       .padding(.bottom, 6)
 
       OnboardingMacCapabilityStrip(
         chips: context.capabilityChips,
         hasAppeared: context.hasAppeared,
-        reduceMotion: context.reduceMotion
+        reduceMotion: context.reduceMotion,
+        identifierPrefix: "onboarding.mac.capabilities"
       )
       .padding(.bottom, context.macSpacingAfterCapabilities)
 
@@ -65,6 +68,7 @@ struct OnboardingMacHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.18),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.mac.hero.title")
 
         Text("The macOS family keeps onboarding logic shared while producing a different render family: denser chrome, stronger information scent, and room for a real desktop posture.")
           .font(context.heroSubtitleFont)
@@ -77,6 +81,7 @@ struct OnboardingMacHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.28),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.mac.hero.subtitle")
       }
       .padding(.top, context.macSpacingAfterHeroCopy + 30)
         
@@ -96,9 +101,11 @@ struct OnboardingMacHeroView: View {
         reduceMotion: context.reduceMotion,
         minWidth: context.heroSupportingTextMaxWidth,
         minHeight: 28,
+        identifier: "onboarding.mac.hero.primary-action",
         action: onContinue
       )
     }
+    .accessibilityIdentifier("onboarding.mac.hero.actions")
   }
 
   private var workflowHighlights: some View {
@@ -133,6 +140,7 @@ struct OnboardingMacHeroView: View {
       .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.36),
       value: context.hasAppeared
     )
+    .accessibilityIdentifier("onboarding.mac.hero.workflow-highlights")
   }
 
   private var secondaryColumn: some View {
@@ -148,6 +156,7 @@ struct OnboardingMacHeroView: View {
       .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.32),
       value: context.hasAppeared
     )
+    .accessibilityIdentifier("onboarding.mac.hero.secondary-column")
   }
 
   private var sessionSurfaceCard: some View {
@@ -176,6 +185,7 @@ struct OnboardingMacHeroView: View {
     .padding(14)
     .background(cardBackground(opacity: 0.12))
     .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityIdentifier("onboarding.mac.hero.workspace-card")
   }
 
   private var desktopNotesCard: some View {
@@ -209,6 +219,7 @@ struct OnboardingMacHeroView: View {
     .padding(14)
     .background(cardBackground(opacity: 0.10))
     .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityIdentifier("onboarding.mac.hero.notes-card")
   }
 
   private var desktopMetricStrip: some View {
@@ -312,4 +323,16 @@ private struct OnboardingMacDetailRow: View {
         .fixedSize(horizontal: false, vertical: true)
     }
   }
+}
+
+#Preview("Desktop Hero") {
+  OnboardingMacHeroView(
+    context: OnboardingPreviewSupport.context(
+      variant: .mac,
+      size: CGSize(width: 1120, height: 620)
+    ),
+    onContinue: {}
+  )
+  .padding(24)
+  .onboardingPreviewSurface(size: CGSize(width: 1120, height: 460))
 }
