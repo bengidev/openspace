@@ -46,7 +46,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       min(max(containerSize.width * 0.034, 22), 40)
     case .mac:
-      28
+      0
     }
   }
 
@@ -57,7 +57,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       usesSidebar ? 28 : 20
     case .mac:
-      22
+      0
     }
   }
 
@@ -101,7 +101,7 @@ struct WorkspaceRenderContext {
   var mainSectionSpacing: CGFloat {
     switch variant {
     case .mac:
-      30
+      24
     case .ios, .ipad:
       usesSidebar ? 34 : 24
     }
@@ -131,11 +131,21 @@ struct WorkspaceRenderContext {
   }
 
   var mainHorizontalPadding: CGFloat {
-    usesSidebar ? 28 : 18
+    switch variant {
+    case .mac:
+      34
+    case .ios, .ipad:
+      usesSidebar ? 28 : 18
+    }
   }
 
   var mainVerticalPadding: CGFloat {
-    usesSidebar ? 22 : 18
+    switch variant {
+    case .mac:
+      28
+    case .ios, .ipad:
+      usesSidebar ? 22 : 18
+    }
   }
 
   var idealWindowSize: CGSize {
