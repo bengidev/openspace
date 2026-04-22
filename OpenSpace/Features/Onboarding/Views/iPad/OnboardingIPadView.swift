@@ -16,6 +16,7 @@ struct OnboardingIPadView: View {
       OnboardingPlatformPanel(variant: .ipad, context: context) {
         VStack(spacing: 0) {
           OnboardingIPadHeaderView()
+            .accessibilityIdentifier("onboarding.ipad.header-container")
             .padding(.horizontal, 22)
             .padding(.top, 22)
 
@@ -26,7 +27,8 @@ struct OnboardingIPadView: View {
             hasAppeared: context.hasAppeared,
             reduceMotion: context.reduceMotion,
             spacing: 10,
-            chipPadding: 14
+            chipPadding: 14,
+            identifierPrefix: "onboarding.ipad.capabilities"
           )
           .padding(.horizontal, 22)
 
@@ -36,11 +38,13 @@ struct OnboardingIPadView: View {
             context: context,
             onContinue: onContinue
           )
+          .accessibilityIdentifier("onboarding.ipad.hero-container")
           .padding(.horizontal, 28)
 
           Spacer(minLength: context.footerSectionSpacing)
 
           OnboardingIPadFooterView(context: context)
+            .accessibilityIdentifier("onboarding.ipad.footer-container")
             .padding(.horizontal, 24)
             .padding(.bottom, 22)
         }
@@ -52,8 +56,23 @@ struct OnboardingIPadView: View {
         alignment: .center,
         maxWidth: context.supportingNoteMaxWidth
       )
+      .accessibilityIdentifier("onboarding.ipad.supporting-note")
       .padding(.horizontal, 28)
       .padding(.bottom, 20)
     }
+    .accessibilityIdentifier("onboarding.ipad.content")
   }
+}
+
+#Preview("iPad Onboarding Content") {
+  OnboardingIPadView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ipad,
+      size: CGSize(width: 834, height: 1194),
+      capabilityChips: OnboardingPreviewSupport.defaultCapabilityChips + ["Multiplatform", "Local-First"]
+    ),
+    onContinue: {}
+  )
+  .padding(.vertical, 24)
+  .onboardingPreviewSurface(size: CGSize(width: 834, height: 1194))
 }
