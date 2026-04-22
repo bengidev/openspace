@@ -4,7 +4,7 @@ This document describes the repository as it exists today, based on the current 
 
 ## Summary
 
-OpenSpace is currently an **onboarding-first SwiftUI prototype**, not yet an AI product. The codebase now centers on a first-run visual experience and a minimal post-onboarding placeholder instead of the old sample timestamp list.
+OpenSpace is currently an **onboarding-first SwiftUI prototype** with an early workspace shell, not yet a full AI product. The codebase now centers on a first-run visual experience and a styled post-onboarding canvas instead of the old sample timestamp list.
 
 ## What Exists Today
 
@@ -14,7 +14,7 @@ OpenSpace is currently an **onboarding-first SwiftUI prototype**, not yet an AI 
   Defines the `@main` app entry point and applies the shared OpenSpace theme.
 
 - [OpenSpace/App/AppRootView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/App/AppRootView.swift:10)
-  Owns the lightweight app flow. It switches between onboarding and a placeholder shell using `@AppStorage("hasCompletedOnboarding")`.
+  Owns the lightweight app flow. It switches between onboarding and the early workspace shell using `@AppStorage("hasCompletedOnboarding")`.
 
 - [OpenSpace/Features/Onboarding/OnboardingView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Onboarding/OnboardingView.swift:10)
   Acts as the onboarding facade. It owns shared feature state and hands rendering off to the onboarding abstract view.
@@ -31,8 +31,11 @@ OpenSpace is currently an **onboarding-first SwiftUI prototype**, not yet an AI 
 - [OpenSpace/Features/Onboarding/OnboardingVisuals.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Onboarding/OnboardingVisuals.swift:9)
   Contains reusable onboarding visuals such as the atmospheric backdrop, hero panel, and pinstripe texture.
 
-- [OpenSpace/Features/Workspace/WorkspacePlaceholderView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Workspace/WorkspacePlaceholderView.swift:10)
-  Provides a deliberately minimal screen after onboarding completes, keeping the repo honest about what has not been built yet.
+- [OpenSpace/Features/Workspace/WorkspaceView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Workspace/WorkspaceView.swift:10)
+  Acts as the workspace facade. It owns local workspace state, applies the shared backdrop, and hands rendering off into the workspace platform tree.
+
+- [OpenSpace/Features/Workspace/Views](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Workspace/Views)
+  Mirrors the onboarding feature split with an abstract platform handoff, shared components, and concrete iPhone, iPad, and macOS workspace implementations. The current refinement focus is the macOS surface first, with mobile variants kept as temporary fallbacks.
 
 - [OpenSpace/Shared/Theme/ThemeColors.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Shared/Theme/ThemeColors.swift:10)
   Defines theme tokens and shared view styling helpers.
@@ -69,12 +72,12 @@ The following capabilities are **not present** in the repository right now:
 - conversation or message domain models
 - persistence for real workspace data
 - onboarding analytics or experiment framework
-- product-grade workspace shell after onboarding
+- product-grade, data-driven workspace after onboarding
 
 ## Practical Interpretation
 
 The best way to understand this repository today is:
 
-> A SwiftUI prototype for refining OpenSpace's first-run onboarding direction before building the real AI workspace underneath it.
+> A SwiftUI prototype for refining OpenSpace's first-run onboarding direction while shaping the first pass of the real workspace shell underneath it.
 
 That makes it a good place to iterate on product framing and visual language, but not yet a foundation for documenting provider features or a full app architecture.
