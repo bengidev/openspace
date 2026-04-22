@@ -12,7 +12,14 @@ struct OnboardingIPadHeaderView: View {
     OnboardingHeaderChromeView(
       centerText: "OpenSpace for iPad",
       badgeOpacity: 0.6,
-      buttonSize: 40
+      buttonSize: 40,
+      identifierPrefix: "onboarding.ipad.header"
     )
   }
+}
+
+#Preview("iPad Header") {
+  OnboardingIPadHeaderView()
+    .padding(24)
+    .onboardingPreviewSurface(size: CGSize(width: 834, height: 130))
 }
