@@ -224,3 +224,41 @@ struct OnboardingRenderContext {
     }
   }
 }
+
+#if DEBUG
+enum OnboardingPreviewSupport {
+  static let defaultCapabilityChips = [
+    "Code",
+    "Images",
+    "Research",
+    "Automation",
+  ]
+
+  static func context(
+    variant: OnboardingPlatformVariant,
+    size: CGSize,
+    hasAppeared: Bool = true,
+    reduceMotion: Bool = true,
+    capabilityChips: [String] = defaultCapabilityChips
+  ) -> OnboardingRenderContext {
+    OnboardingRenderContext(
+      variant: variant,
+      capabilityChips: capabilityChips,
+      containerSize: size,
+      hasAppeared: hasAppeared,
+      reduceMotion: reduceMotion
+    )
+  }
+}
+
+extension View {
+  func onboardingPreviewSurface(size: CGSize) -> some View {
+    ZStack {
+      OnboardingBackdrop(isAnimated: false)
+      self
+    }
+    .frame(width: size.width, height: size.height)
+    .openSpaceTheme()
+  }
+}
+#endif
