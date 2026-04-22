@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingIPadHeroView: View {
+  @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
@@ -23,7 +24,7 @@ struct OnboardingIPadHeroView: View {
         Text("OpenSpace Expands Without Splitting the Feature")
           .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white)
+          .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
           .frame(maxWidth: context.heroTextMaxWidth)
           .lineLimit(4)
           .minimumScaleFactor(0.8)
@@ -38,7 +39,7 @@ struct OnboardingIPadHeroView: View {
         Text("The iPad variant keeps the same onboarding state and intent, but produces a broader family of components with more room for hierarchy and capability context.")
           .font(context.heroSubtitleFont)
           .multilineTextAlignment(.center)
-          .foregroundStyle(Color.white.opacity(0.88))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
           .frame(maxWidth: context.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
