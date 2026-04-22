@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingMacHeroView: View {
+  @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
@@ -57,8 +58,8 @@ struct OnboardingMacHeroView: View {
         Text("A Native Desktop Surface for Multi-Provider Work")
           .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.leading)
-          .foregroundStyle(Color.white)
-          .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 3)
+          .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
+          .shadow(color: ThemeColor.elevatedShadow(for: colorScheme), radius: 8, x: 0, y: 3)
           .frame(maxWidth: context.heroTextMaxWidth, alignment: .leading)
           .lineLimit(4)
           .minimumScaleFactor(0.8)
@@ -73,7 +74,7 @@ struct OnboardingMacHeroView: View {
         Text("The macOS family keeps onboarding logic shared while producing a different render family: denser chrome, stronger information scent, and room for a real desktop posture.")
           .font(context.heroSubtitleFont)
           .multilineTextAlignment(.leading)
-          .foregroundStyle(Color.white.opacity(0.8))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
           .frame(maxWidth: context.heroSupportingTextMaxWidth, alignment: .leading)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
@@ -113,7 +114,7 @@ struct OnboardingMacHeroView: View {
       HStack(alignment: .center, spacing: 10) {
         Text("Desktop Rhythm")
           .font(.caption.weight(.semibold))
-          .foregroundStyle(Color.white.opacity(0.82))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
         Spacer(minLength: 10)
 
@@ -121,7 +122,7 @@ struct OnboardingMacHeroView: View {
       }
 
       Rectangle()
-        .fill(Color.white.opacity(0.08))
+        .fill(ThemeColor.chromeStroke(for: colorScheme))
         .frame(height: 1)
         .padding(.vertical, 2)
 
@@ -164,7 +165,7 @@ struct OnboardingMacHeroView: View {
       HStack(alignment: .center) {
         Text("Workspace Surface")
           .font(.caption.weight(.semibold))
-          .foregroundStyle(Color.white.opacity(0.72))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
         Spacer()
 
@@ -194,7 +195,7 @@ struct OnboardingMacHeroView: View {
         HStack(alignment: .top, spacing: 12) {
           Text("Desktop Notes")
             .font(.caption.weight(.semibold))
-            .foregroundStyle(Color.white.opacity(0.82))
+            .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
           Spacer(minLength: 8)
 
@@ -204,7 +205,7 @@ struct OnboardingMacHeroView: View {
         VStack(alignment: .leading, spacing: 10) {
           Text("Desktop Notes")
             .font(.caption.weight(.semibold))
-            .foregroundStyle(Color.white.opacity(0.82))
+            .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
           desktopMetricStrip
         }
@@ -236,11 +237,11 @@ struct OnboardingMacHeroView: View {
     VStack(alignment: .leading, spacing: 2) {
       Text(title.uppercased())
         .font(.caption2.monospaced().weight(.medium))
-        .foregroundStyle(Color.white.opacity(0.58))
+        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
 
       Text(value)
         .font(.caption.weight(.semibold))
-        .foregroundStyle(Color.white.opacity(0.92))
+        .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
         .lineLimit(1)
     }
     .padding(.horizontal, 10)
@@ -251,28 +252,28 @@ struct OnboardingMacHeroView: View {
   private func compactStatus(_ title: String) -> some View {
     Text(title)
       .font(.caption2.monospaced().weight(.medium))
-      .foregroundStyle(Color.white.opacity(0.90))
+      .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
       .padding(.horizontal, 8)
       .padding(.vertical, 5)
-      .background(Capsule().fill(Color.white.opacity(0.14)))
+      .background(Capsule().fill(ThemeColor.subtlePanelFill(for: colorScheme)))
   }
 
   private func sessionRow(icon: String, title: String, value: String) -> some View {
     HStack(alignment: .top, spacing: 10) {
       Image(systemName: icon)
         .font(.system(size: 12, weight: .semibold))
-        .foregroundStyle(Color.white.opacity(0.82))
+        .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
         .frame(width: 26, height: 26)
-        .background(Circle().fill(Color.white.opacity(0.10)))
+        .background(Circle().fill(ThemeColor.subtlePanelFill(for: colorScheme)))
 
       VStack(alignment: .leading, spacing: 3) {
         Text(title)
           .font(.caption.weight(.semibold))
-          .foregroundStyle(Color.white.opacity(0.85))
+          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
         Text(value)
           .font(.footnote)
-          .foregroundStyle(Color.white.opacity(0.92))
+          .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
       }
     }
   }
@@ -281,32 +282,33 @@ struct OnboardingMacHeroView: View {
     VStack(alignment: .leading, spacing: 2) {
       Text(value)
         .font(.title3.weight(.semibold))
-        .foregroundStyle(Color.white)
+        .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
 
       Text(label)
         .font(.caption2)
-        .foregroundStyle(Color.white.opacity(0.78))
+        .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding(.horizontal, 12)
     .padding(.vertical, 10)
     .background(
       RoundedRectangle(cornerRadius: 14, style: .continuous)
-        .fill(Color.black.opacity(0.18))
+        .fill(ThemeColor.subtlePanelFill(for: colorScheme))
     )
   }
 
   private func cardBackground(opacity: Double) -> some View {
     RoundedRectangle(cornerRadius: 20, style: .continuous)
-      .fill(Color.white.opacity(opacity))
+      .fill(colorScheme == .dark ? Color.white.opacity(opacity) : ThemeColor.accent100.opacity(max(opacity * 5.5, 0.42)))
       .overlay(
         RoundedRectangle(cornerRadius: 20, style: .continuous)
-          .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+          .strokeBorder(ThemeColor.chromeStroke(for: colorScheme), lineWidth: 1)
       )
   }
 }
 
 private struct OnboardingMacDetailRow: View {
+  @Environment(\.colorScheme) private var colorScheme
   let title: String
   let value: String
 
@@ -314,12 +316,12 @@ private struct OnboardingMacDetailRow: View {
     HStack(alignment: .top, spacing: 10) {
       Text(title.uppercased())
         .font(.caption2.monospaced().weight(.medium))
-        .foregroundStyle(Color.white.opacity(0.58))
+        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
         .frame(width: 74, alignment: .leading)
 
       Text(value)
         .font(.footnote)
-        .foregroundStyle(Color.white.opacity(0.90))
+        .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
         .fixedSize(horizontal: false, vertical: true)
     }
   }
