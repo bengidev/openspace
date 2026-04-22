@@ -13,11 +13,14 @@ struct AppRootView: View {
   var body: some View {
     Group {
       if hasCompletedOnboarding {
-        WorkspacePlaceholderView {
+        WorkspaceView {
           withAnimation(.easeInOut(duration: 0.3)) {
             hasCompletedOnboarding = false
           }
         }
+        #if os(macOS)
+          .frame(minWidth: 1180, idealWidth: 1280, minHeight: 740, idealHeight: 820)
+        #endif
       } else {
         OnboardingView {
           withAnimation(.easeInOut(duration: 0.35)) {
