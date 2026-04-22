@@ -9,6 +9,15 @@ import SwiftUI
 
 struct OnboardingIOSHeaderView: View {
   var body: some View {
-    OnboardingHeaderChromeView(centerText: "OpenSpace")
+    OnboardingHeaderChromeView(
+      centerText: "OpenSpace",
+      identifierPrefix: "onboarding.ios.header"
+    )
   }
+}
+
+#Preview("iPhone Header") {
+  OnboardingIOSHeaderView()
+    .padding(24)
+    .onboardingPreviewSurface(size: CGSize(width: 390, height: 120))
 }
