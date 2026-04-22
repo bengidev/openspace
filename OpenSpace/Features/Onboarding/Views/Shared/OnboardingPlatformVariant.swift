@@ -12,6 +12,17 @@ enum OnboardingPlatformVariant {
   case ipad
   case mac
 
+  var identifierPrefix: String {
+    switch self {
+    case .ios:
+      "onboarding.ios"
+    case .ipad:
+      "onboarding.ipad"
+    case .mac:
+      "onboarding.mac"
+    }
+  }
+
   var panelCornerRadius: CGFloat {
     switch self {
     case .ios:
