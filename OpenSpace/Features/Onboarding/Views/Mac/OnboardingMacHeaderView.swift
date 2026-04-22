@@ -13,6 +13,7 @@ struct OnboardingMacHeaderView: View {
       regularHeader
       compactHeader
     }
+    .accessibilityIdentifier("onboarding.mac.header")
   }
 
   private var regularHeader: some View {
@@ -59,6 +60,7 @@ struct OnboardingMacHeaderView: View {
           .minimumScaleFactor(0.8)
       }
     }
+    .accessibilityIdentifier("onboarding.mac.header.identity")
   }
 
   private func headerBadge(_ title: String) -> some View {
@@ -70,5 +72,12 @@ struct OnboardingMacHeaderView: View {
       .background(Capsule().fill(Color.white.opacity(0.42)))
       .lineLimit(1)
       .minimumScaleFactor(0.85)
+      .accessibilityIdentifier("onboarding.mac.header.badge.\(title.lowercased().replacingOccurrences(of: " ", with: "-"))")
   }
+}
+
+#Preview("Desktop Header") {
+  OnboardingMacHeaderView()
+    .padding(24)
+    .onboardingPreviewSurface(size: CGSize(width: 1120, height: 120))
 }
