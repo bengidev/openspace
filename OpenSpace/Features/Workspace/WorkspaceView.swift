@@ -75,7 +75,7 @@ struct WorkspaceView: View {
       let context = renderContext(for: proxy.size, variant: variant)
 
       ZStack {
-        OnboardingBackdrop(isAnimated: context.isAnimated)
+        WorkspaceBackdrop(isAnimated: context.isAnimated)
 
         contentSurface(context: context, variant: variant)
       }
@@ -109,9 +109,7 @@ struct WorkspaceView: View {
 
     #if os(macOS)
       if variant == .mac {
-        VStack {
-          content
-        }
+        content
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
       } else {
         ScrollView(.vertical, showsIndicators: false) {
