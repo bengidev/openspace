@@ -25,6 +25,8 @@ struct OpenSpaceApp: App {
     }
     #if os(macOS)
       .defaultSize(width: 1120, height: 620)
+      .windowToolbarStyle(.unifiedCompact)
+      .windowResizability(.contentMinSize)
     #endif
   }
 }
