@@ -37,9 +37,9 @@ Avoid wiring UI directly to provider-specific APIs. Add a small service boundary
 - error normalization
 - streaming support hooks
 
-### 4. Replace the placeholder post-onboarding shell
+### 4. Evolve the post-onboarding workspace shell
 
-The current onboarding flow should eventually hand off into a real workspace shell:
+The current onboarding flow now hands off into an initial workspace shell, which should evolve into a richer product surface with:
 
 - sidebar or conversation list
 - thread detail view
