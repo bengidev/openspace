@@ -62,6 +62,7 @@ struct OnboardingPlatformPanel<Content: View>: View {
 }
 
 struct OnboardingHeaderChromeView: View {
+  @Environment(\.colorScheme) private var colorScheme
   let centerText: String
   let badgeOpacity: Double
   let buttonSize: CGFloat
@@ -118,9 +119,9 @@ struct OnboardingHeaderChromeView: View {
     Button {} label: {
       Image(systemName: "plus")
         .font(.system(size: 16, weight: .medium))
-        .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
+        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
         .frame(width: buttonSize, height: buttonSize)
-        .background(Circle().fill(Color.white.opacity(0.62)))
+        .background(Circle().fill(ThemeColor.chromeFill(for: colorScheme, emphasis: 1.2)))
     }
     .buttonStyle(.plain)
     .accessibilityLabel("OpenSpace mark")
@@ -130,12 +131,12 @@ struct OnboardingHeaderChromeView: View {
   private var centerBadge: some View {
     Text(centerText)
       .font(.caption.weight(.semibold))
-      .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
+      .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
       .lineLimit(1)
       .minimumScaleFactor(0.8)
       .padding(.horizontal, 12)
       .padding(.vertical, 8)
-      .background(Capsule().fill(Color.white.opacity(badgeOpacity)))
+      .background(Capsule().fill(ThemeColor.chromeFill(for: colorScheme, emphasis: badgeOpacity)))
       .accessibilityIdentifier("\(identifierPrefix).center-badge")
   }
 
@@ -143,9 +144,9 @@ struct OnboardingHeaderChromeView: View {
     Button {} label: {
       Image(systemName: "waveform.path.ecg")
         .font(.system(size: 15, weight: .medium))
-        .foregroundStyle(Color(red: 0.05, green: 0.11, blue: 0.13))
+        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
         .frame(width: buttonSize, height: buttonSize)
-        .background(Circle().fill(Color.white.opacity(0.62)))
+        .background(Circle().fill(ThemeColor.chromeFill(for: colorScheme, emphasis: 1.2)))
     }
     .buttonStyle(.plain)
     .accessibilityLabel("Ambient activity indicator")
@@ -210,6 +211,7 @@ struct OnboardingMacCapabilityStrip: View {
 }
 
 struct OnboardingPrimaryButton: View {
+  @Environment(\.colorScheme) private var colorScheme
   let title: String
   let hasAppeared: Bool
   let reduceMotion: Bool
@@ -240,13 +242,13 @@ struct OnboardingPrimaryButton: View {
     Button(action: action) {
       Text(title)
         .font(.title3.weight(.semibold))
-        .foregroundStyle(Color(red: 0.06, green: 0.12, blue: 0.14))
+        .foregroundStyle(colorScheme == .dark ? ThemeColor.neutral1000 : ThemeColor.textPrimary)
         .frame(minWidth: minWidth, minHeight: minHeight)
         .padding(.horizontal, 28)
         .padding(.vertical, 18)
         .background(
           Capsule()
-            .fill(Color.white)
+            .fill(colorScheme == .dark ? Color.white : ThemeColor.accent100)
         )
     }
     .buttonStyle(.plain)
@@ -255,7 +257,7 @@ struct OnboardingPrimaryButton: View {
     .scaleEffect(reduceMotion ? 1 : (hasAppeared ? 1 : 0.94))
     .opacity(hasAppeared ? 1 : 0)
     .shadow(
-      color: Color.white.opacity(reduceMotion ? 0.08 : 0.16),
+      color: ThemeColor.elevatedShadow(for: colorScheme).opacity(reduceMotion ? 0.45 : 1),
       radius: hasAppeared ? 12 : 0,
       x: 0,
       y: 5
@@ -273,6 +275,7 @@ struct OnboardingPrimaryButton: View {
 }
 
 struct OnboardingMetadataBar: View {
+  @Environment(\.colorScheme) private var colorScheme
   let labels: [String]
   let hasAppeared: Bool
   let alignment: Alignment
@@ -284,7 +287,7 @@ struct OnboardingMetadataBar: View {
       verticalBar
     }
     .font(.caption2.monospaced())
-    .foregroundStyle(Color.white.opacity(0.48))
+    .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
     .opacity(hasAppeared ? 1 : 0)
     .animation(
       .easeOut(duration: 0.8).delay(0.48),
@@ -324,6 +327,7 @@ struct OnboardingMetadataBar: View {
 }
 
 struct OnboardingSupportingNote: View {
+  @Environment(\.colorScheme) private var colorScheme
   let text: String
   let hasAppeared: Bool
   let alignment: TextAlignment
@@ -332,7 +336,7 @@ struct OnboardingSupportingNote: View {
   var body: some View {
     Text(text)
       .font(.footnote)
-      .foregroundStyle(Color.white.opacity(0.72))
+      .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
       .multilineTextAlignment(alignment)
       .frame(maxWidth: maxWidth)
       .frame(maxWidth: .infinity, alignment: frameAlignment)
@@ -357,6 +361,7 @@ struct OnboardingSupportingNote: View {
 }
 
 struct OnboardingCapabilityChip: View {
+  @Environment(\.colorScheme) private var colorScheme
   let title: String
   let isVisible: Bool
   let reduceMotion: Bool
@@ -367,12 +372,12 @@ struct OnboardingCapabilityChip: View {
   var body: some View {
     Text(title)
       .font(.caption.monospaced())
-      .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
+      .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
       .padding(.horizontal, horizontalPadding)
       .padding(.vertical, 6)
       .background(
         Capsule()
-          .fill(Color.white.opacity(0.68))
+          .fill(ThemeColor.chromeFill(for: colorScheme, emphasis: 1.1))
       )
       .opacity(isVisible ? 1 : 0)
       .offset(y: isVisible ? 0 : 10)
@@ -386,6 +391,7 @@ struct OnboardingCapabilityChip: View {
 }
 
 struct OnboardingSignalPill: View {
+  @Environment(\.colorScheme) private var colorScheme
   let isAnimated: Bool
   let label: String
   let identifierPrefix: String
@@ -409,7 +415,7 @@ struct OnboardingSignalPill: View {
 
       Text(label)
         .font(.caption)
-        .foregroundStyle(Color.white.opacity(0.88))
+        .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
         .multilineTextAlignment(.leading)
         .fixedSize(horizontal: false, vertical: true)
         .accessibilityIdentifier("\(identifierPrefix).label")
@@ -418,24 +424,28 @@ struct OnboardingSignalPill: View {
     .padding(.vertical, 8)
     .background(
       Capsule()
-        .fill(Color.white.opacity(0.12))
+        .fill(ThemeColor.subtlePanelFill(for: colorScheme))
     )
     .accessibilityIdentifier(identifierPrefix)
   }
 }
 
 struct AnimatedSignalDot: View {
+  @Environment(\.colorScheme) private var colorScheme
   let isAnimated: Bool
   let identifier: String
   @State private var isExpanded = false
 
   var body: some View {
     Circle()
-      .fill(Color.white)
+      .fill(colorScheme == .dark ? Color.white : ThemeColor.accent)
       .frame(width: 6, height: 6)
       .overlay(
         Circle()
-          .stroke(Color.white.opacity(isAnimated ? 0.22 : 0.32), lineWidth: 5)
+          .stroke(
+            (colorScheme == .dark ? Color.white : ThemeColor.accent).opacity(isAnimated ? 0.22 : 0.32),
+            lineWidth: 5
+          )
           .frame(width: isExpanded ? 20 : 16, height: isExpanded ? 20 : 16)
           .opacity(isExpanded ? 0.25 : 0.65)
       )
