@@ -54,6 +54,7 @@ struct OnboardingView: View {
 
       ZStack {
         OnboardingBackdrop(isAnimated: context.isAnimated)
+          .accessibilityIdentifier("onboarding.backdrop")
 
         switch variant {
         case .mac:
@@ -67,6 +68,7 @@ struct OnboardingView: View {
             Spacer(minLength: 0)
           }
           .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+          .accessibilityIdentifier("\(variant.identifierPrefix).container")
         case .ios, .ipad:
           ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 28) {
@@ -85,8 +87,10 @@ struct OnboardingView: View {
             )
           }
           .safeAreaPadding(.vertical, 10)
+          .accessibilityIdentifier("\(variant.identifierPrefix).scroll")
         }
       }
+      .accessibilityIdentifier("onboarding.root")
     }
     .task {
       guard !hasAppeared else { return }
