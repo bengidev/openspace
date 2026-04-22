@@ -8,21 +8,56 @@
 import SwiftUI
 
 enum WorkspacePalette {
-  static let shellTop = Color(red: 0.97, green: 0.97, blue: 0.96)
-  static let shellBottom = Color(red: 0.94, green: 0.94, blue: 0.93)
-  static let shellStroke = Color.white.opacity(0.85)
-  static let sidebarBackground = Color(red: 0.94, green: 0.94, blue: 0.93)
-  static let sidebarSelection = Color.white.opacity(0.92)
-  static let panelBackground = Color.white.opacity(0.96)
-  static let panelSecondary = Color(red: 0.97, green: 0.97, blue: 0.96)
-  static let cardStroke = Color(red: 0.90, green: 0.89, blue: 0.87)
-  static let primaryText = Color(red: 0.15, green: 0.16, blue: 0.18)
-  static let secondaryText = Color(red: 0.49, green: 0.49, blue: 0.51)
-  static let tertiaryText = Color(red: 0.63, green: 0.63, blue: 0.65)
-  static let accent = Color(red: 0.88, green: 0.58, blue: 0.28)
-  static let accentSoft = Color(red: 0.98, green: 0.95, blue: 0.90)
-  static let border = Color.black.opacity(0.06)
-  static let shadow = Color.black.opacity(0.12)
+  static func shellTop(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.surface.opacity(0.92) : ThemeColor.backgroundPrimary
+  }
+
+  static func shellBottom(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.backgroundPrimary : ThemeColor.backgroundSecondary.opacity(0.84)
+  }
+
+  static func shellStroke(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.chromeStroke(for: colorScheme)
+  }
+
+  static func sidebarBackground(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.surface.opacity(0.74) : ThemeColor.backgroundSecondary.opacity(0.82)
+  }
+
+  static func sidebarSelection(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.accent300.opacity(0.42) : ThemeColor.accent100.opacity(0.74)
+  }
+
+  static func panelBackground(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.panelFill(for: colorScheme)
+  }
+
+  static func panelSecondary(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.panelSecondaryFill(for: colorScheme)
+  }
+
+  static func cardStroke(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.elevatedStroke(for: colorScheme)
+  }
+
+  static let primaryText = ThemeColor.textPrimary
+  static let secondaryText = ThemeColor.textSecondary
+  static func tertiaryText(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.neutral300.opacity(0.74) : ThemeColor.neutral500.opacity(0.92)
+  }
+
+  static let accent = ThemeColor.accent
+  static func accentSoft(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.accent300.opacity(0.42) : ThemeColor.accent100.opacity(0.82)
+  }
+
+  static func border(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.chromeStroke(for: colorScheme)
+  }
+
+  static func shadow(for colorScheme: ColorScheme) -> Color {
+    ThemeColor.elevatedShadow(for: colorScheme)
+  }
 }
 
 enum WorkspaceSidebarSection: String {
