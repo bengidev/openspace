@@ -12,7 +12,7 @@ The current architecture intentionally does less:
 
 - one lightweight app root
 - one onboarding feature
-- one minimal post-onboarding placeholder
+- one early post-onboarding workspace shell
 - one shared theme file
 - one platform-specific onboarding render tree split into small files per Apple platform
 
@@ -28,7 +28,11 @@ OpenSpaceApp
                  -> Views/iOS/OnboardingIOSView
                  -> Views/iPad/OnboardingIPadView
                  -> Views/Mac/OnboardingMacView
-       -> WorkspacePlaceholderView
+       -> WorkspaceView
+            -> WorkspaceAbstractView
+                 -> Views/iOS/WorkspaceIOSView
+                 -> Views/iPad/WorkspaceIPadView
+                 -> Views/Mac/WorkspaceMacView
 ```
 
 ### Responsibilities
@@ -54,8 +58,14 @@ OpenSpaceApp
 - `OnboardingVisuals`
   Holds reusable visual building blocks for the onboarding surface.
 
-- `WorkspacePlaceholderView`
-  Keeps the app honest after onboarding finishes. It is not pretending to be a finished workspace yet.
+- `WorkspaceView`
+  Owns shared workspace state, background treatment, and handoff into the concrete platform-specific workspace tree.
+
+- `Features/Workspace/Views/iOS`, `Views/iPad`, `Views/Mac`
+  Hold the concrete workspace implementations. Each platform uses the same shared building blocks while remaining free to compose them differently. The current refinement priority is the macOS tree, with mobile renderers acting as temporary fallbacks.
+
+- `Features/Workspace/Views/Shared`
+  Holds shared workspace models, render context, and reusable UI components such as shell chrome, sidebar rows, composer controls, and quick prompt buttons.
 
 - `ThemeColors`
   Centralizes color tokens and shared styling helpers.
@@ -118,7 +128,13 @@ OpenSpace/
 │   │   │   └── Mac/
 │   │   └── OnboardingVisuals.swift
 │   └── Workspace/
-│       └── WorkspacePlaceholderView.swift
+│       ├── WorkspaceView.swift
+│       └── Views/
+│           ├── WorkspaceAbstractView.swift
+│           ├── Shared/
+│           ├── iOS/
+│           ├── iPad/
+│           └── Mac/
 └── Shared/
     └── Theme/
         └── ThemeColors.swift
