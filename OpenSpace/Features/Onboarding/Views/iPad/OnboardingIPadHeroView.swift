@@ -15,7 +15,8 @@ struct OnboardingIPadHeroView: View {
     VStack(spacing: context.heroContentSpacing + 4) {
       OnboardingSignalPill(
         isAnimated: context.isAnimated,
-        label: "A larger canvas for coding, image generation, and local AI setup"
+        label: "A larger canvas for coding, image generation, and local AI setup",
+        identifierPrefix: "onboarding.ipad.hero.signal"
       )
 
       VStack(spacing: 12) {
@@ -32,6 +33,7 @@ struct OnboardingIPadHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.18),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.ipad.hero.title")
 
         Text("The iPad variant keeps the same onboarding state and intent, but produces a broader family of components with more room for hierarchy and capability context.")
           .font(context.heroSubtitleFont)
@@ -44,14 +46,30 @@ struct OnboardingIPadHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.28),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.ipad.hero.subtitle")
       }
 
       OnboardingPrimaryButton(
         title: "Enter OpenSpace",
         hasAppeared: context.hasAppeared,
         reduceMotion: context.reduceMotion,
+        identifier: "onboarding.ipad.hero.primary-action",
         action: onContinue
       )
     }
+    .accessibilityIdentifier("onboarding.ipad.hero")
   }
+}
+
+#Preview("iPad Hero") {
+  OnboardingIPadHeroView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ipad,
+      size: CGSize(width: 834, height: 1194),
+      capabilityChips: OnboardingPreviewSupport.defaultCapabilityChips + ["Multiplatform", "Local-First"]
+    ),
+    onContinue: {}
+  )
+  .padding(32)
+  .onboardingPreviewSurface(size: CGSize(width: 834, height: 430))
 }
