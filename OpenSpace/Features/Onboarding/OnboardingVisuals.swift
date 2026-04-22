@@ -13,27 +13,21 @@ enum OnboardingHeroPanelStyle {
 }
 
 struct OnboardingBackdrop: View {
+  @Environment(\.colorScheme) private var colorScheme
   let isAnimated: Bool
   @State private var driftPhase = false
 
   var body: some View {
     ZStack {
-      Color(red: 0.04, green: 0.11, blue: 0.14)
+      ThemeColor.backgroundPrimary
       LinearGradient(
-        colors: [
-          Color(red: 0.24, green: 0.34, blue: 0.39).opacity(0.82),
-          Color(red: 0.07, green: 0.15, blue: 0.18).opacity(0.95),
-          Color(red: 0.02, green: 0.08, blue: 0.10),
-        ],
+        colors: backdropGradientColors,
         startPoint: .top,
         endPoint: .bottom
       )
 
       RadialGradient(
-        colors: [
-          Color(red: 0.82, green: 0.88, blue: 0.90).opacity(0.16),
-          .clear,
-        ],
+        colors: backdropHighlightColors,
         center: .top,
         startRadius: 32,
         endRadius: 420
@@ -43,7 +37,7 @@ struct OnboardingBackdrop: View {
 
       RadialGradient(
         colors: [
-          ThemeColor.accent100.opacity(0.14),
+          ThemeColor.accent.opacity(colorScheme == .dark ? 0.16 : 0.12),
           .clear,
         ],
         center: .bottomLeading,
@@ -53,9 +47,13 @@ struct OnboardingBackdrop: View {
       .offset(x: driftPhase ? -72 : -102, y: driftPhase ? 138 : 114)
       .scaleEffect(driftPhase ? 1.08 : 0.96)
 
-      PinstripeOverlay(stripeColor: Color.white.opacity(0.03), stripeSpacing: 5, stripeWidth: 0.6)
-        .blendMode(.screen)
-        .opacity(driftPhase ? 0.28 : 0.38)
+      PinstripeOverlay(
+        stripeColor: colorScheme == .dark ? Color.white.opacity(0.03) : ThemeColor.accent100.opacity(0.26),
+        stripeSpacing: 5,
+        stripeWidth: 0.6
+      )
+      .blendMode(colorScheme == .dark ? .screen : .overlay)
+      .opacity(driftPhase ? 0.24 : 0.34)
     }
     .ignoresSafeArea()
     .task(id: isAnimated) {
@@ -69,9 +67,40 @@ struct OnboardingBackdrop: View {
       }
     }
   }
+
+  private var backdropGradientColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color(red: 0.24, green: 0.34, blue: 0.39).opacity(0.82),
+        Color(red: 0.07, green: 0.15, blue: 0.18).opacity(0.95),
+        Color(red: 0.02, green: 0.08, blue: 0.10),
+      ]
+    } else {
+      [
+        ThemeColor.backgroundSecondary.opacity(0.96),
+        ThemeColor.backgroundPrimary,
+        ThemeColor.accent100.opacity(0.72),
+      ]
+    }
+  }
+
+  private var backdropHighlightColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color(red: 0.82, green: 0.88, blue: 0.90).opacity(0.16),
+        .clear,
+      ]
+    } else {
+      [
+        Color.white.opacity(0.62),
+        .clear,
+      ]
+    }
+  }
 }
 
 struct OnboardingHeroPanel<Content: View>: View {
+  @Environment(\.colorScheme) private var colorScheme
   let style: OnboardingHeroPanelStyle
   let cornerRadius: CGFloat
   @ViewBuilder let content: Content
@@ -89,17 +118,29 @@ struct OnboardingHeroPanel<Content: View>: View {
   private var backgroundColors: [Color] {
     switch style {
     case .floatingShowcase:
-      [
-        Color.white.opacity(0.94),
-        Color(red: 0.88, green: 0.92, blue: 0.93).opacity(0.9),
-        Color(red: 0.08, green: 0.17, blue: 0.21).opacity(0.92),
-      ]
+      colorScheme == .dark
+        ? [
+          Color.white.opacity(0.94),
+          Color(red: 0.88, green: 0.92, blue: 0.93).opacity(0.9),
+          Color(red: 0.08, green: 0.17, blue: 0.21).opacity(0.92),
+        ]
+        : [
+          Color.white.opacity(0.98),
+          ThemeColor.backgroundSecondary.opacity(0.95),
+          ThemeColor.accent100.opacity(0.82),
+        ]
     case .desktopCanvas:
-      [
-        Color.white.opacity(0.82),
-        Color(red: 0.78, green: 0.85, blue: 0.88).opacity(0.72),
-        Color(red: 0.06, green: 0.14, blue: 0.17).opacity(0.97),
-      ]
+      colorScheme == .dark
+        ? [
+          Color.white.opacity(0.82),
+          Color(red: 0.78, green: 0.85, blue: 0.88).opacity(0.72),
+          Color(red: 0.06, green: 0.14, blue: 0.17).opacity(0.97),
+        ]
+        : [
+          Color.white.opacity(0.98),
+          ThemeColor.backgroundSecondary.opacity(0.92),
+          ThemeColor.backgroundPrimary.opacity(0.96),
+        ]
     }
   }
 
@@ -117,34 +158,23 @@ struct OnboardingHeroPanel<Content: View>: View {
 
           PinstripeOverlay(stripeColor: Color.white.opacity(0.18), stripeSpacing: 3.4, stripeWidth: 0.55)
             .mask(shape.fill(.white))
-            .opacity(style == .desktopCanvas ? 0.18 : 0.32)
+            .opacity(colorScheme == .dark ? (style == .desktopCanvas ? 0.18 : 0.32) : 0.12)
 
           LinearGradient(
-            colors: [
-              Color.white.opacity(0.28),
-              .clear,
-              Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.55),
-            ],
+            colors: overlayGradientColors,
             startPoint: .top,
             endPoint: .bottom
           )
 
           if style == .desktopCanvas {
             LinearGradient(
-              colors: [
-                Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.78),
-                Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.28),
-                .clear,
-              ],
+              colors: desktopShadeColors,
               startPoint: .top,
               endPoint: .bottom
             )
 
             RadialGradient(
-              colors: [
-                Color(red: 0.12, green: 0.19, blue: 0.22).opacity(0.26),
-                .clear,
-              ],
+              colors: desktopGlowColors,
               center: .leading,
               startRadius: 48,
               endRadius: 420
@@ -152,11 +182,7 @@ struct OnboardingHeroPanel<Content: View>: View {
             .offset(x: -72, y: 22)
 
             LinearGradient(
-              colors: [
-                Color.clear,
-                Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.14),
-                Color(red: 0.01, green: 0.06, blue: 0.09).opacity(0.24),
-              ],
+              colors: desktopBottomFadeColors,
               startPoint: .top,
               endPoint: .bottom
             )
@@ -169,8 +195,8 @@ struct OnboardingHeroPanel<Content: View>: View {
           .strokeBorder(
             LinearGradient(
               colors: [
-                Color.white.opacity(style == .desktopCanvas ? 0.28 : 0.46),
-                Color.white.opacity(style == .desktopCanvas ? 0.05 : 0.08),
+                panelStrokeStart,
+                panelStrokeEnd,
               ],
               startPoint: .top,
               endPoint: .bottom
@@ -179,11 +205,85 @@ struct OnboardingHeroPanel<Content: View>: View {
           )
       )
       .shadow(
-        color: Color.black.opacity(style == .desktopCanvas ? 0.0 : 0.25),
+        color: colorScheme == .dark ? Color.black.opacity(style == .desktopCanvas ? 0.0 : 0.25) : ThemeColor.elevatedShadow(for: colorScheme),
         radius: style == .desktopCanvas ? 0 : 36,
         x: 0,
         y: style == .desktopCanvas ? 0 : 24
       )
+  }
+
+  private var overlayGradientColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color.white.opacity(0.28),
+        .clear,
+        Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.55),
+      ]
+    } else {
+      [
+        Color.white.opacity(0.46),
+        .clear,
+        ThemeColor.accent100.opacity(0.26),
+      ]
+    }
+  }
+
+  private var desktopShadeColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.78),
+        Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.28),
+        .clear,
+      ]
+    } else {
+      [
+        ThemeColor.accent100.opacity(0.20),
+        ThemeColor.backgroundSecondary.opacity(0.14),
+        .clear,
+      ]
+    }
+  }
+
+  private var desktopGlowColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color(red: 0.12, green: 0.19, blue: 0.22).opacity(0.26),
+        .clear,
+      ]
+    } else {
+      [
+        ThemeColor.accent.opacity(0.10),
+        .clear,
+      ]
+    }
+  }
+
+  private var desktopBottomFadeColors: [Color] {
+    if colorScheme == .dark {
+      [
+        Color.clear,
+        Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.14),
+        Color(red: 0.01, green: 0.06, blue: 0.09).opacity(0.24),
+      ]
+    } else {
+      [
+        Color.clear,
+        ThemeColor.accent100.opacity(0.10),
+        ThemeColor.accent100.opacity(0.18),
+      ]
+    }
+  }
+
+  private var panelStrokeStart: Color {
+    colorScheme == .dark
+      ? Color.white.opacity(style == .desktopCanvas ? 0.28 : 0.46)
+      : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.62 : 0.92)
+  }
+
+  private var panelStrokeEnd: Color {
+    colorScheme == .dark
+      ? Color.white.opacity(style == .desktopCanvas ? 0.05 : 0.08)
+      : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.12 : 0.28)
   }
 }
 
