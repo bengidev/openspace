@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+private extension String {
+  var onboardingIdentifierSlug: String {
+    lowercased()
+      .map { character in
+        character.isLetter || character.isNumber ? String(character) : "-"
+      }
+      .joined()
+      .replacingOccurrences(of: "-+", with: "-", options: .regularExpression)
+      .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+  }
+}
+
 struct OnboardingPlatformPanel<Content: View>: View {
   let variant: OnboardingPlatformVariant
   let context: OnboardingRenderContext
@@ -45,6 +57,7 @@ struct OnboardingPlatformPanel<Content: View>: View {
         isActive: context.isAnimated && variant.usesFloatingPanelEffect
       )
     )
+    .accessibilityIdentifier("\(variant.identifierPrefix).panel")
   }
 }
 
@@ -52,15 +65,18 @@ struct OnboardingHeaderChromeView: View {
   let centerText: String
   let badgeOpacity: Double
   let buttonSize: CGFloat
+  let identifierPrefix: String
 
   init(
     centerText: String,
     badgeOpacity: Double = 0.56,
-    buttonSize: CGFloat = 36
+    buttonSize: CGFloat = 36,
+    identifierPrefix: String = "onboarding.header"
   ) {
     self.centerText = centerText
     self.badgeOpacity = badgeOpacity
     self.buttonSize = buttonSize
+    self.identifierPrefix = identifierPrefix
   }
 
   var body: some View {
@@ -68,6 +84,7 @@ struct OnboardingHeaderChromeView: View {
       regularChrome
       compactChrome
     }
+    .accessibilityIdentifier(identifierPrefix)
   }
 
   private var regularChrome: some View {
@@ -107,6 +124,7 @@ struct OnboardingHeaderChromeView: View {
     }
     .buttonStyle(.plain)
     .accessibilityLabel("OpenSpace mark")
+    .accessibilityIdentifier("\(identifierPrefix).leading-button")
   }
 
   private var centerBadge: some View {
@@ -118,6 +136,7 @@ struct OnboardingHeaderChromeView: View {
       .padding(.horizontal, 12)
       .padding(.vertical, 8)
       .background(Capsule().fill(Color.white.opacity(badgeOpacity)))
+      .accessibilityIdentifier("\(identifierPrefix).center-badge")
   }
 
   private var trailingButton: some View {
@@ -130,6 +149,7 @@ struct OnboardingHeaderChromeView: View {
     }
     .buttonStyle(.plain)
     .accessibilityLabel("Ambient activity indicator")
+    .accessibilityIdentifier("\(identifierPrefix).trailing-button")
   }
 }
 
@@ -139,6 +159,7 @@ struct OnboardingHorizontalCapabilityStrip: View {
   let reduceMotion: Bool
   let spacing: CGFloat
   let chipPadding: CGFloat
+  let identifierPrefix: String
 
   var body: some View {
     ScrollView(.horizontal, showsIndicators: false) {
@@ -149,12 +170,14 @@ struct OnboardingHorizontalCapabilityStrip: View {
             isVisible: hasAppeared,
             reduceMotion: reduceMotion,
             delay: Double(index) * 0.08,
-            horizontalPadding: chipPadding
+            horizontalPadding: chipPadding,
+            identifier: "\(identifierPrefix).chip.\(chip.onboardingIdentifierSlug)"
           )
         }
       }
     }
     .scrollClipDisabled()
+    .accessibilityIdentifier(identifierPrefix)
   }
 }
 
@@ -162,6 +185,7 @@ struct OnboardingMacCapabilityStrip: View {
   let chips: [String]
   let hasAppeared: Bool
   let reduceMotion: Bool
+  let identifierPrefix: String
 
   private let columns = [
     GridItem(.adaptive(minimum: 84), spacing: 8),
@@ -175,11 +199,13 @@ struct OnboardingMacCapabilityStrip: View {
           isVisible: hasAppeared,
           reduceMotion: reduceMotion,
           delay: Double(index) * 0.06,
-          horizontalPadding: 9
+          horizontalPadding: 9,
+          identifier: "\(identifierPrefix).chip.\(chip.onboardingIdentifierSlug)"
         )
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityIdentifier(identifierPrefix)
   }
 }
 
@@ -189,6 +215,7 @@ struct OnboardingPrimaryButton: View {
   let reduceMotion: Bool
   let minWidth: CGFloat?
   let minHeight: CGFloat
+  let identifier: String
   let action: () -> Void
 
   init(
@@ -197,6 +224,7 @@ struct OnboardingPrimaryButton: View {
     reduceMotion: Bool,
     minWidth: CGFloat? = nil,
     minHeight: CGFloat = 48,
+    identifier: String = "onboarding.primary-button",
     action: @escaping () -> Void
   ) {
     self.title = title
@@ -204,6 +232,7 @@ struct OnboardingPrimaryButton: View {
     self.reduceMotion = reduceMotion
     self.minWidth = minWidth
     self.minHeight = minHeight
+    self.identifier = identifier
     self.action = action
   }
 
@@ -222,6 +251,7 @@ struct OnboardingPrimaryButton: View {
     }
     .buttonStyle(.plain)
     .accessibilityHint("Finish onboarding and enter the current app shell")
+    .accessibilityIdentifier(identifier)
     .scaleEffect(reduceMotion ? 1 : (hasAppeared ? 1 : 0.94))
     .opacity(hasAppeared ? 1 : 0)
     .shadow(
@@ -246,6 +276,7 @@ struct OnboardingMetadataBar: View {
   let labels: [String]
   let hasAppeared: Bool
   let alignment: Alignment
+  let identifierPrefix: String
 
   var body: some View {
     ViewThatFits(in: .horizontal) {
@@ -259,6 +290,7 @@ struct OnboardingMetadataBar: View {
       .easeOut(duration: 0.8).delay(0.48),
       value: hasAppeared
     )
+    .accessibilityIdentifier(identifierPrefix)
   }
 
   private var horizontalBar: some View {
@@ -287,6 +319,7 @@ struct OnboardingMetadataBar: View {
     Text(label)
       .lineLimit(1)
       .minimumScaleFactor(0.78)
+      .accessibilityIdentifier("\(identifierPrefix).label.\(label.onboardingIdentifierSlug)")
   }
 }
 
@@ -329,10 +362,11 @@ struct OnboardingCapabilityChip: View {
   let reduceMotion: Bool
   let delay: Double
   let horizontalPadding: CGFloat
+  let identifier: String
 
   var body: some View {
     Text(title)
-      .font(.caption)
+      .font(.caption.monospaced())
       .foregroundStyle(Color(red: 0.12, green: 0.17, blue: 0.19))
       .padding(.horizontal, horizontalPadding)
       .padding(.vertical, 6)
@@ -347,30 +381,38 @@ struct OnboardingCapabilityChip: View {
         .easeOut(duration: 0.55).delay(reduceMotion ? 0 : delay),
         value: isVisible
       )
+      .accessibilityIdentifier(identifier)
   }
 }
 
 struct OnboardingSignalPill: View {
   let isAnimated: Bool
   let label: String
+  let identifierPrefix: String
 
   init(
     isAnimated: Bool,
-    label: String = "One workspace for coding, image generation, and local AI setup"
+    label: String = "One workspace for coding, image generation, and local AI setup",
+    identifierPrefix: String = "onboarding.signal-pill"
   ) {
     self.isAnimated = isAnimated
     self.label = label
+    self.identifierPrefix = identifierPrefix
   }
 
   var body: some View {
     HStack(spacing: 8) {
-      AnimatedSignalDot(isAnimated: isAnimated)
+      AnimatedSignalDot(
+        isAnimated: isAnimated,
+        identifier: "\(identifierPrefix).dot"
+      )
 
       Text(label)
         .font(.caption)
         .foregroundStyle(Color.white.opacity(0.88))
         .multilineTextAlignment(.leading)
         .fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("\(identifierPrefix).label")
     }
     .padding(.horizontal, 14)
     .padding(.vertical, 8)
@@ -378,11 +420,13 @@ struct OnboardingSignalPill: View {
       Capsule()
         .fill(Color.white.opacity(0.12))
     )
+    .accessibilityIdentifier(identifierPrefix)
   }
 }
 
 struct AnimatedSignalDot: View {
   let isAnimated: Bool
+  let identifier: String
   @State private var isExpanded = false
 
   var body: some View {
@@ -405,6 +449,7 @@ struct AnimatedSignalDot: View {
           isExpanded = true
         }
       }
+      .accessibilityIdentifier(identifier)
   }
 }
 
