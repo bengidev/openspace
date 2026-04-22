@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingMacView: View {
+  @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
@@ -38,7 +39,7 @@ struct OnboardingMacView: View {
         .padding(.top, context.macSpacingBeforeFooter)
         .overlay(alignment: .top) {
           Rectangle()
-            .fill(Color.white.opacity(0.08))
+            .fill(ThemeColor.chromeStroke(for: colorScheme))
             .frame(height: 1)
         }
       }
