@@ -18,7 +18,20 @@ struct OnboardingIPadFooterView: View {
         "FOCUS + BREADTH",
       ],
       hasAppeared: context.hasAppeared,
-      alignment: .center
+      alignment: .center,
+      identifierPrefix: "onboarding.ipad.footer"
     )
   }
+}
+
+#Preview("iPad Footer") {
+  OnboardingIPadFooterView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ipad,
+      size: CGSize(width: 834, height: 1194),
+      capabilityChips: OnboardingPreviewSupport.defaultCapabilityChips + ["Multiplatform", "Local-First"]
+    )
+  )
+  .padding(24)
+  .onboardingPreviewSurface(size: CGSize(width: 834, height: 150))
 }
