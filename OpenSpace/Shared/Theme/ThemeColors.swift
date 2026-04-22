@@ -48,18 +48,60 @@ enum ThemeColor {
   static let glassHighlight = accent100.opacity(0.24)
   static let glassShadow = Color.black.opacity(0.32)
   static let glow = accent.opacity(0.18)
+
+  static func panelFill(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? neutral700.opacity(0.92) : Color.white.opacity(0.96)
+  }
+
+  static func panelSecondaryFill(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? neutral700.opacity(0.72) : neutral300.opacity(0.72)
+  }
+
+  static func subtlePanelFill(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white.opacity(0.08) : accent100.opacity(0.62)
+  }
+
+  static func elevatedStroke(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white.opacity(0.10) : accent100.opacity(0.85)
+  }
+
+  static func elevatedShadow(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.black.opacity(0.26) : accent300.opacity(0.12)
+  }
+
+  static func overlayTextPrimary(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white : neutral1000
+  }
+
+  static func overlayTextSecondary(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white.opacity(0.82) : neutral700.opacity(0.90)
+  }
+
+  static func overlayTextTertiary(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white.opacity(0.62) : neutral500.opacity(0.92)
+  }
+
+  static func chromeFill(for colorScheme: ColorScheme, emphasis: Double = 1) -> Color {
+    if colorScheme == .dark {
+      return Color.white.opacity(0.10 * emphasis)
+    } else {
+      return Color.white.opacity(0.96)
+    }
+  }
+
+  static func chromeStroke(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white.opacity(0.08) : accent100.opacity(0.92)
+  }
 }
 
 // MARK: - View Extensions
 
 extension View {
-  /// Applies the OpenSpace dark-first theme to the view.
-  /// Sets background, tint, and preferred color scheme.
+  /// Applies the OpenSpace shared theme tokens without forcing a color scheme.
   func openSpaceTheme() -> some View {
     self
       .background(ThemeColor.backgroundPrimary)
       .tint(ThemeColor.accent)
-      .preferredColorScheme(.dark)
   }
 
   /// Applies a frosted glass treatment with subtle tint, stroke, and shadow.
