@@ -18,7 +18,19 @@ struct OnboardingIOSFooterView: View {
         "LOCAL-FIRST",
       ],
       hasAppeared: context.hasAppeared,
-      alignment: .center
+      alignment: .center,
+      identifierPrefix: "onboarding.ios.footer"
     )
   }
+}
+
+#Preview("iPhone Footer") {
+  OnboardingIOSFooterView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ios,
+      size: CGSize(width: 390, height: 844)
+    )
+  )
+  .padding(24)
+  .onboardingPreviewSurface(size: CGSize(width: 390, height: 150))
 }
