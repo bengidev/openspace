@@ -13,7 +13,10 @@ struct OnboardingIOSHeroView: View {
 
   var body: some View {
     VStack(spacing: context.heroContentSpacing) {
-      OnboardingSignalPill(isAnimated: context.isAnimated)
+      OnboardingSignalPill(
+        isAnimated: context.isAnimated,
+        identifierPrefix: "onboarding.ios.hero.signal"
+      )
 
       VStack(spacing: 10) {
         Text("Calm Systems for Fast Builders")
@@ -29,6 +32,7 @@ struct OnboardingIOSHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.18),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.ios.hero.title")
 
         Text("Bring code, prompts, and image generation into one local-first workspace that feels composed even when the work is not.")
           .font(context.heroSubtitleFont)
@@ -41,14 +45,29 @@ struct OnboardingIOSHeroView: View {
             .easeOut(duration: 0.75).delay(context.reduceMotion ? 0 : 0.28),
             value: context.hasAppeared
           )
+          .accessibilityIdentifier("onboarding.ios.hero.subtitle")
       }
 
       OnboardingPrimaryButton(
         title: "Enter OpenSpace",
         hasAppeared: context.hasAppeared,
         reduceMotion: context.reduceMotion,
+        identifier: "onboarding.ios.hero.primary-action",
         action: onContinue
       )
     }
+    .accessibilityIdentifier("onboarding.ios.hero")
   }
+}
+
+#Preview("iPhone Hero") {
+  OnboardingIOSHeroView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ios,
+      size: CGSize(width: 390, height: 844)
+    ),
+    onContinue: {}
+  )
+  .padding(28)
+  .onboardingPreviewSurface(size: CGSize(width: 390, height: 380))
 }
