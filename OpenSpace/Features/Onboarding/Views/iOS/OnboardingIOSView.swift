@@ -16,6 +16,7 @@ struct OnboardingIOSView: View {
       OnboardingPlatformPanel(variant: .ios, context: context) {
         VStack(spacing: 0) {
           OnboardingIOSHeaderView()
+            .accessibilityIdentifier("onboarding.ios.header-container")
             .padding(.horizontal, 22)
             .padding(.top, 22)
 
@@ -26,7 +27,8 @@ struct OnboardingIOSView: View {
             hasAppeared: context.hasAppeared,
             reduceMotion: context.reduceMotion,
             spacing: 8,
-            chipPadding: 12
+            chipPadding: 12,
+            identifierPrefix: "onboarding.ios.capabilities"
           )
           .padding(.horizontal, 22)
 
@@ -36,11 +38,13 @@ struct OnboardingIOSView: View {
             context: context,
             onContinue: onContinue
           )
+          .accessibilityIdentifier("onboarding.ios.hero-container")
           .padding(.horizontal, 28)
 
           Spacer(minLength: context.footerSectionSpacing)
 
           OnboardingIOSFooterView(context: context)
+            .accessibilityIdentifier("onboarding.ios.footer-container")
             .padding(.horizontal, 24)
             .padding(.bottom, 22)
         }
@@ -52,8 +56,22 @@ struct OnboardingIOSView: View {
         alignment: .center,
         maxWidth: context.supportingNoteMaxWidth
       )
+      .accessibilityIdentifier("onboarding.ios.supporting-note")
       .padding(.horizontal, 28)
       .padding(.bottom, 20)
     }
+    .accessibilityIdentifier("onboarding.ios.content")
   }
+}
+
+#Preview("iPhone Onboarding Content") {
+  OnboardingIOSView(
+    context: OnboardingPreviewSupport.context(
+      variant: .ios,
+      size: CGSize(width: 390, height: 844)
+    ),
+    onContinue: {}
+  )
+  .padding(.vertical, 18)
+  .onboardingPreviewSurface(size: CGSize(width: 390, height: 844))
 }
