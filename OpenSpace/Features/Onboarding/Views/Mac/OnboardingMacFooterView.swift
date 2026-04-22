@@ -18,7 +18,19 @@ struct OnboardingMacFooterView: View {
         "MULTI-WINDOW READY",
       ],
       hasAppeared: context.hasAppeared,
-      alignment: .leading
+      alignment: .leading,
+      identifierPrefix: "onboarding.mac.footer"
     )
   }
+}
+
+#Preview("Desktop Footer") {
+  OnboardingMacFooterView(
+    context: OnboardingPreviewSupport.context(
+      variant: .mac,
+      size: CGSize(width: 1120, height: 620)
+    )
+  )
+  .padding(24)
+  .onboardingPreviewSurface(size: CGSize(width: 1120, height: 150))
 }
