@@ -14,16 +14,11 @@ struct WorkspaceView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @FocusState private var isPromptFocused: Bool
 
-  @State private var selectedDestination: WorkspaceDestination = .textToImage
-  @State private var selectedModel: WorkspaceModel = .artboard3
+  @State private var selectedDestination: WorkspaceDestination = .home
+  @State private var selectedModel: WorkspaceModel = .chatGPT4o
   @State private var selectedPrompt = ""
-  @State private var selectedStyleChips = Set<WorkspaceStyleChip>([
-    .highQuality,
-    .fourK,
-    .cinematic,
-  ])
-  @State private var toneValue = 0.24
-  @State private var isRandomized = false
+  @State private var selectedWritingStyle: WorkspaceWritingStyle = .balanced
+  @State private var citationEnabled = true
   @State private var highlightedQuickPrompt: WorkspaceQuickPrompt?
   @State private var hasAppeared = false
   #if os(macOS)
@@ -47,9 +42,8 @@ struct WorkspaceView: View {
       selectedDestination: $selectedDestination,
       selectedModel: $selectedModel,
       selectedPrompt: $selectedPrompt,
-      selectedStyleChips: $selectedStyleChips,
-      toneValue: $toneValue,
-      isRandomized: $isRandomized,
+      selectedWritingStyle: $selectedWritingStyle,
+      citationEnabled: $citationEnabled,
       highlightedQuickPrompt: $highlightedQuickPrompt,
       isPromptFocused: $isPromptFocused,
       replayOnboarding: replayOnboarding
