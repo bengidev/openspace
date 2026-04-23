@@ -26,7 +26,7 @@ struct OnboardingMacHeaderView: View {
 
       HStack(spacing: 8) {
         headerBadge("DESKTOP SURFACE")
-        headerBadge("SHARED STATE")
+        headerBadge("WINDOW READY")
       }
     }
   }
@@ -37,7 +37,7 @@ struct OnboardingMacHeaderView: View {
 
       HStack(spacing: 8) {
         headerBadge("DESKTOP SURFACE")
-        headerBadge("SHARED STATE")
+        headerBadge("WINDOW READY")
       }
     }
   }
@@ -55,7 +55,7 @@ struct OnboardingMacHeaderView: View {
           .font(.subheadline.weight(.semibold))
           .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
 
-        Text("Compact macOS onboarding for local, multi-provider work")
+        Text("Desktop onboarding for local, multi-tool work")
           .font(.caption)
           .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
           .lineLimit(1)
