@@ -101,22 +101,24 @@ struct OnboardingIPadHeroView: View {
 
   private var capabilityColumn: some View {
     VStack(spacing: layout.heroCardSpacing) {
-      featureCard(
+      OnboardingIPadFeatureCard(
         title: "Focused Entry",
         caption: "One clear primary action",
-        icon: "point.topleft.down.curvedto.point.bottomright.up"
+        icon: "point.topleft.down.curvedto.point.bottomright.up",
+        spacing: layout.heroCardInternalSpacing
       ) {
-        detailRow(title: "Entry", value: "Fewer branches before work starts")
-        detailRow(title: "Rhythm", value: "Context stays visible without crowding")
+        OnboardingIPadDetailRow(title: "Entry", value: "Fewer branches before work starts")
+        OnboardingIPadDetailRow(title: "Rhythm", value: "Context stays visible without crowding")
       }
 
-      featureCard(
+      OnboardingIPadFeatureCard(
         title: "Glanceable Setup",
         caption: "More room for orientation",
-        icon: "square.grid.2x2"
+        icon: "square.grid.2x2",
+        spacing: layout.heroCardInternalSpacing
       ) {
-        detailRow(title: "Capabilities", value: "Code, images, research, and automation")
-        detailRow(title: "Surface", value: "Optimized for touch and split attention")
+        OnboardingIPadDetailRow(title: "Capabilities", value: "Code, images, research, and automation")
+        OnboardingIPadDetailRow(title: "Surface", value: "Optimized for touch and split attention")
       }
     }
     .opacity(context.hasAppeared ? 1 : 0)
@@ -126,62 +128,6 @@ struct OnboardingIPadHeroView: View {
       value: context.hasAppeared
     )
     .accessibilityIdentifier("onboarding.ipad.hero.capability-column")
-  }
-
-  private func featureCard<Content: View>(
-    title: String,
-    caption: String,
-    icon: String,
-    @ViewBuilder content: () -> Content
-    ) -> some View {
-    VStack(alignment: .leading, spacing: layout.heroCardInternalSpacing) {
-      HStack(alignment: .center, spacing: 12) {
-        Image(systemName: icon)
-          .font(.system(size: 15, weight: .semibold))
-          .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
-          .frame(width: 34, height: 34)
-          .background(Circle().fill(ThemeColor.subtlePanelFill(for: colorScheme)))
-
-        VStack(alignment: .leading, spacing: 2) {
-          Text(title)
-            .font(.headline)
-            .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
-
-          Text(caption)
-            .font(.caption)
-            .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
-        }
-      }
-
-      content()
-    }
-    .padding(.horizontal, 18)
-    .padding(.vertical, 16)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background(cardBackground)
-  }
-
-  private func detailRow(title: String, value: String) -> some View {
-    HStack(alignment: .top, spacing: 12) {
-      Text(title.uppercased())
-        .font(.caption2.monospaced().weight(.medium))
-        .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
-        .frame(width: 82, alignment: .leading)
-
-      Text(value)
-        .font(.footnote)
-        .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
-        .fixedSize(horizontal: false, vertical: true)
-    }
-  }
-
-  private var cardBackground: some View {
-    RoundedRectangle(cornerRadius: 24, style: .continuous)
-      .fill(colorScheme == .dark ? Color.white.opacity(0.09) : ThemeColor.accent100.opacity(0.54))
-      .overlay(
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-          .strokeBorder(ThemeColor.chromeStroke(for: colorScheme), lineWidth: 1)
-      )
   }
 }
 
