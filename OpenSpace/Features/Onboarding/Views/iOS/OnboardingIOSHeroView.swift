@@ -10,22 +10,27 @@ import SwiftUI
 struct OnboardingIOSHeroView: View {
   @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
+  let layout: OnboardingIOSLayout
   let onContinue: () -> Void
 
   var body: some View {
-    VStack(spacing: context.heroContentSpacing) {
+    VStack(spacing: 0) {
       OnboardingSignalPill(
         isAnimated: context.isAnimated,
+        label: "A pocket-sized workspace for code, images, and AI tasks",
         identifierPrefix: "onboarding.ios.hero.signal"
       )
+      .padding(.horizontal, layout.heroSignalHorizontalPadding)
+      .padding(.top, layout.heroTopPadding)
 
-      VStack(spacing: 10) {
+      Spacer(minLength: layout.heroTopSpacer)
+
+      VStack(spacing: layout.heroTextSpacing) {
         Text("Calm Systems for Fast Builders")
-          .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
+          .font(.system(size: layout.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.center)
           .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
-          .frame(maxWidth: context.heroTextMaxWidth)
-          .lineLimit(4)
+          .frame(maxWidth: layout.heroTextMaxWidth)
           .minimumScaleFactor(0.8)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 18)
@@ -35,11 +40,11 @@ struct OnboardingIOSHeroView: View {
           )
           .accessibilityIdentifier("onboarding.ios.hero.title")
 
-        Text("Bring code, prompts, and image generation into one local-first workspace that feels composed even when the work is not.")
-          .font(context.heroSubtitleFont)
+        Text("OpenSpace gives iPhone a tighter first-run rhythm: clear intent, less chrome, and one fast path into the workspace.")
+          .font(layout.heroSubtitleFont)
           .multilineTextAlignment(.center)
           .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
-          .frame(maxWidth: context.heroSupportingTextMaxWidth)
+          .frame(maxWidth: layout.heroSupportingTextMaxWidth)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
           .animation(
@@ -49,14 +54,23 @@ struct OnboardingIOSHeroView: View {
           .accessibilityIdentifier("onboarding.ios.hero.subtitle")
       }
 
+      Spacer(minLength: layout.heroBottomSpacer)
+
       OnboardingPrimaryButton(
         title: "Enter OpenSpace",
         hasAppeared: context.hasAppeared,
         reduceMotion: context.reduceMotion,
+        font: layout.heroPrimaryButtonFont,
+        minHeight: layout.heroPrimaryButtonMinHeight,
+        horizontalPadding: layout.heroPrimaryButtonHorizontalPadding,
+        verticalPadding: layout.heroPrimaryButtonVerticalPadding,
         identifier: "onboarding.ios.hero.primary-action",
         action: onContinue
       )
+      .padding(.bottom, layout.heroBottomPadding)
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    .padding(.horizontal, layout.heroHorizontalPadding)
     .accessibilityIdentifier("onboarding.ios.hero")
   }
 }
@@ -66,6 +80,12 @@ struct OnboardingIOSHeroView: View {
     context: OnboardingPreviewSupport.context(
       variant: .ios,
       size: CGSize(width: 390, height: 844)
+    ),
+    layout: OnboardingIOSLayout(
+      context: OnboardingPreviewSupport.context(
+        variant: .ios,
+        size: CGSize(width: 390, height: 844)
+      )
     ),
     onContinue: {}
   )
