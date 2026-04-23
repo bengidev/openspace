@@ -22,7 +22,7 @@ struct WorkspaceRenderContext {
     case .ios:
       false
     case .ipad:
-      containerSize.width >= 920
+      containerSize.width >= 900
     case .mac:
       true
     }
@@ -33,18 +33,18 @@ struct WorkspaceRenderContext {
     case .ios:
       760
     case .ipad:
-      1320
+      1380
     case .mac:
-      1320
+      1440
     }
   }
 
   var shellHorizontalPadding: CGFloat {
     switch variant {
     case .ios:
-      min(max(containerSize.width * 0.038, 18), 24)
+      min(max(containerSize.width * 0.038, 16), 22)
     case .ipad:
-      min(max(containerSize.width * 0.034, 22), 40)
+      min(max(containerSize.width * 0.03, 18), 32)
     case .mac:
       0
     }
@@ -53,9 +53,9 @@ struct WorkspaceRenderContext {
   var shellVerticalPadding: CGFloat {
     switch variant {
     case .ios:
-      18
+      14
     case .ipad:
-      usesSidebar ? 28 : 20
+      usesSidebar ? 18 : 16
     case .mac:
       0
     }
@@ -64,11 +64,11 @@ struct WorkspaceRenderContext {
   var shellCornerRadius: CGFloat {
     switch variant {
     case .ios:
-      34
-    case .ipad:
-      34
-    case .mac:
       30
+    case .ipad:
+      36
+    case .mac:
+      0
     }
   }
 
@@ -79,11 +79,11 @@ struct WorkspaceRenderContext {
   var preferredShellHeight: CGFloat {
     switch variant {
     case .ios:
-      680
+      720
     case .ipad:
-      760
+      820
     case .mac:
-      736
+      820
     }
   }
 
@@ -92,59 +92,134 @@ struct WorkspaceRenderContext {
     case .ios:
       0
     case .ipad:
-      236
+      88
     case .mac:
-      248
+      72
     }
   }
 
   var mainSectionSpacing: CGFloat {
     switch variant {
+    case .ios:
+      22
+    case .ipad:
+      28
     case .mac:
       24
-    case .ios, .ipad:
-      usesSidebar ? 34 : 24
     }
   }
 
   var heroTitleFont: Font {
     switch variant {
     case .ios:
-      .title2.weight(.semibold)
+      .system(size: 36, weight: .semibold, design: .default)
     case .ipad:
-      .system(size: 34, weight: .semibold)
+      .system(size: 52, weight: .semibold, design: .default)
     case .mac:
-      .system(size: 38, weight: .semibold)
+      .system(size: 46, weight: .semibold, design: .default)
     }
   }
 
   var heroCopyMaxWidth: CGFloat {
-    usesSidebar ? 500 : 460
+    switch variant {
+    case .ios:
+      440
+    case .ipad:
+      620
+    case .mac:
+      560
+    }
   }
 
   var composerMaxWidth: CGFloat {
-    usesSidebar ? 640 : 560
+    switch variant {
+    case .ios:
+      560
+    case .ipad:
+      780
+    case .mac:
+      720
+    }
   }
 
   var quickPromptMaxWidth: CGFloat {
-    usesSidebar ? 720 : 600
+    switch variant {
+    case .ios:
+      580
+    case .ipad:
+      860
+    case .mac:
+      760
+    }
+  }
+
+  var railItemSpacing: CGFloat {
+    usesSidebar ? 8 : 0
+  }
+
+  var heroTopSpacing: CGFloat {
+    switch variant {
+    case .ios:
+      20
+    case .ipad:
+      34
+    case .mac:
+      22
+    }
+  }
+
+  var heroSectionSpacing: CGFloat {
+    switch variant {
+    case .ios:
+      18
+    case .ipad:
+      22
+    case .mac:
+      18
+    }
+  }
+
+  var exampleGridMinWidth: CGFloat {
+    switch variant {
+    case .ios:
+      160
+    case .ipad:
+      160
+    case .mac:
+      156
+    }
+  }
+
+  var contentTopBarSpacing: CGFloat {
+    switch variant {
+    case .ios:
+      12
+    case .ipad:
+      18
+    case .mac:
+      16
+    }
   }
 
   var mainHorizontalPadding: CGFloat {
     switch variant {
     case .mac:
-      34
-    case .ios, .ipad:
-      usesSidebar ? 28 : 18
+      26
+    case .ipad:
+      28
+    case .ios:
+      18
     }
   }
 
   var mainVerticalPadding: CGFloat {
     switch variant {
     case .mac:
-      28
-    case .ios, .ipad:
-      usesSidebar ? 22 : 18
+      22
+    case .ipad:
+      24
+    case .ios:
+      18
     }
   }
 
@@ -153,9 +228,9 @@ struct WorkspaceRenderContext {
     case .ios:
       CGSize(width: 390, height: 844)
     case .ipad:
-      CGSize(width: 1024, height: 760)
+      CGSize(width: 1180, height: 860)
     case .mac:
-      CGSize(width: 1280, height: 820)
+      CGSize(width: 1400, height: 860)
     }
   }
 
@@ -164,9 +239,9 @@ struct WorkspaceRenderContext {
     case .ios:
       CGSize(width: 390, height: 844)
     case .ipad:
-      CGSize(width: 920, height: 700)
+      CGSize(width: 900, height: 720)
     case .mac:
-      CGSize(width: 1180, height: 740)
+      CGSize(width: 1200, height: 760)
     }
   }
 }

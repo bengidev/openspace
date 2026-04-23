@@ -9,11 +9,11 @@ import SwiftUI
 
 enum WorkspacePalette {
   static func shellTop(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.surface.opacity(0.92) : ThemeColor.backgroundPrimary
+    colorScheme == .dark ? ThemeColor.surface.opacity(0.92) : ThemeColor.backgroundSecondary.opacity(0.94)
   }
 
   static func shellBottom(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.backgroundPrimary : ThemeColor.backgroundSecondary.opacity(0.84)
+    colorScheme == .dark ? ThemeColor.backgroundPrimary : ThemeColor.backgroundPrimary.opacity(0.94)
   }
 
   static func shellStroke(for colorScheme: ColorScheme) -> Color {
@@ -21,11 +21,11 @@ enum WorkspacePalette {
   }
 
   static func sidebarBackground(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.surface.opacity(0.74) : ThemeColor.backgroundSecondary.opacity(0.82)
+    colorScheme == .dark ? ThemeColor.surface.opacity(0.74) : ThemeColor.backgroundSecondary.opacity(0.78)
   }
 
   static func sidebarSelection(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.accent300.opacity(0.42) : ThemeColor.accent100.opacity(0.74)
+    colorScheme == .dark ? ThemeColor.accent300.opacity(0.42) : ThemeColor.subtlePanelFill(for: colorScheme)
   }
 
   static func panelBackground(for colorScheme: ColorScheme) -> Color {
@@ -33,7 +33,7 @@ enum WorkspacePalette {
   }
 
   static func panelSecondary(for colorScheme: ColorScheme) -> Color {
-    ThemeColor.panelSecondaryFill(for: colorScheme)
+    colorScheme == .dark ? ThemeColor.panelSecondaryFill(for: colorScheme) : ThemeColor.subtlePanelFill(for: colorScheme)
   }
 
   static func cardStroke(for colorScheme: ColorScheme) -> Color {
@@ -58,182 +58,230 @@ enum WorkspacePalette {
   static func shadow(for colorScheme: ColorScheme) -> Color {
     ThemeColor.elevatedShadow(for: colorScheme)
   }
+
+  static let orbCore = ThemeColor.accent200
+  static let orbEdge = ThemeColor.accent
+  static let accentGradientStart = ThemeColor.accent300
+  static let accentGradientEnd = ThemeColor.accent
+
+  static func primaryButtonBackground(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? Color.white : ThemeColor.neutral1000
+  }
+
+  static func primaryButtonForeground(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? ThemeColor.neutral1000 : Color.white
+  }
 }
 
-enum WorkspaceSidebarSection: String {
-  case create = "Create"
-  case library = "Library"
-  case support = "Support"
+enum WorkspaceNavigationPlacement {
+  case primary
+  case utility
 }
 
 enum WorkspaceDestination: String, CaseIterable, Hashable {
-  case textToImage = "Text to image"
-  case sketchToImage = "Sketch to image"
-  case imageToImage = "Image to image"
-  case projects = "Projects"
-  case gallery = "Gallery"
-  case favorites = "Favorites"
-  case history = "History"
+  case home = "Home"
+  case threads = "Threads"
+  case recents = "Recents"
+  case agents = "Agents"
+  case files = "Files"
+  case share = "Share"
+  case data = "Data"
   case help = "Help"
   case settings = "Settings"
 
   var systemImage: String {
     switch self {
-    case .textToImage:
-      "text.alignleft"
-    case .sketchToImage:
-      "pencil.and.scribble"
-    case .imageToImage:
-      "photo.on.rectangle"
-    case .projects:
-      "folder"
-    case .gallery:
-      "square.grid.2x2"
-    case .favorites:
-      "star"
-    case .history:
+    case .home:
+      "house"
+    case .threads:
+      "bubble.left.and.bubble.right"
+    case .recents:
       "clock.arrow.circlepath"
+    case .agents:
+      "sparkles.rectangle.stack"
+    case .files:
+      "folder"
+    case .share:
+      "point.3.connected.trianglepath"
+    case .data:
+      "cylinder.split.1x2"
     case .help:
-      "questionmark.circle"
+      "headphones"
     case .settings:
       "gearshape"
     }
   }
 
-  var section: WorkspaceSidebarSection {
+  var navigationPlacement: WorkspaceNavigationPlacement {
     switch self {
-    case .textToImage, .sketchToImage, .imageToImage:
-      .create
-    case .projects, .gallery, .favorites, .history:
-      .library
+    case .home, .threads, .recents, .agents, .files, .share, .data:
+      .primary
     case .help, .settings:
-      .support
+      .utility
     }
   }
 
-  var subtitle: String {
+  var heroFirstLine: String {
     switch self {
-    case .textToImage:
-      "Turn a scene description into a cinematic visual."
-    case .sketchToImage:
-      "Refine rough sketches into polished concepts."
-    case .imageToImage:
-      "Transform references into a new visual direction."
-    case .projects:
-      "Organize ongoing explorations and keep iterations together."
-    case .gallery:
-      "Browse generated visuals and revisit stand-out frames."
-    case .favorites:
-      "Keep your strongest prompts and outputs close at hand."
-    case .history:
-      "Reopen previous sessions and continue where you left off."
+    case .home:
+      "Good Afternoon, Bambang"
+    case .threads:
+      "Pick up an"
+    case .recents:
+      "Bring back"
+    case .agents:
+      "Direct the"
+    case .files:
+      "Pull files into"
+    case .share:
+      "Coordinate faster"
+    case .data:
+      "Connect live"
     case .help:
-      "Learn the workspace patterns and discover shortcuts."
+      "Find the pattern"
     case .settings:
-      "Fine-tune providers, defaults, and workspace preferences."
+      "Tune the workspace"
     }
   }
 
-  var heroTitle: String {
+  var heroSecondLineLeading: String {
     switch self {
-    case .textToImage:
-      "Good to see you, Bambang"
-    case .sketchToImage:
-      "Bring rough sketches to life"
-    case .imageToImage:
-      "Remix what already exists"
-    case .projects:
-      "Your workspace is taking shape"
-    case .gallery:
-      "A clean archive for your best generations"
-    case .favorites:
-      "Keep strong directions within reach"
-    case .history:
-      "Every iteration stays recoverable"
+    case .home:
+      "What's on "
+    case .threads:
+      ""
+    case .recents:
+      ""
+    case .agents:
+      ""
+    case .files:
+      ""
+    case .share:
+      ""
+    case .data:
+      ""
     case .help:
-      "The workspace is designed to stay lightweight"
+      ""
     case .settings:
-      "Tune OpenSpace around your creative routine"
+      ""
+    }
+  }
+
+  var heroAccentText: String {
+    switch self {
+    case .home:
+      "your mind?"
+    case .threads:
+      "active thread"
+    case .recents:
+      "recent context"
+    case .agents:
+      "right specialist"
+    case .files:
+      "the workspace"
+    case .share:
+      "with others"
+    case .data:
+      "project data"
+    case .help:
+      "that fits"
+    case .settings:
+      "to your flow"
     }
   }
 
   var heroBody: String {
     switch self {
-    case .textToImage:
-      "Choose a prompt below or write your own to start shaping visuals with OpenSpace."
-    case .sketchToImage:
-      "Drop a sketch concept into the composer and decide how stylized or grounded the output should feel."
-    case .imageToImage:
-      "Start with a reference, adjust direction, and keep the next pass aligned with your intent."
-    case .projects:
-      "The shell now mirrors the reference layout, so future conversation and provider flows have a solid foundation."
-    case .gallery:
-      "This first workspace pass establishes hierarchy, navigation, and composition for richer asset browsing next."
-    case .favorites:
-      "Pin reusable prompts, preferred models, and notable outputs so the best work is easier to revisit."
-    case .history:
-      "Use the same composer surface to restart older explorations without losing the calm, focused layout."
+    case .home:
+      "A calmer desktop workspace for planning, asking, and moving between threads without visual noise."
+    case .threads:
+      "Recent conversations stay close, so continuing work takes one action instead of another full navigation pass."
+    case .recents:
+      "Reopen drafts, prompts, and references from the same centered workspace without breaking your train of thought."
+    case .agents:
+      "Move from a general chat into specialist support while keeping the same main composer and example-driven flow."
+    case .files:
+      "Attachments and project files enter the same composition surface, so context stays visible right where you ask."
+    case .share:
+      "Invite collaborators into the thread layer without turning the main canvas into a dashboard."
+    case .data:
+      "Live project sources can sit behind a lighter shell, keeping the interface focused even as capability grows."
     case .help:
-      "The current build focuses on navigation, composition, and visual structure before real provider data arrives."
+      "The shell favors one strong path forward, with support and recovery actions kept to the edges."
     case .settings:
-      "Provider selection, workspace defaults, and credential screens can plug into this shell without redesigning it."
+      "Model defaults, citations, and workspace behaviors can evolve here without disturbing the main conversation rhythm."
     }
   }
 
   var composerPlaceholder: String {
     switch self {
-    case .textToImage:
-      "Add prompt instructions"
-    case .sketchToImage:
-      "Describe how the sketch should be transformed"
-    case .imageToImage:
-      "Describe the new direction for the reference"
-    case .projects:
-      "Capture the direction for your next workspace thread"
-    case .gallery:
-      "Describe what you want to revisit or refine"
-    case .favorites:
-      "Write a reusable prompt worth keeping"
-    case .history:
-      "Summarize the thread you want to continue"
+    case .home:
+      "Ask AI a question or make a request..."
+    case .threads:
+      "Describe the thread you want to continue..."
+    case .recents:
+      "Ask to reopen a recent direction..."
+    case .agents:
+      "Tell OpenSpace which specialist you need..."
+    case .files:
+      "Describe the file or reference you want to attach..."
+    case .share:
+      "Draft a share-ready message or invite note..."
+    case .data:
+      "Ask for a summary from your connected project data..."
     case .help:
-      "Ask what you want this workspace to support next"
+      "Ask how this workspace should help next..."
     case .settings:
-      "Describe the default behavior you want to tune"
+      "Describe the behavior you want to tune..."
     }
   }
 }
 
 enum WorkspaceModel: String, CaseIterable, Identifiable {
-  case artboard3 = "ArtBoard 3"
-  case lucidCanvas = "Lucid Canvas"
-  case openSpaceVision = "OpenSpace Vision"
+  case chatGPT4o = "ChatGPT 4o"
+  case openSpaceFocus = "OpenSpace Focus"
+  case gpt5Reasoning = "GPT-5 Reasoning"
 
   var id: String { rawValue }
 }
 
-enum WorkspaceStyleChip: String, CaseIterable, Hashable {
-  case highQuality = "High quality"
-  case fourK = "4K"
-  case cinematic = "Cinematic"
-  case cleanEdges = "Clean edges"
+enum WorkspaceWritingStyle: String, CaseIterable, Identifiable {
+  case balanced = "Balanced"
+  case concise = "Concise"
+  case strategic = "Strategic"
+  case exploratory = "Exploratory"
+
+  var id: String { rawValue }
 }
 
-enum WorkspaceQuickPrompt: String, CaseIterable, Hashable {
-  case mysticalForest = "Mystical Forest Portal"
-  case neonCity = "Neon City Streets"
-  case lotusTemple = "Lotus Temple"
-  case desertCastle = "Desert Castle"
-  case lunarArchive = "Lunar Archive"
+enum WorkspaceQuickPrompt: String, CaseIterable, Hashable, Identifiable {
+  case toDoList = "Write a to-do list for a personal project"
+  case emailReply = "Generate an email to reply to a job offer"
+  case articleSummary = "Summarize this article in one paragraph"
+  case technicalExplain = "How does AI work in a technical capacity"
+
+  var id: String { rawValue }
+
+  var symbolName: String {
+    switch self {
+    case .toDoList:
+      "person"
+    case .emailReply:
+      "envelope"
+    case .articleSummary:
+      "bubble.left"
+    case .technicalExplain:
+      "chevron.left.forwardslash.chevron.right"
+    }
+  }
 }
 
 struct WorkspaceViewBindings {
   let selectedDestination: Binding<WorkspaceDestination>
   let selectedModel: Binding<WorkspaceModel>
   let selectedPrompt: Binding<String>
-  let selectedStyleChips: Binding<Set<WorkspaceStyleChip>>
-  let toneValue: Binding<Double>
-  let isRandomized: Binding<Bool>
+  let selectedWritingStyle: Binding<WorkspaceWritingStyle>
+  let citationEnabled: Binding<Bool>
   let highlightedQuickPrompt: Binding<WorkspaceQuickPrompt?>
   let isPromptFocused: FocusState<Bool>.Binding
   let replayOnboarding: () -> Void
