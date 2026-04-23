@@ -215,8 +215,11 @@ struct OnboardingPrimaryButton: View {
   let title: String
   let hasAppeared: Bool
   let reduceMotion: Bool
+  let font: Font
   let minWidth: CGFloat?
   let minHeight: CGFloat
+  let horizontalPadding: CGFloat
+  let verticalPadding: CGFloat
   let identifier: String
   let action: () -> Void
 
@@ -224,16 +227,22 @@ struct OnboardingPrimaryButton: View {
     title: String,
     hasAppeared: Bool,
     reduceMotion: Bool,
+    font: Font = .title3.weight(.semibold),
     minWidth: CGFloat? = nil,
     minHeight: CGFloat = 48,
+    horizontalPadding: CGFloat = 28,
+    verticalPadding: CGFloat = 18,
     identifier: String = "onboarding.primary-button",
     action: @escaping () -> Void
   ) {
     self.title = title
     self.hasAppeared = hasAppeared
     self.reduceMotion = reduceMotion
+    self.font = font
     self.minWidth = minWidth
     self.minHeight = minHeight
+    self.horizontalPadding = horizontalPadding
+    self.verticalPadding = verticalPadding
     self.identifier = identifier
     self.action = action
   }
@@ -241,11 +250,11 @@ struct OnboardingPrimaryButton: View {
   var body: some View {
     Button(action: action) {
       Text(title)
-        .font(.title3.weight(.semibold))
+        .font(font)
         .foregroundStyle(colorScheme == .dark ? ThemeColor.neutral1000 : ThemeColor.textPrimary)
         .frame(minWidth: minWidth, minHeight: minHeight)
-        .padding(.horizontal, 28)
-        .padding(.vertical, 18)
+        .padding(.horizontal, horizontalPadding)
+        .padding(.vertical, verticalPadding)
         .background(
           Capsule()
             .fill(colorScheme == .dark ? Color.white : ThemeColor.accent100)
