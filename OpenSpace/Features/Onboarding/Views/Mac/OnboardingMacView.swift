@@ -12,41 +12,59 @@ struct OnboardingMacView: View {
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
+  private var layout: OnboardingMacLayout {
+    OnboardingMacLayout(context: context)
+  }
+
   var body: some View {
-    OnboardingPlatformPanel(variant: .mac, context: context) {
-      VStack(alignment: .leading, spacing: context.desktopSectionSpacing) {
-        OnboardingMacHeaderView()
-          .accessibilityIdentifier("onboarding.mac.header-container")
+    VStack(spacing: 0) {
+      OnboardingPlatformPanel(
+        variant: .mac,
+        cornerRadius: layout.panelCornerRadius,
+        maxWidth: layout.panelMaxWidth,
+        minHeight: layout.panelMinHeight,
+        horizontalPadding: layout.panelHorizontalPadding,
+        hasAppeared: context.hasAppeared,
+        reduceMotion: context.reduceMotion,
+        isAnimated: context.isAnimated,
+        contentAlignment: .topLeading
+      ) {
+        VStack(alignment: .leading, spacing: layout.sectionSpacing) {
+          OnboardingMacHeaderView()
+            .accessibilityIdentifier("onboarding.mac.header-container")
 
-        OnboardingMacHeroView(
-          context: context,
-          onContinue: onContinue
-        )
-        .accessibilityIdentifier("onboarding.mac.hero-container")
-
-        VStack(alignment: .leading, spacing: 10) {
-          OnboardingMacFooterView(context: context)
-            .accessibilityIdentifier("onboarding.mac.footer-container")
-
-          OnboardingSupportingNote(
-            text: "The macOS surface leans into dense desktop posture: shared onboarding logic, stronger workspace framing, and room for durable chrome without feeling heavy.",
-            hasAppeared: context.hasAppeared,
-            alignment: .leading,
-            maxWidth: context.supportingNoteMaxWidth
+          OnboardingMacHeroView(
+            context: context,
+            layout: layout,
+            onContinue: onContinue
           )
-          .accessibilityIdentifier("onboarding.mac.supporting-note")
+          .accessibilityIdentifier("onboarding.mac.hero-container")
+
+          VStack(alignment: .leading, spacing: 10) {
+            OnboardingMacFooterView(context: context)
+              .accessibilityIdentifier("onboarding.mac.footer-container")
+
+            OnboardingSupportingNote(
+              text: "macOS onboarding leans into a desktop workbench posture, with enough structure to orient you before the main workspace opens.",
+              hasAppeared: context.hasAppeared,
+              alignment: .leading,
+              maxWidth: layout.supportingNoteMaxWidth
+            )
+            .accessibilityIdentifier("onboarding.mac.supporting-note")
+          }
+          .padding(.top, layout.footerTopPadding)
+          .overlay(alignment: .top) {
+            Rectangle()
+              .fill(ThemeColor.chromeStroke(for: colorScheme))
+              .frame(height: 1)
+          }
         }
-        .padding(.top, context.macSpacingBeforeFooter)
-        .overlay(alignment: .top) {
-          Rectangle()
-            .fill(ThemeColor.chromeStroke(for: colorScheme))
-            .frame(height: 1)
-        }
+        .padding(.horizontal, layout.panelHorizontalInset)
+        .padding(.top, layout.panelTopPadding)
+        .padding(.bottom, layout.panelBottomPadding)
       }
-      .padding(.horizontal, context.desktopPanelPadding)
-      .padding(.top, max(context.desktopPanelPadding - 4, 12))
-      .padding(.bottom, max(context.desktopPanelPadding - 20, 6))
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     .accessibilityIdentifier("onboarding.mac.content")
   }
 }

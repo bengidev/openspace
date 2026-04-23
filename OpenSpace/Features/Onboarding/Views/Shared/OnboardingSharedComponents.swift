@@ -21,40 +21,61 @@ private extension String {
 
 struct OnboardingPlatformPanel<Content: View>: View {
   let variant: OnboardingPlatformVariant
-  let context: OnboardingRenderContext
+  let cornerRadius: CGFloat
+  let maxWidth: CGFloat?
+  let minHeight: CGFloat
+  let horizontalPadding: CGFloat
+  let hasAppeared: Bool
+  let reduceMotion: Bool
+  let isAnimated: Bool
+  let contentAlignment: Alignment
   @ViewBuilder let content: Content
 
   init(
     variant: OnboardingPlatformVariant,
-    context: OnboardingRenderContext,
+    cornerRadius: CGFloat,
+    maxWidth: CGFloat?,
+    minHeight: CGFloat,
+    horizontalPadding: CGFloat,
+    hasAppeared: Bool,
+    reduceMotion: Bool,
+    isAnimated: Bool,
+    contentAlignment: Alignment = .center,
     @ViewBuilder content: () -> Content
   ) {
     self.variant = variant
-    self.context = context
+    self.cornerRadius = cornerRadius
+    self.maxWidth = maxWidth
+    self.minHeight = minHeight
+    self.horizontalPadding = horizontalPadding
+    self.hasAppeared = hasAppeared
+    self.reduceMotion = reduceMotion
+    self.isAnimated = isAnimated
+    self.contentAlignment = contentAlignment
     self.content = content()
   }
 
   var body: some View {
     OnboardingHeroPanel(
       style: variant.panelStyle,
-      cornerRadius: variant.panelCornerRadius
+      cornerRadius: cornerRadius
     ) {
       content
         .frame(
           maxWidth: .infinity,
-          minHeight: context.panelMinHeight,
-          alignment: variant == .mac ? .topLeading : .center
+          minHeight: minHeight,
+          alignment: contentAlignment
         )
     }
-    .frame(maxWidth: context.panelMaxWidth)
-    .padding(.horizontal, variant.panelHorizontalPadding)
-    .opacity(context.hasAppeared ? 1 : 0)
-    .offset(y: context.hasAppeared ? 0 : 26)
-    .scaleEffect(context.reduceMotion ? 1 : (context.hasAppeared ? 1 : 0.985))
-    .animation(.easeOut(duration: 0.9), value: context.hasAppeared)
+    .frame(maxWidth: maxWidth)
+    .padding(.horizontal, horizontalPadding)
+    .opacity(hasAppeared ? 1 : 0)
+    .offset(y: hasAppeared ? 0 : 26)
+    .scaleEffect(reduceMotion ? 1 : (hasAppeared ? 1 : 0.985))
+    .animation(.easeOut(duration: 0.9), value: hasAppeared)
     .modifier(
       FloatingPanelEffect(
-        isActive: context.isAnimated && variant.usesFloatingPanelEffect
+        isActive: isAnimated && variant.usesFloatingPanelEffect
       )
     )
     .accessibilityIdentifier("\(variant.identifierPrefix).panel")

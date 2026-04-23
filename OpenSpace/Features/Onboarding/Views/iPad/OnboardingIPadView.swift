@@ -11,55 +11,81 @@ struct OnboardingIPadView: View {
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
+  private var layout: OnboardingIPadLayout {
+    OnboardingIPadLayout(context: context)
+  }
+
   var body: some View {
-    VStack(spacing: 28) {
-      OnboardingPlatformPanel(variant: .ipad, context: context) {
-        VStack(spacing: 0) {
-          OnboardingIPadHeaderView()
-            .accessibilityIdentifier("onboarding.ipad.header-container")
-            .padding(.horizontal, 22)
-            .padding(.top, 22)
+    ScrollView(.vertical, showsIndicators: false) {
+      VStack(spacing: layout.screenStackSpacing) {
+        Spacer(minLength: layout.screenTopSpacing)
 
-          Spacer(minLength: context.topSectionSpacing)
+        OnboardingPlatformPanel(
+          variant: .ipad,
+          cornerRadius: layout.panelCornerRadius,
+          maxWidth: layout.panelMaxWidth,
+          minHeight: layout.panelMinHeight,
+          horizontalPadding: layout.panelHorizontalPadding,
+          hasAppeared: context.hasAppeared,
+          reduceMotion: context.reduceMotion,
+          isAnimated: context.isAnimated
+        ) {
+          VStack(spacing: 0) {
+            OnboardingIPadHeaderView()
+              .accessibilityIdentifier("onboarding.ipad.header-container")
+              .padding(.horizontal, layout.headerHorizontalPadding)
+              .padding(.top, layout.headerTopPadding)
 
-          OnboardingHorizontalCapabilityStrip(
-            chips: context.capabilityChips + ["Multiplatform", "Local-First"],
-            hasAppeared: context.hasAppeared,
-            reduceMotion: context.reduceMotion,
-            spacing: 10,
-            chipPadding: 14,
-            identifierPrefix: "onboarding.ipad.capabilities"
-          )
-          .padding(.horizontal, 22)
+            Spacer(minLength: layout.capabilityTopSpacing)
 
-          Spacer(minLength: context.heroSectionSpacing)
+            OnboardingHorizontalCapabilityStrip(
+              chips: context.capabilityChips + ["Multiplatform", "Local-First"],
+              hasAppeared: context.hasAppeared,
+              reduceMotion: context.reduceMotion,
+              spacing: layout.capabilitySpacing,
+              chipPadding: layout.capabilityChipPadding,
+              identifierPrefix: "onboarding.ipad.capabilities"
+            )
+            .padding(.horizontal, layout.capabilityHorizontalPadding)
 
-          OnboardingIPadHeroView(
-            context: context,
-            onContinue: onContinue
-          )
-          .accessibilityIdentifier("onboarding.ipad.hero-container")
-          .padding(.horizontal, 28)
+            Spacer(minLength: layout.heroTopSpacing)
 
-          Spacer(minLength: context.footerSectionSpacing)
+            OnboardingIPadHeroView(
+              context: context,
+              layout: layout,
+              onContinue: onContinue
+            )
+            .accessibilityIdentifier("onboarding.ipad.hero-container")
+            .padding(.horizontal, layout.heroHorizontalPadding)
+            .padding(.bottom, layout.heroBottomPadding)
 
-          OnboardingIPadFooterView(context: context)
-            .accessibilityIdentifier("onboarding.ipad.footer-container")
-            .padding(.horizontal, 24)
-            .padding(.bottom, 22)
+            Spacer(minLength: layout.footerTopSpacing)
+
+            OnboardingIPadFooterView(context: context)
+              .accessibilityIdentifier("onboarding.ipad.footer-container")
+              .padding(.horizontal, layout.footerHorizontalPadding)
+              .padding(.bottom, layout.footerBottomPadding)
+          }
         }
-      }
 
-      OnboardingSupportingNote(
-        text: "The iPad family can afford broader composition, denser capability cues, and more persistent ambient context while keeping the same onboarding intent.",
-        hasAppeared: context.hasAppeared,
-        alignment: .center,
-        maxWidth: context.supportingNoteMaxWidth
+        OnboardingSupportingNote(
+          text: "On iPad, onboarding uses the extra canvas for hierarchy and glanceable setup context, so the first screen already feels like a workspace instead of a blown-up phone sheet.",
+          hasAppeared: context.hasAppeared,
+          alignment: .center,
+          maxWidth: layout.supportingNoteMaxWidth
+        )
+        .accessibilityIdentifier("onboarding.ipad.supporting-note")
+        .padding(.horizontal, layout.supportingNoteHorizontalPadding)
+        .padding(.bottom, layout.supportingNoteBottomPadding)
+      }
+      .frame(
+        maxWidth: .infinity,
+        minHeight: layout.screenContentMinHeight,
+        alignment: .top
       )
-      .accessibilityIdentifier("onboarding.ipad.supporting-note")
-      .padding(.horizontal, 28)
-      .padding(.bottom, 20)
     }
+    .safeAreaPadding(.vertical, layout.screenVerticalPadding)
+    .accessibilityIdentifier("onboarding.ipad.scroll")
     .accessibilityIdentifier("onboarding.ipad.content")
   }
 }

@@ -11,55 +11,76 @@ struct OnboardingIOSView: View {
   let context: OnboardingRenderContext
   let onContinue: () -> Void
 
+  private var layout: OnboardingIOSLayout {
+    OnboardingIOSLayout(context: context)
+  }
+
   var body: some View {
-    VStack(spacing: 28) {
-      OnboardingPlatformPanel(variant: .ios, context: context) {
-        VStack(spacing: 0) {
-          OnboardingIOSHeaderView()
-            .accessibilityIdentifier("onboarding.ios.header-container")
-            .padding(.horizontal, 22)
-            .padding(.top, 22)
+    ScrollView(.vertical, showsIndicators: false) {
+      VStack(spacing: layout.screenStackSpacing) {
+        Spacer(minLength: layout.screenTopSpacing)
 
-          Spacer(minLength: context.topSectionSpacing)
+        OnboardingPlatformPanel(
+          variant: .ios,
+          cornerRadius: layout.panelCornerRadius,
+          maxWidth: layout.panelMaxWidth,
+          minHeight: layout.panelMinHeight,
+          horizontalPadding: layout.panelHorizontalPadding,
+          hasAppeared: context.hasAppeared,
+          reduceMotion: context.reduceMotion,
+          isAnimated: context.isAnimated
+        ) {
+          VStack(spacing: 0) {
+            OnboardingIOSHeaderView()
+              .accessibilityIdentifier("onboarding.ios.header-container")
+              .padding(.horizontal, layout.headerHorizontalPadding)
+              .padding(.top, layout.headerTopPadding)
 
-          OnboardingHorizontalCapabilityStrip(
-            chips: context.capabilityChips,
-            hasAppeared: context.hasAppeared,
-            reduceMotion: context.reduceMotion,
-            spacing: 8,
-            chipPadding: 12,
-            identifierPrefix: "onboarding.ios.capabilities"
-          )
-          .padding(.horizontal, 22)
+            OnboardingHorizontalCapabilityStrip(
+              chips: context.capabilityChips,
+              hasAppeared: context.hasAppeared,
+              reduceMotion: context.reduceMotion,
+              spacing: layout.capabilitySpacing,
+              chipPadding: layout.capabilityChipPadding,
+              identifierPrefix: "onboarding.ios.capabilities"
+            )
+            .padding(.top, layout.capabilityTopPadding)
+            .padding(.horizontal, layout.capabilityHorizontalPadding)
 
-          Spacer(minLength: context.heroSectionSpacing)
+            OnboardingIOSHeroView(
+              context: context,
+              layout: layout,
+              onContinue: onContinue
+            )
+            .accessibilityIdentifier("onboarding.ios.hero-container")
 
-          OnboardingIOSHeroView(
-            context: context,
-            onContinue: onContinue
-          )
-          .accessibilityIdentifier("onboarding.ios.hero-container")
-          .padding(.horizontal, 28)
+            Spacer(minLength: layout.footerTopSpacing)
 
-          Spacer(minLength: context.footerSectionSpacing)
-
-          OnboardingIOSFooterView(context: context)
-            .accessibilityIdentifier("onboarding.ios.footer-container")
-            .padding(.horizontal, 24)
-            .padding(.bottom, 22)
+            OnboardingIOSFooterView(context: context)
+              .accessibilityIdentifier("onboarding.ios.footer-container")
+              .padding(.horizontal, layout.footerHorizontalPadding)
+              .padding(.bottom, layout.footerBottomPadding)
+          }
         }
-      }
 
-      OnboardingSupportingNote(
-        text: "OpenSpace is designed for developers who move between coding, visual ideation, and model orchestration.",
-        hasAppeared: context.hasAppeared,
-        alignment: .center,
-        maxWidth: context.supportingNoteMaxWidth
+        OnboardingSupportingNote(
+          text: "OpenSpace keeps first-run setup calm on iPhone, so you can understand the workspace quickly and keep momentum when you enter the app.",
+          hasAppeared: context.hasAppeared,
+          alignment: .center,
+          maxWidth: layout.supportingNoteMaxWidth
+        )
+        .accessibilityIdentifier("onboarding.ios.supporting-note")
+        .padding(.horizontal, layout.supportingNoteHorizontalPadding)
+        .padding(.bottom, layout.supportingNoteBottomPadding)
+      }
+      .frame(
+        maxWidth: .infinity,
+        minHeight: layout.screenContentMinHeight,
+        alignment: .top
       )
-      .accessibilityIdentifier("onboarding.ios.supporting-note")
-      .padding(.horizontal, 28)
-      .padding(.bottom, 20)
     }
+    .safeAreaPadding(.vertical, layout.screenVerticalPadding)
+    .accessibilityIdentifier("onboarding.ios.scroll")
     .accessibilityIdentifier("onboarding.ios.content")
   }
 }
