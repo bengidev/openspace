@@ -10,27 +10,31 @@ import SwiftUI
 struct OnboardingMacHeroView: View {
   @Environment(\.colorScheme) private var colorScheme
   let context: OnboardingRenderContext
+  let layout: OnboardingMacLayout
   let onContinue: () -> Void
 
   var body: some View {
-    ViewThatFits(in: .horizontal) {
-      wideLayout
-      stackedLayout
+    Group {
+      if layout.prefersStackedHero {
+        stackedLayout
+      } else {
+        wideLayout
+      }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .accessibilityIdentifier("onboarding.mac.hero")
   }
 
   private var wideLayout: some View {
-    HStack(alignment: .top, spacing: context.heroStackSpacing + 28) {
+    HStack(alignment: .top, spacing: layout.heroColumnSpacing) {
       leadingColumn
       secondaryColumn
-        .frame(width: context.desktopSidebarWidth, alignment: .leading)
+        .frame(width: layout.secondaryColumnWidth, alignment: .leading)
     }
   }
 
   private var stackedLayout: some View {
-    VStack(alignment: .leading, spacing: context.heroStackSpacing) {
+    VStack(alignment: .leading, spacing: layout.heroColumnSpacing) {
       leadingColumn
       secondaryColumn
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -38,7 +42,7 @@ struct OnboardingMacHeroView: View {
   }
 
   private var leadingColumn: some View {
-    VStack(alignment: .leading, spacing: context.heroContentSpacing) {
+    VStack(alignment: .leading, spacing: layout.heroContentSpacing) {
       OnboardingSignalPill(
         isAnimated: context.isAnimated,
         label: "A desktop workbench for coding, image generation, and local AI setup",
@@ -52,15 +56,15 @@ struct OnboardingMacHeroView: View {
         reduceMotion: context.reduceMotion,
         identifierPrefix: "onboarding.mac.capabilities"
       )
-      .padding(.bottom, context.macSpacingAfterCapabilities)
+      .padding(.bottom, 10)
 
       VStack(alignment: .leading, spacing: 8) {
-        Text("A Native Desktop Surface for Multi-Provider Work")
-          .font(.system(size: context.heroTitleSize, weight: .medium, design: .default))
+        Text("A Native Desktop Entry for Multi-Tool Work")
+          .font(.system(size: layout.heroTitleSize, weight: .medium, design: .default))
           .multilineTextAlignment(.leading)
           .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
           .shadow(color: ThemeColor.elevatedShadow(for: colorScheme), radius: 8, x: 0, y: 3)
-          .frame(maxWidth: context.heroTextMaxWidth, alignment: .leading)
+          .frame(maxWidth: layout.heroTextMaxWidth, alignment: .leading)
           .lineLimit(4)
           .minimumScaleFactor(0.8)
           .opacity(context.hasAppeared ? 1 : 0)
@@ -71,11 +75,11 @@ struct OnboardingMacHeroView: View {
           )
           .accessibilityIdentifier("onboarding.mac.hero.title")
 
-        Text("The macOS family keeps onboarding logic shared while producing a different render family: denser chrome, stronger information scent, and room for a real desktop posture.")
-          .font(context.heroSubtitleFont)
+        Text("OpenSpace uses macOS onboarding to frame the workspace early: more cues, more durable chrome, and a clearer sense of what stays visible once the app opens.")
+          .font(layout.heroSubtitleFont)
           .multilineTextAlignment(.leading)
           .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
-          .frame(maxWidth: context.heroSupportingTextMaxWidth, alignment: .leading)
+          .frame(maxWidth: layout.heroSupportingTextMaxWidth, alignment: .leading)
           .opacity(context.hasAppeared ? 1 : 0)
           .offset(y: context.hasAppeared ? 0 : 14)
           .animation(
@@ -84,24 +88,27 @@ struct OnboardingMacHeroView: View {
           )
           .accessibilityIdentifier("onboarding.mac.hero.subtitle")
       }
-      .padding(.top, context.macSpacingAfterHeroCopy + 30)
-        
-        Spacer()
+      .padding(.top, layout.titleTopPadding)
+
+      Spacer(minLength: 0)
 
       actionCluster
-            .padding(.bottom, 30)
+        .padding(.bottom, layout.actionBottomPadding)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private var actionCluster: some View {
-    VStack(alignment: .leading, spacing: 16) {
+    VStack(alignment: .leading, spacing: 14) {
       OnboardingPrimaryButton(
         title: "Enter OpenSpace",
         hasAppeared: context.hasAppeared,
         reduceMotion: context.reduceMotion,
-        minWidth: context.heroSupportingTextMaxWidth,
-        minHeight: 28,
+        font: layout.heroPrimaryButtonFont,
+        minWidth: layout.heroPrimaryButtonMinWidth,
+        minHeight: layout.heroPrimaryButtonMinHeight,
+        horizontalPadding: layout.heroPrimaryButtonHorizontalPadding,
+        verticalPadding: layout.heroPrimaryButtonVerticalPadding,
         identifier: "onboarding.mac.hero.primary-action",
         action: onContinue
       )
@@ -129,7 +136,7 @@ struct OnboardingMacHeroView: View {
       VStack(alignment: .leading, spacing: 8) {
         OnboardingMacDetailRow(title: "Hierarchy", value: "Persistent panels and cues")
         OnboardingMacDetailRow(title: "Setup", value: "Local AI staged in first run")
-        OnboardingMacDetailRow(title: "Render", value: "Shared flow, desktop-aware surface")
+        OnboardingMacDetailRow(title: "Render", value: "Desktop-aware surface and pacing")
       }
     }
     .padding(16)
@@ -145,7 +152,7 @@ struct OnboardingMacHeroView: View {
   }
 
   private var secondaryColumn: some View {
-    VStack(alignment: .leading, spacing: 14) {
+    VStack(alignment: .leading, spacing: layout.cardStackSpacing) {
       sessionSurfaceCard
       desktopNotesCard
       workflowHighlights
@@ -180,7 +187,7 @@ struct OnboardingMacHeroView: View {
 
       HStack(spacing: 10) {
         statTile(value: "2x", label: "denser cues")
-        statTile(value: "1", label: "shared flow")
+        statTile(value: "3", label: "desktop panes")
       }
     }
     .padding(14)
@@ -214,7 +221,7 @@ struct OnboardingMacHeroView: View {
       VStack(alignment: .leading, spacing: 8) {
         OnboardingMacDetailRow(title: "Chrome", value: "Persistent workspace framing")
         OnboardingMacDetailRow(title: "Density", value: "More information per surface")
-        OnboardingMacDetailRow(title: "Flow", value: "Shared state, variant-specific render")
+        OnboardingMacDetailRow(title: "Flow", value: "Desktop-first entry posture")
       }
     }
     .padding(14)
@@ -225,7 +232,7 @@ struct OnboardingMacHeroView: View {
 
   private var desktopMetricStrip: some View {
     HStack(spacing: 8) {
-      compactMetric(title: "Flow", value: "Shared state")
+      compactMetric(title: "Flow", value: "Focused entry")
         .frame(maxWidth: .infinity, alignment: .leading)
 
       compactMetric(title: "Density", value: "Desktop-first")
@@ -328,11 +335,14 @@ private struct OnboardingMacDetailRow: View {
 }
 
 #Preview("Desktop Hero") {
+  let context = OnboardingPreviewSupport.context(
+    variant: .mac,
+    size: CGSize(width: 1120, height: 620)
+  )
+
   OnboardingMacHeroView(
-    context: OnboardingPreviewSupport.context(
-      variant: .mac,
-      size: CGSize(width: 1120, height: 620)
-    ),
+    context: context,
+    layout: OnboardingMacLayout(context: context),
     onContinue: {}
   )
   .padding(24)
