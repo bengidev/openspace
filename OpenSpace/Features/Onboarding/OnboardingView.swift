@@ -34,11 +34,9 @@ struct OnboardingView: View {
   }
 
   private func renderContext(
-    for size: CGSize,
-    variant: OnboardingPlatformVariant
+    for size: CGSize
   ) -> OnboardingRenderContext {
     OnboardingRenderContext(
-      variant: variant,
       capabilityChips: capabilityChips,
       containerSize: size,
       hasAppeared: hasAppeared,
@@ -50,46 +48,19 @@ struct OnboardingView: View {
     let variant = platformVariant
 
     GeometryReader { proxy in
-      let context = renderContext(for: proxy.size, variant: variant)
+      let context = renderContext(for: proxy.size)
 
       ZStack {
         OnboardingBackdrop(isAnimated: context.isAnimated)
           .accessibilityIdentifier("onboarding.backdrop")
 
-        switch variant {
-        case .mac:
-          VStack(spacing: 0) {
-            OnboardingAbstractView(
-              variant: variant,
-              context: context,
-              onContinue: onContinue
-            )
-
-            Spacer(minLength: 0)
-          }
-          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-          .accessibilityIdentifier("\(variant.identifierPrefix).container")
-        case .ios, .ipad:
-          ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 28) {
-              Spacer(minLength: 18)
-
-              OnboardingAbstractView(
-                variant: variant,
-                context: context,
-                onContinue: onContinue
-              )
-            }
-            .frame(
-              maxWidth: .infinity,
-              minHeight: max(proxy.size.height - 20, 0),
-              alignment: .top
-            )
-          }
-          .safeAreaPadding(.vertical, 10)
-          .accessibilityIdentifier("\(variant.identifierPrefix).scroll")
-        }
+        OnboardingAbstractView(
+          variant: variant,
+          context: context,
+          onContinue: onContinue
+        )
       }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
       .accessibilityIdentifier("onboarding.root")
     }
     .task {
