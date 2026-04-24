@@ -1,37 +1,43 @@
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 #if os(iOS)
-import UIKit
+    import UIKit
 #elseif os(macOS)
-import AppKit
+    import AppKit
 #endif
+
+// MARK: - OpenSpaceApp
 
 @main
 struct OpenSpaceApp: App {
-  let store = Store(initialState: AppFeature.State()) {
-    AppFeature()
-  }
+    // MARK: Lifecycle
 
-  init() {
-    #if os(iOS)
-    let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
-    UIView.appearance().tintColor = accent
-    UIView.appearance().overrideUserInterfaceStyle = .dark
-    #elseif os(macOS)
-    NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
-    #endif
-  }
-
-  var body: some Scene {
-    WindowGroup {
-      AppRootView(store: store)
-        .openSpaceTheme()
+    init() {
+        #if os(iOS)
+            let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
+            UIView.appearance().tintColor = accent
+            UIView.appearance().overrideUserInterfaceStyle = .dark
+        #elseif os(macOS)
+            NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+        #endif
     }
-    #if os(macOS)
-    .defaultSize(width: 1280, height: 820)
-    .defaultPosition(.center)
-    .windowToolbarStyle(.unifiedCompact)
-    .windowResizability(.contentMinSize)
-    #endif
-  }
+
+    // MARK: Internal
+
+    let store = Store(initialState: AppFeature.State()) {
+        AppFeature()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            AppRootView(store: store)
+                .openSpaceTheme()
+        }
+        #if os(macOS)
+        .defaultSize(width: 1280, height: 820)
+        .defaultPosition(.center)
+        .windowToolbarStyle(.unifiedCompact)
+        .windowResizability(.contentMinSize)
+        #endif
+    }
 }
