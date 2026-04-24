@@ -63,8 +63,8 @@ struct WorkspaceBackdrop: View {
   private var backgroundGradientColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.surface.opacity(0.94),
-        ThemeColor.backgroundSecondary.opacity(0.96),
+        AppTheme.colorHuntInkRaised.opacity(0.96),
+        ThemeColor.backgroundSecondary.opacity(0.42),
         ThemeColor.backgroundPrimary,
       ]
     } else {
@@ -79,7 +79,7 @@ struct WorkspaceBackdrop: View {
   private var topGlowColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.accent100.opacity(0.12),
+        ThemeColor.accent300.opacity(0.18),
         .clear,
       ]
     } else {
@@ -92,7 +92,7 @@ struct WorkspaceBackdrop: View {
 
   private var accentGlowColors: [Color] {
     [
-      ThemeColor.accent.opacity(colorScheme == .dark ? 0.14 : 0.10),
+      ThemeColor.accent.opacity(colorScheme == .dark ? 0.18 : 0.10),
       .clear,
     ]
   }
@@ -100,7 +100,7 @@ struct WorkspaceBackdrop: View {
   private var chromeBandColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.accent100.opacity(0.06),
+        ThemeColor.accent300.opacity(0.12),
         .clear,
       ]
     } else {
