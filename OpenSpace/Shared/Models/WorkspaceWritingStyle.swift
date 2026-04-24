@@ -1,10 +1,12 @@
 import Foundation
 
-enum WorkspaceWritingStyle: String, CaseIterable, Identifiable, Equatable, Codable {
-  case balanced = "Balanced"
-  case concise = "Concise"
-  case strategic = "Strategic"
-  case exploratory = "Exploratory"
+nonisolated enum WorkspaceWritingStyle: String, CaseIterable, Identifiable, Equatable, Codable, Sendable {
+    case balanced = "Balanced"
+    case concise = "Concise"
+    case strategic = "Strategic"
+    case exploratory = "Exploratory"
 
-  var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 }
