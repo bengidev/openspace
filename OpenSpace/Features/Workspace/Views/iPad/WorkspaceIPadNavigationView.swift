@@ -7,198 +7,225 @@
 
 import SwiftUI
 
+// MARK: - WorkspaceIPadIconRail
+
 struct WorkspaceIPadIconRail: View {
-  @Environment(\.colorScheme) private var colorScheme
-  let context: WorkspaceRenderContext
-  let bindings: WorkspaceViewBindings
+    // MARK: Internal
 
-  private var selectedDestination: WorkspaceDestination {
-    bindings.selectedDestination.wrappedValue
-  }
+    let context: WorkspaceRenderContext
+    let bindings: WorkspaceViewBindings
 
-  private var primaryDestinations: [WorkspaceDestination] {
-    WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
-  }
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 14) {
+                WorkspaceIPadRailBrandButton()
 
-  private var utilityDestinations: [WorkspaceDestination] {
-    WorkspaceDestination.allCases.filter { $0.navigationPlacement == .utility }
-  }
-
-  var body: some View {
-    VStack(spacing: 0) {
-      VStack(spacing: 14) {
-        WorkspaceIPadRailBrandButton()
-
-        VStack(spacing: context.railItemSpacing) {
-          ForEach(primaryDestinations, id: \.self) { destination in
-            WorkspaceIPadRailButton(
-              title: destination.rawValue,
-              systemImage: destination.systemImage,
-              isSelected: destination == selectedDestination
-            ) {
-              bindings.selectedDestination.wrappedValue = destination
+                VStack(spacing: context.railItemSpacing) {
+                    ForEach(primaryDestinations, id: \.self) { destination in
+                        WorkspaceIPadRailButton(
+                            title: destination.rawValue,
+                            systemImage: destination.systemImage,
+                            isSelected: destination == selectedDestination
+                        ) {
+                            bindings.selectedDestination.wrappedValue = destination
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
 
-      Spacer(minLength: 0)
+            Spacer(minLength: 0)
 
-      VStack(spacing: context.railItemSpacing) {
-        Button(action: bindings.replayOnboarding) {
-          Image(systemName: "arrow.counterclockwise")
-            .font(.system(size: 16, weight: .semibold))
-            .foregroundStyle(WorkspacePalette.secondaryText)
-            .frame(width: 42, height: 42)
-            .background(
-              RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(WorkspacePalette.panelSecondary(for: colorScheme))
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Replay onboarding")
+            VStack(spacing: context.railItemSpacing) {
+                Button(action: bindings.replayOnboarding) {
+                    Image(systemName: "arrow.counterclockwise")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(WorkspacePalette.secondaryText)
+                        .frame(width: 42, height: 42)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(WorkspacePalette.panelSecondary(for: colorScheme))
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Replay onboarding")
 
-        ForEach(utilityDestinations, id: \.self) { destination in
-          WorkspaceIPadRailButton(
-            title: destination.rawValue,
-            systemImage: destination.systemImage,
-            isSelected: destination == selectedDestination
-          ) {
-            bindings.selectedDestination.wrappedValue = destination
-          }
+                ForEach(utilityDestinations, id: \.self) { destination in
+                    WorkspaceIPadRailButton(
+                        title: destination.rawValue,
+                        systemImage: destination.systemImage,
+                        isSelected: destination == selectedDestination
+                    ) {
+                        bindings.selectedDestination.wrappedValue = destination
+                    }
+                }
+            }
         }
-      }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 14)
+        .accessibilityIdentifier("\(context.variant.identifierPrefix).rail")
     }
-    .padding(.horizontal, 10)
-    .padding(.vertical, 14)
-    .accessibilityIdentifier("\(context.variant.identifierPrefix).rail")
-  }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var selectedDestination: WorkspaceDestination {
+        bindings.selectedDestination.wrappedValue
+    }
+
+    private var primaryDestinations: [WorkspaceDestination] {
+        WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
+    }
+
+    private var utilityDestinations: [WorkspaceDestination] {
+        WorkspaceDestination.allCases.filter { $0.navigationPlacement == .utility }
+    }
 }
+
+// MARK: - WorkspaceIPadCompactNavigation
 
 struct WorkspaceIPadCompactNavigation: View {
-  @Environment(\.colorScheme) private var colorScheme
-  @Binding var selectedDestination: WorkspaceDestination
+    // MARK: Internal
 
-  private var destinations: [WorkspaceDestination] {
-    WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
-  }
+    @Binding var selectedDestination: WorkspaceDestination
 
-  var body: some View {
-    ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 8) {
-        ForEach(destinations, id: \.self) { destination in
-          Button {
-            selectedDestination = destination
-          } label: {
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-              Image(systemName: destination.systemImage)
-                .font(.system(size: 12, weight: .medium))
+                ForEach(destinations, id: \.self) { destination in
+                    Button {
+                        selectedDestination = destination
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: destination.systemImage)
+                                .font(.system(size: 12, weight: .medium))
 
-              Text(destination.rawValue)
-                .font(.caption.weight(.semibold))
+                            Text(destination.rawValue)
+                                .font(.caption.weight(.semibold))
+                        }
+                        .foregroundStyle(
+                            destination == selectedDestination
+                                ? WorkspacePalette.primaryText
+                                : WorkspacePalette.secondaryText
+                        )
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule()
+                                .fill(
+                                    destination == selectedDestination
+                                        ? WorkspacePalette.sidebarSelection(for: colorScheme)
+                                        : WorkspacePalette.panelSecondary(for: colorScheme)
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .foregroundStyle(
-              destination == selectedDestination
-                ? WorkspacePalette.primaryText
-                : WorkspacePalette.secondaryText
-            )
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-              Capsule()
-                .fill(
-                  destination == selectedDestination
-                    ? WorkspacePalette.sidebarSelection(for: colorScheme)
-                    : WorkspacePalette.panelSecondary(for: colorScheme)
-                )
-            )
-          }
-          .buttonStyle(.plain)
+            .padding(.bottom, 2)
         }
-      }
-      .padding(.bottom, 2)
+        .scrollClipDisabled()
     }
-    .scrollClipDisabled()
-  }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var destinations: [WorkspaceDestination] {
+        WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
+    }
 }
+
+// MARK: - WorkspaceIPadRailBrandButton
 
 private struct WorkspaceIPadRailBrandButton: View {
-  @Environment(\.colorScheme) private var colorScheme
+    // MARK: Internal
 
-  var body: some View {
-    ZStack {
-      Circle()
-        .fill(
-          RadialGradient(
-            colors: [
-              ThemeColor.orbHighlight(for: colorScheme),
-              WorkspacePalette.sidebarSelection(for: colorScheme),
-            ],
-            center: .center,
-            startRadius: 2,
-            endRadius: 24
-          )
-        )
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [
+                            ThemeColor.orbHighlight(for: colorScheme),
+                            WorkspacePalette.sidebarSelection(for: colorScheme),
+                        ],
+                        center: .center,
+                        startRadius: 2,
+                        endRadius: 24
+                    )
+                )
 
-      Image(systemName: "sparkle")
-        .font(.system(size: 16, weight: .semibold))
-        .foregroundStyle(WorkspacePalette.primaryText)
+            Image(systemName: "sparkle")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(WorkspacePalette.primaryText)
+        }
+        .frame(width: 36, height: 36)
+        .accessibilityLabel("OpenSpace home")
     }
-    .frame(width: 36, height: 36)
-    .accessibilityLabel("OpenSpace home")
-  }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
 }
 
-private struct WorkspaceIPadRailButton: View {
-  @Environment(\.colorScheme) private var colorScheme
-  let title: String
-  let systemImage: String
-  let isSelected: Bool
-  let action: () -> Void
+// MARK: - WorkspaceIPadRailButton
 
-  var body: some View {
-    Button(action: action) {
-      Image(systemName: systemImage)
-        .font(.system(size: 16, weight: isSelected ? .semibold : .medium))
-        .foregroundStyle(isSelected ? WorkspacePalette.accentHighlight(for: colorScheme) : WorkspacePalette.secondaryText)
-        .frame(width: 38, height: 38)
-        .background(
-          RoundedRectangle(cornerRadius: 12, style: .continuous)
-            .fill(isSelected ? WorkspacePalette.sidebarSelection(for: colorScheme) : Color.clear)
-        )
-        .overlay(
-          RoundedRectangle(cornerRadius: 12, style: .continuous)
-            .stroke(isSelected ? WorkspacePalette.cardStroke(for: colorScheme) : Color.clear, lineWidth: 1)
-        )
+private struct WorkspaceIPadRailButton: View {
+    // MARK: Internal
+
+    let title: String
+    let systemImage: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 16, weight: isSelected ? .semibold : .medium))
+                .foregroundStyle(isSelected ? WorkspacePalette.accentHighlight(for: colorScheme) : WorkspacePalette.secondaryText)
+                .frame(width: 38, height: 38)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isSelected ? WorkspacePalette.sidebarSelection(for: colorScheme) : Color.clear)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(isSelected ? WorkspacePalette.cardStroke(for: colorScheme) : Color.clear, lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
-    .buttonStyle(.plain)
-    .accessibilityLabel(title)
-    .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-  }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
 }
 
 #Preview("iPad Workspace Rail") {
-  WorkspacePreviewSupport.preview(
-    variant: .ipad,
-    size: CGSize(width: 1024, height: 820),
-    selectedDestination: .agents
-  ) { context, bindings in
-    WorkspaceIPadIconRail(context: context, bindings: bindings)
-      .frame(width: context.sidebarWidth, height: context.minimumShellHeight)
-      .background(WorkspacePalette.sidebarBackground(for: .light))
-      .padding(24)
-  }
-  .workspacePreviewSurface(size: CGSize(width: 240, height: 820))
+    WorkspacePreviewSupport.preview(
+        variant: .ipad,
+        size: CGSize(width: 1024, height: 820),
+        selectedDestination: .agents
+    ) { context, bindings in
+        WorkspaceIPadIconRail(context: context, bindings: bindings)
+            .frame(width: context.sidebarWidth, height: context.minimumShellHeight)
+            .background(WorkspacePalette.sidebarBackground(for: .light))
+            .padding(24)
+    }
+    .workspacePreviewSurface(size: CGSize(width: 240, height: 820))
 }
 
 #Preview("iPad Compact Navigation") {
-  WorkspacePreviewSupport.preview(
-    variant: .ipad,
-    size: CGSize(width: 744, height: 1133),
-    selectedDestination: .threads
-  ) { _, bindings in
-    WorkspaceIPadCompactNavigation(selectedDestination: bindings.selectedDestination)
-      .padding(24)
-  }
-  .workspacePreviewSurface(size: CGSize(width: 744, height: 180))
+    WorkspacePreviewSupport.preview(
+        variant: .ipad,
+        size: CGSize(width: 744, height: 1133),
+        selectedDestination: .threads
+    ) { _, bindings in
+        WorkspaceIPadCompactNavigation(selectedDestination: bindings.selectedDestination)
+            .padding(24)
+    }
+    .workspacePreviewSurface(size: CGSize(width: 744, height: 180))
 }
