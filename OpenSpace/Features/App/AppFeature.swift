@@ -2,12 +2,14 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AppFeature: Reducer {
+  @ObservableState
   struct State: Equatable {
     var onboarding = OnboardingFeature.State()
     var workspace = WorkspaceFeature.State()
     var hasCompletedOnboarding: Bool = false
   }
   
+  @CasePathable
   enum Action {
     case onboarding(OnboardingFeature.Action)
     case workspace(WorkspaceFeature.Action)
@@ -16,10 +18,10 @@ struct AppFeature: Reducer {
   }
   
   var body: some Reducer<State, Action> {
-    Scope(state: \.onboarding, action: /Action.onboarding) {
+    Scope(state: \.onboarding, action: \.onboarding) {
       OnboardingFeature()
     }
-    Scope(state: \.workspace, action: /Action.workspace) {
+    Scope(state: \.workspace, action: \.workspace) {
       WorkspaceFeature()
     }
     Reduce { state, action in
