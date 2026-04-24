@@ -14,7 +14,7 @@ OpenSpace is currently an **onboarding-first SwiftUI prototype** with an early w
   Defines the `@main` app entry point and applies the shared OpenSpace theme.
 
 - [OpenSpace/App/AppRootView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/App/AppRootView.swift:10)
-  Owns the lightweight app flow. It switches between onboarding and the early workspace shell using `@AppStorage("hasCompletedOnboarding")`.
+  Owns the lightweight app flow. It switches between onboarding and the early workspace shell using TCA state from `AppFeature.State`.
 
 - [OpenSpace/Features/Onboarding/OnboardingView.swift](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace/Features/Onboarding/OnboardingView.swift:10)
   Acts as the onboarding facade. It owns shared feature state and hands rendering off to the onboarding abstract view.
@@ -58,7 +58,7 @@ From the project configuration and current source:
 - iOS deployment target: `17.6`
 - macOS deployment target: `14.6`
 - UI framework: `SwiftUI`
-- local state for onboarding completion: `@AppStorage`
+- app flow state management: `The Composable Architecture (TCA)`
 - test frameworks: `Swift Testing` and `XCTest`
 
 ## What Does Not Exist Yet

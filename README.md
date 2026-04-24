@@ -15,7 +15,7 @@ The repository does **not** implement that product yet. The current codebase is 
 
 - Built with **SwiftUI**
 - Targets **iOS 17.6+** and **macOS 14.6+**
-- Uses `@AppStorage` to track first-run onboarding completion
+- Uses The Composable Architecture (TCA) for app, onboarding, and workspace state
 - Includes starter tests with **Swift Testing** and **XCTest UI Testing**
 - Focuses on onboarding visuals, not on a real AI workspace yet
 
@@ -23,7 +23,7 @@ The repository does **not** implement that product yet. The current codebase is 
 
 - Not a production AI client
 - Not a multi-provider chat workspace
-- Not using TCA
+- Uses TCA for current feature flow and state management
 - Not storing API keys in Keychain
 - Not integrating provider SDKs or persistence models yet
 

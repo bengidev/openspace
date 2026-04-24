@@ -41,7 +41,7 @@ OpenSpaceApp
   Creates the app scene and applies the global theme.
 
 - `AppRootView`
-  Owns app-level presentation state for first-run flow using `@AppStorage("hasCompletedOnboarding")`.
+  Owns app-level presentation state for first-run flow using TCA state from `AppFeature.State`.
 
 - `OnboardingView`
   Owns the first-run facade, shared onboarding state, and handoff into the platform-specific render tree.

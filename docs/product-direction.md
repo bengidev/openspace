@@ -49,7 +49,7 @@ The current onboarding flow now hands off into an initial workspace shell, which
 
 ### 5. Reassess architecture after real complexity exists
 
-The repo does not currently use TCA, and that is fine at this stage. Add stronger architecture boundaries when the app actually has:
+The repo already uses TCA for app-level flow and feature state. The next architecture decisions should focus on whether to deepen those boundaries only when the app actually has:
 
 - multi-screen state
 - async networking
