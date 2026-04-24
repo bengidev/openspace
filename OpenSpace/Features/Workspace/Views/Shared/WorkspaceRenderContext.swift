@@ -117,7 +117,11 @@ struct WorkspaceRenderContext {
   var heroTitleFont: Font {
     switch variant {
     case .ios:
-      .system(size: 36, weight: .semibold, design: .default)
+      .system(
+        size: min(max(containerSize.width * 0.074, 26), 30),
+        weight: .semibold,
+        design: .default
+      )
     case .ipad:
       .system(size: 52, weight: .semibold, design: .default)
     case .mac:
