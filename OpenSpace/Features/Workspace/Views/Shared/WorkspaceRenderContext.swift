@@ -22,9 +22,9 @@ struct WorkspaceRenderContext {
     case .ios:
       false
     case .ipad:
-      containerSize.width >= 900
+      false
     case .mac:
-      true
+      false
     }
   }
 
@@ -35,7 +35,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       1380
     case .mac:
-      1440
+      .infinity
     }
   }
 
@@ -73,7 +73,12 @@ struct WorkspaceRenderContext {
   }
 
   var minimumShellHeight: CGFloat {
-    max(containerSize.height - (shellVerticalPadding * 2), preferredShellHeight)
+    switch variant {
+    case .ios, .ipad:
+      max(containerSize.height - (shellVerticalPadding * 2), preferredShellHeight)
+    case .mac:
+      max(containerSize.height - (shellVerticalPadding * 2), 0)
+    }
   }
 
   var preferredShellHeight: CGFloat {
@@ -105,7 +110,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       28
     case .mac:
-      24
+      macUsesCompactVerticalLayout ? 14 : 24
     }
   }
 
@@ -116,7 +121,11 @@ struct WorkspaceRenderContext {
     case .ipad:
       .system(size: 52, weight: .semibold, design: .default)
     case .mac:
-      .system(size: 46, weight: .semibold, design: .default)
+      .system(
+        size: min(max(min(containerSize.width * 0.04, containerSize.height * 0.06), 30), 46),
+        weight: .semibold,
+        design: .default
+      )
     }
   }
 
@@ -127,7 +136,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       620
     case .mac:
-      560
+      min(max(containerSize.width * 0.26, 560), 700)
     }
   }
 
@@ -138,7 +147,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       780
     case .mac:
-      720
+      min(max(containerSize.width * 0.42, 720), 980)
     }
   }
 
@@ -149,8 +158,12 @@ struct WorkspaceRenderContext {
     case .ipad:
       860
     case .mac:
-      760
+      min(max(containerSize.width * 0.44, 760), 1060)
     }
+  }
+
+  var workspaceContentMaxWidth: CGFloat {
+    max(composerMaxWidth, quickPromptMaxWidth)
   }
 
   var railItemSpacing: CGFloat {
@@ -164,7 +177,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       34
     case .mac:
-      22
+      macUsesCompactVerticalLayout ? 10 : min(max(containerSize.height * 0.045, 22), 58)
     }
   }
 
@@ -175,7 +188,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       22
     case .mac:
-      18
+      macUsesCompactVerticalLayout ? 12 : 18
     }
   }
 
@@ -204,7 +217,7 @@ struct WorkspaceRenderContext {
   var mainHorizontalPadding: CGFloat {
     switch variant {
     case .mac:
-      26
+      min(max(containerSize.width * 0.018, 26), 48)
     case .ipad:
       28
     case .ios:
@@ -215,7 +228,7 @@ struct WorkspaceRenderContext {
   var mainVerticalPadding: CGFloat {
     switch variant {
     case .mac:
-      22
+      macUsesCompactVerticalLayout ? 16 : min(max(containerSize.height * 0.024, 22), 44)
     case .ipad:
       24
     case .ios:
@@ -243,5 +256,226 @@ struct WorkspaceRenderContext {
     case .mac:
       CGSize(width: 1200, height: 760)
     }
+  }
+
+  // MARK: - Hero Orb
+
+  var heroOrbSize: CGFloat {
+    switch variant {
+    case .ios:
+      56
+    case .ipad:
+      usesSidebar ? 66 : 56
+    case .mac:
+      macUsesCompactVerticalLayout ? 38 : min(max(containerSize.height * 0.065, 40), 54)
+    }
+  }
+
+  // MARK: - Composer Card
+
+  var composerVStackSpacing: CGFloat {
+    switch variant {
+    case .ios:
+      16
+    case .ipad:
+      usesSidebar ? 20 : 16
+    case .mac:
+      macUsesCompactVerticalLayout ? 12 : 20
+    }
+  }
+
+  var composerTextFont: Font {
+    switch variant {
+    case .ios:
+      .body
+    case .ipad:
+      .title3
+    case .mac:
+      macUsesCompactVerticalLayout ? .body : .title3
+    }
+  }
+
+  var composerMinHeight: CGFloat {
+    switch variant {
+    case .ios:
+      110
+    case .ipad:
+      usesSidebar ? 132 : 110
+    case .mac:
+      macUsesCompactVerticalLayout ? 78 : 104
+    }
+  }
+
+  var composerLineLimit: ClosedRange<Int> {
+    switch variant {
+    case .ios:
+      4...6
+    case .ipad:
+      usesSidebar ? 4...8 : 4...6
+    case .mac:
+      4...8
+    }
+  }
+
+  var composerPadding: CGFloat {
+    switch variant {
+    case .ios:
+      18
+    case .ipad:
+      usesSidebar ? 22 : 18
+    case .mac:
+      macUsesCompactVerticalLayout ? 12 : 18
+    }
+  }
+
+  var composerCornerRadius: CGFloat {
+    switch variant {
+    case .ios, .ipad:
+      26
+    case .mac:
+      22
+    }
+  }
+
+  var composerUsesCompactFallback: Bool {
+    variant == .ios
+  }
+
+  var toggleScale: CGFloat {
+    switch variant {
+    case .ios:
+      0.78
+    case .ipad, .mac:
+      0.84
+    }
+  }
+
+  var citationToggleFont: Font {
+    .subheadline.weight(.medium)
+  }
+
+  var citationToggleSpacing: CGFloat {
+    8
+  }
+
+  // MARK: - Quick Prompt Section
+
+  var quickPromptMinHeight: CGFloat {
+    switch variant {
+    case .ios, .mac:
+      macUsesCompactVerticalLayout ? 96 : 128
+    case .ipad:
+      154
+    }
+  }
+
+  var quickPromptPadding: CGFloat {
+    switch variant {
+    case .ios, .ipad:
+      18
+    case .mac:
+      macUsesCompactVerticalLayout ? 14 : 16
+    }
+  }
+
+  var quickPromptGridMinWidth: CGFloat {
+    switch variant {
+    case .ios, .ipad:
+      160
+    case .mac:
+      156
+    }
+  }
+
+  // MARK: - Utility Bar
+
+  var utilityBarShowsInvite: Bool {
+    false
+  }
+
+  var utilityBarSearchIsTextButton: Bool {
+    false
+  }
+
+  var utilityBarButtonHorizontalPadding: CGFloat {
+    switch variant {
+    case .ios:
+      17
+    case .ipad, .mac:
+      16
+    }
+  }
+
+  var utilityBarButtonVerticalPadding: CGFloat {
+    switch variant {
+    case .ios:
+      11
+    case .ipad, .mac:
+      12
+    }
+  }
+
+  // MARK: - Hero Heading
+
+  var heroHeadingSpacing: CGFloat {
+    switch variant {
+    case .ios:
+      4
+    case .ipad, .mac:
+      2
+    }
+  }
+
+  var heroHeadingMaxWidth: CGFloat? {
+    switch variant {
+    case .mac:
+      900
+    default:
+      nil
+    }
+  }
+
+  // MARK: - Compact Navigation
+
+  var compactNavBottomPadding: CGFloat {
+    2
+  }
+
+  var compactNavItemSpacing: CGFloat {
+    8
+  }
+
+  var compactNavHorizontalPadding: CGFloat {
+    12
+  }
+
+  var compactNavVerticalPadding: CGFloat {
+    10
+  }
+
+  // MARK: - Preview
+
+  var previewWidth: CGFloat {
+    switch variant {
+    case .ios:
+      390
+    case .ipad:
+      920
+    case .mac:
+      1160
+    }
+  }
+
+  var previewHeight: CGFloat {
+    switch variant {
+    case .ios:
+      844
+    case .ipad, .mac:
+      820
+    }
+  }
+
+  private var macUsesCompactVerticalLayout: Bool {
+    variant == .mac && containerSize.height < 760
   }
 }
