@@ -2,6 +2,7 @@ import Foundation
 import ComposableArchitecture
 
 struct WorkspaceFeature: Reducer {
+  @ObservableState
   struct State: Equatable {
     var selectedDestination: WorkspaceDestination = .home
     var selectedModel: WorkspaceModel = .chatGPT4o
@@ -22,6 +23,7 @@ struct WorkspaceFeature: Reducer {
     #endif
   }
   
+  @CasePathable
   enum Action {
     case destinationSelected(WorkspaceDestination)
     case modelSelected(WorkspaceModel)
