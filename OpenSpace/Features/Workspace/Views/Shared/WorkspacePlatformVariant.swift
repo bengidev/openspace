@@ -8,18 +8,30 @@
 import SwiftUI
 
 enum WorkspacePlatformVariant {
-  case ios
-  case ipad
-  case mac
+    case ios
+    case ipad
+    case mac
 
-  var identifierPrefix: String {
-    switch self {
-    case .ios:
-      "workspace.ios"
-    case .ipad:
-      "workspace.ipad"
-    case .mac:
-      "workspace.mac"
+    // MARK: Internal
+
+    static var current: WorkspacePlatformVariant {
+        #if os(macOS)
+            .mac
+        #elseif os(iOS)
+            UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
+        #else
+            .ios
+        #endif
     }
-  }
+
+    var identifierPrefix: String {
+        switch self {
+        case .ios:
+            "workspace.ios"
+        case .ipad:
+            "workspace.ipad"
+        case .mac:
+            "workspace.mac"
+        }
+    }
 }
