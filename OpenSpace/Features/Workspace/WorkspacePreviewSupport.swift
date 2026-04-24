@@ -112,6 +112,12 @@ private struct WorkspacePreviewHarness<Content: View>: View {
       citationEnabled: $citationEnabled,
       highlightedQuickPrompt: $highlightedQuickPrompt,
       isPromptFocused: $isPromptFocused,
+      sendPrompt: {},
+      quickPromptTapped: { prompt in
+        highlightedQuickPrompt = prompt
+        selectedPrompt = prompt.rawValue
+        isPromptFocused = true
+      },
       replayOnboarding: {}
     )
   }
