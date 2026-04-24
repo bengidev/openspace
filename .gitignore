@@ -63,7 +63,9 @@ fastlane/test_output
 
 # Local Swift build server artifacts
 .compile
+build/
 build.log
+.xcodebuildmcp/
 
 # VSCode local build output
 .vscode/DerivedData/
