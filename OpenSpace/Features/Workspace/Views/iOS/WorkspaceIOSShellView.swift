@@ -13,11 +13,12 @@ struct WorkspaceIOSShell: View {
   let bindings: WorkspaceViewBindings
 
   var body: some View {
+    let shellShape = RoundedRectangle(cornerRadius: context.shellCornerRadius, style: .continuous)
+
     WorkspaceIOSMainContent(context: context, bindings: bindings)
       .frame(maxWidth: .infinity, minHeight: context.minimumShellHeight, maxHeight: .infinity, alignment: .topLeading)
-      .background(WorkspacePalette.sidebarBackground(for: colorScheme))
       .background(
-        RoundedRectangle(cornerRadius: context.shellCornerRadius, style: .continuous)
+        shellShape
           .fill(
             LinearGradient(
               colors: [
@@ -29,9 +30,10 @@ struct WorkspaceIOSShell: View {
             )
           )
       )
+      .clipShape(shellShape)
       .overlay(
-        RoundedRectangle(cornerRadius: context.shellCornerRadius, style: .continuous)
-          .stroke(WorkspacePalette.shellStroke(for: colorScheme), lineWidth: 1)
+        shellShape
+          .strokeBorder(WorkspacePalette.shellStroke(for: colorScheme), lineWidth: 1)
       )
       .shadow(color: WorkspacePalette.shadow(for: colorScheme), radius: 32, x: 0, y: 18)
   }
