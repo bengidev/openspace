@@ -13,36 +13,34 @@ struct OnboardingView: View {
   private let capabilityChips = ["Code", "Images", "Research", "Automation"]
 
   var body: some View {
-    WithViewStore(store, observe: { $0 }) { viewStore in
-      GeometryReader { proxy in
-        let variant = platformVariant(for: proxy.size)
-        let context = OnboardingRenderContext(
-          capabilityChips: capabilityChips,
-          containerSize: proxy.size,
-          hasAppeared: viewStore.hasAppeared,
-          reduceMotion: reduceMotion
+    GeometryReader { proxy in
+      let variant = platformVariant(for: proxy.size)
+      let context = OnboardingRenderContext(
+        capabilityChips: capabilityChips,
+        containerSize: proxy.size,
+        hasAppeared: store.hasAppeared,
+        reduceMotion: reduceMotion
+      )
+
+      ZStack(alignment: .top) {
+        OnboardingBackdrop(isAnimated: context.isAnimated)
+          .accessibilityIdentifier("onboarding.backdrop")
+
+        OnboardingAbstractView(
+          variant: variant,
+          context: context,
+          onContinue: onContinue
         )
-
-        ZStack(alignment: .top) {
-          OnboardingBackdrop(isAnimated: context.isAnimated)
-            .accessibilityIdentifier("onboarding.backdrop")
-
-          OnboardingAbstractView(
-            variant: variant,
-            context: context,
-            onContinue: onContinue
-          )
-          .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityIdentifier("onboarding.root")
-        .task {
-          guard !viewStore.hasAppeared else { return }
-          viewStore.send(.appeared)
-          #if os(macOS)
+        .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .accessibilityIdentifier("onboarding.root")
+      .task {
+        guard !store.hasAppeared else { return }
+        store.send(.appeared)
+        #if os(macOS)
           configureMacWindow()
-          #endif
-        }
+        #endif
       }
     }
   }
