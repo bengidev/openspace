@@ -1,41 +1,49 @@
-//
-//  AppRootView.swift
-//  OpenSpace
-//
-//  Created by Codex on 17/04/26.
-//
-
+import ComposableArchitecture
 import SwiftUI
 
 struct AppRootView: View {
-  @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+  let store: StoreOf<AppFeature>
 
   var body: some View {
-    Group {
-      if hasCompletedOnboarding {
-        WorkspaceView {
-          withAnimation(.easeInOut(duration: 0.3)) {
-            hasCompletedOnboarding = false
-          }
+    WithViewStore(store, observe: { $0 }) { viewStore in
+      Group {
+        if viewStore.hasCompletedOnboarding {
+          WorkspaceView(
+            store: store.scope(state: \.workspace, action: { .workspace($0) })
+          )
+          #if os(macOS)
+            .frame(minWidth: 640, idealWidth: 1120, minHeight: 520, idealHeight: 760)
+          #endif
+        } else {
+          OnboardingView(
+            store: store.scope(state: \.onboarding, action: { .onboarding($0) }),
+            onContinue: {
+              viewStore.send(.onboarding(.continueButtonTapped))
+            }
+          )
+          #if os(macOS)
+            .frame(minWidth: 760, idealWidth: 1120, minHeight: 560, idealHeight: 720)
+          #endif
         }
-        #if os(macOS)
-          .frame(minWidth: 1180, idealWidth: 1280, minHeight: 740, idealHeight: 820)
-        #endif
-      } else {
-        OnboardingView {
-          withAnimation(.easeInOut(duration: 0.35)) {
-            hasCompletedOnboarding = true
-          }
-        }
-        #if os(macOS)
-          .frame(minWidth: 980, idealWidth: 1120, minHeight: 620, idealHeight: 620)
-        #endif
       }
     }
   }
 }
 
-#Preview("Onboarding") {
-  AppRootView()
-    .openSpaceTheme()
+#Preview("App Root - Onboarding") {
+  AppRootView(
+    store: Store(initialState: AppFeature.State()) {
+      AppFeature()
+    }
+  )
+  .openSpaceTheme()
+}
+
+#Preview("App Root - Workspace") {
+  AppRootView(
+    store: Store(initialState: AppFeature.State(hasCompletedOnboarding: true)) {
+      AppFeature()
+    }
+  )
+  .openSpaceTheme()
 }

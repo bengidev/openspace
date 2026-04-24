@@ -1,32 +1,29 @@
-//
-//  OpenSpaceApp.swift
-//  OpenSpace
-//
-//  Created by Bambang Tri Rahmat Doni on 16/04/26.
-//
-
 import SwiftUI
 import ComposableArchitecture
 
 @main
 struct OpenSpaceApp: App {
+  let store = Store(initialState: AppFeature.State()) {
+    AppFeature()
+  }
+
   init() {
-    // Configure the global tint color for the entire app (UIKit only)
     #if os(iOS)
-      let accent = UIColor(ThemeColor.accent)
-      UIView.appearance().tintColor = accent
+    let accent = UIColor(ThemeColor.accent)
+    UIView.appearance().tintColor = accent
     #endif
   }
 
   var body: some Scene {
     WindowGroup {
-      AppRootView()
+      AppRootView(store: store)
         .openSpaceTheme()
     }
     #if os(macOS)
-      .defaultSize(width: 1120, height: 620)
-      .windowToolbarStyle(.unifiedCompact)
-      .windowResizability(.contentMinSize)
+    .defaultSize(width: 1280, height: 820)
+    .defaultPosition(.center)
+    .windowToolbarStyle(.unifiedCompact)
+    .windowResizability(.contentMinSize)
     #endif
   }
 }
