@@ -8,60 +8,65 @@
 import SwiftUI
 
 struct WorkspaceIOSCompactNavigation: View {
-  @Environment(\.colorScheme) private var colorScheme
-  @Binding var selectedDestination: WorkspaceDestination
+    // MARK: Internal
 
-  private var destinations: [WorkspaceDestination] {
-    WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
-  }
+    @Binding var selectedDestination: WorkspaceDestination
 
-  var body: some View {
-    ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 8) {
-        ForEach(destinations, id: \.self) { destination in
-          Button {
-            selectedDestination = destination
-          } label: {
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-              Image(systemName: destination.systemImage)
-                .font(.system(size: 12, weight: .medium))
+                ForEach(destinations, id: \.self) { destination in
+                    Button {
+                        selectedDestination = destination
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: destination.systemImage)
+                                .font(.system(size: 12, weight: .medium))
 
-              Text(destination.rawValue)
-                .font(.caption.weight(.semibold))
+                            Text(destination.rawValue)
+                                .font(.caption.weight(.semibold))
+                        }
+                        .foregroundStyle(
+                            destination == selectedDestination
+                                ? WorkspacePalette.primaryText
+                                : WorkspacePalette.secondaryText
+                        )
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule()
+                                .fill(
+                                    destination == selectedDestination
+                                        ? WorkspacePalette.sidebarSelection(for: colorScheme)
+                                        : WorkspacePalette.panelSecondary(for: colorScheme)
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .foregroundStyle(
-              destination == selectedDestination
-                ? WorkspacePalette.primaryText
-                : WorkspacePalette.secondaryText
-            )
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-              Capsule()
-                .fill(
-                  destination == selectedDestination
-                    ? WorkspacePalette.sidebarSelection(for: colorScheme)
-                    : WorkspacePalette.panelSecondary(for: colorScheme)
-                )
-            )
-          }
-          .buttonStyle(.plain)
+            .padding(.bottom, 2)
         }
-      }
-      .padding(.bottom, 2)
+        .scrollClipDisabled()
     }
-    .scrollClipDisabled()
-  }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var destinations: [WorkspaceDestination] {
+        WorkspaceDestination.allCases.filter { $0.navigationPlacement == .primary }
+    }
 }
 
 #Preview("iPhone Compact Navigation") {
-  WorkspacePreviewSupport.preview(
-    variant: .ios,
-    size: CGSize(width: 390, height: 844),
-    selectedDestination: .files
-  ) { _, bindings in
-    WorkspaceIOSCompactNavigation(selectedDestination: bindings.selectedDestination)
-      .padding(20)
-  }
-  .workspacePreviewSurface(size: CGSize(width: 390, height: 180))
+    WorkspacePreviewSupport.preview(
+        variant: .ios,
+        size: CGSize(width: 390, height: 844),
+        selectedDestination: .files
+    ) { _, bindings in
+        WorkspaceIOSCompactNavigation(selectedDestination: bindings.selectedDestination)
+            .padding(20)
+    }
+    .workspacePreviewSurface(size: CGSize(width: 390, height: 180))
 }
