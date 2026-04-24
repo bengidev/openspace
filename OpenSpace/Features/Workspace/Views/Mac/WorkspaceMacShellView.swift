@@ -8,39 +8,44 @@
 import SwiftUI
 
 struct WorkspaceMacShell: View {
-  @Environment(\.colorScheme) private var colorScheme
-  let context: WorkspaceRenderContext
-  let bindings: WorkspaceViewBindings
+    // MARK: Internal
 
-  var body: some View {
-    WorkspaceMacMainContent(context: context, bindings: bindings)
-      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-      .background(
-        LinearGradient(
-          colors: [
-            WorkspacePalette.shellTop(for: colorScheme),
-            WorkspacePalette.shellBottom(for: colorScheme),
-          ],
-          startPoint: .top,
-          endPoint: .bottom
-        )
-      )
-      .overlay(alignment: .top) {
-        Rectangle()
-          .fill(WorkspacePalette.shellStroke(for: colorScheme))
-          .frame(height: 1)
-          .opacity(0.55)
-      }
-  }
+    let context: WorkspaceRenderContext
+    let bindings: WorkspaceViewBindings
+
+    var body: some View {
+        WorkspaceMacMainContent(context: context, bindings: bindings)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(
+                LinearGradient(
+                    colors: [
+                        WorkspacePalette.shellTop(for: colorScheme),
+                        WorkspacePalette.shellBottom(for: colorScheme),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(WorkspacePalette.shellStroke(for: colorScheme))
+                    .frame(height: 1)
+                    .opacity(0.55)
+            }
+    }
+
+    // MARK: Private
+
+    @Environment(\.colorScheme) private var colorScheme
 }
 
 #Preview("Mac Workspace Shell") {
-  WorkspacePreviewSupport.preview(
-    variant: .mac,
-    size: CGSize(width: 1280, height: 820),
-    selectedDestination: .home
-  ) { context, bindings in
-    WorkspaceMacShell(context: context, bindings: bindings)
-  }
-  .workspacePreviewSurface(size: CGSize(width: 1280, height: 820))
+    WorkspacePreviewSupport.preview(
+        variant: .mac,
+        size: CGSize(width: 1280, height: 820),
+        selectedDestination: .home
+    ) { context, bindings in
+        WorkspaceMacShell(context: context, bindings: bindings)
+    }
+    .workspacePreviewSurface(size: CGSize(width: 1280, height: 820))
 }
