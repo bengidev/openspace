@@ -177,7 +177,7 @@ struct WorkspaceRenderContext {
   var heroTopSpacing: CGFloat {
     switch variant {
     case .ios:
-      20
+      10
     case .ipad:
       34
     case .mac:
@@ -188,7 +188,7 @@ struct WorkspaceRenderContext {
   var heroSectionSpacing: CGFloat {
     switch variant {
     case .ios:
-      18
+      14
     case .ipad:
       22
     case .mac:
@@ -225,7 +225,7 @@ struct WorkspaceRenderContext {
     case .ipad:
       28
     case .ios:
-      18
+      20
     }
   }
 
@@ -267,7 +267,7 @@ struct WorkspaceRenderContext {
   var heroOrbSize: CGFloat {
     switch variant {
     case .ios:
-      56
+      48
     case .ipad:
       usesSidebar ? 66 : 56
     case .mac:
