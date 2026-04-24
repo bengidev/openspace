@@ -11,40 +11,53 @@ struct OnboardingMacLayout {
   let context: OnboardingRenderContext
 
   private var isCompactWidth: Bool {
-    context.containerSize.width < 1120
+    context.containerSize.width < 1080
   }
 
   private var isCompactHeight: Bool {
-    context.containerSize.height < 680
+    context.containerSize.height < 720
+  }
+
+  private var isExpandedHeight: Bool {
+    context.containerSize.height > 900
   }
 
   var panelCornerRadius: CGFloat { 0 }
   var panelHorizontalPadding: CGFloat { 0 }
   var panelMaxWidth: CGFloat? { nil }
-
-  var panelMinHeight: CGFloat {
-    let preferredHeight = context.containerSize.height * (isCompactHeight ? 0.46 : 0.52)
-    return min(max(isCompactHeight ? 432 : 468, preferredHeight), 560)
+  var contentMaxWidth: CGFloat? {
+    guard !isCompactWidth else { return nil }
+    return min(context.containerSize.width - 56, isExpandedHeight ? 1440 : 1320)
   }
 
-  var panelTopPadding: CGFloat { isCompactHeight ? 14 : 22 }
-  var panelBottomPadding: CGFloat { isCompactHeight ? 8 : 14 }
-  var panelHorizontalInset: CGFloat { prefersStackedHero ? 18 : 24 }
+  var panelMinHeight: CGFloat {
+    let preferredHeight = context.containerSize.height - (screenVerticalPadding * 2)
+    return max(isCompactHeight ? 520 : 600, preferredHeight)
+  }
+
+  var screenVerticalPadding: CGFloat { 0 }
+  var screenTopSpacing: CGFloat { 0 }
+  var screenContentMinHeight: CGFloat { max(context.containerSize.height - (screenVerticalPadding * 2), 0) }
+
+  var panelTopPadding: CGFloat { isCompactHeight ? 16 : (isExpandedHeight ? 34 : 22) }
+  var panelBottomPadding: CGFloat { isCompactHeight ? 16 : (isExpandedHeight ? 28 : 22) }
+  var panelHorizontalInset: CGFloat { isCompactWidth ? 18 : (isExpandedHeight ? 32 : 24) }
   var sectionSpacing: CGFloat { prefersStackedHero ? 12 : 16 }
   var heroColumnSpacing: CGFloat { prefersStackedHero ? 18 : 28 }
   var heroContentSpacing: CGFloat { isCompactHeight ? 10 : 14 }
   var cardStackSpacing: CGFloat { isCompactHeight ? 10 : 14 }
 
   var prefersStackedHero: Bool { context.containerSize.width < 980 }
-  var secondaryColumnWidth: CGFloat { min(max(context.containerSize.width * 0.28, 288), 360) }
+  var secondaryColumnWidth: CGFloat { min(max(context.containerSize.width * 0.24, 300), 360) }
 
-  var titleTopPadding: CGFloat { prefersStackedHero ? 20 : 28 }
-  var actionBottomPadding: CGFloat { isCompactHeight ? 20 : 28 }
+  var titleTopPadding: CGFloat { prefersStackedHero ? 16 : 22 }
+  var actionTopPadding: CGFloat { isCompactHeight ? 34 : (isExpandedHeight ? 72 : 56) }
+  var actionBottomPadding: CGFloat { isCompactHeight ? 4 : 8 }
   var footerTopPadding: CGFloat { isCompactHeight ? 10 : 14 }
 
   var heroTitleSize: CGFloat {
-    if context.containerSize.width < 900 {
-      30
+    if isCompactHeight || context.containerSize.width < 900 {
+      28
     } else if context.containerSize.width < 1160 {
       34
     } else {

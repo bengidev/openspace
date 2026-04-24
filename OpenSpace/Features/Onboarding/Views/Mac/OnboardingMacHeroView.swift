@@ -90,11 +90,11 @@ struct OnboardingMacHeroView: View {
       }
       .padding(.top, layout.titleTopPadding)
 
-      Spacer(minLength: 0)
-
       actionCluster
+        .padding(.top, layout.actionTopPadding)
         .padding(.bottom, layout.actionBottomPadding)
     }
+    .fixedSize(horizontal: false, vertical: true)
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
