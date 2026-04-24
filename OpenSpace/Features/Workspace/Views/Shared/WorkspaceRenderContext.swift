@@ -302,7 +302,7 @@ struct WorkspaceRenderContext {
   var composerMinHeight: CGFloat {
     switch variant {
     case .ios:
-      110
+      96
     case .ipad:
       usesSidebar ? 132 : 110
     case .mac:
@@ -324,7 +324,7 @@ struct WorkspaceRenderContext {
   var composerPadding: CGFloat {
     switch variant {
     case .ios:
-      18
+      16
     case .ipad:
       usesSidebar ? 22 : 18
     case .mac:
