@@ -48,7 +48,7 @@ struct OnboardingBackdrop: View {
       .scaleEffect(driftPhase ? 1.08 : 0.96)
 
       PinstripeOverlay(
-        stripeColor: colorScheme == .dark ? Color.white.opacity(0.03) : ThemeColor.accent100.opacity(0.26),
+        stripeColor: colorScheme == .dark ? AppTheme.colorHuntCream.opacity(0.03) : ThemeColor.accent100.opacity(0.26),
         stripeSpacing: 5,
         stripeWidth: 0.6
       )
@@ -71,8 +71,8 @@ struct OnboardingBackdrop: View {
   private var backdropGradientColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.backgroundSecondary.opacity(0.92),
-        ThemeColor.surface.opacity(0.96),
+        ThemeColor.backgroundSecondary.opacity(0.78),
+        AppTheme.colorHuntInkRaised.opacity(0.96),
         ThemeColor.backgroundPrimary,
       ]
     } else {
@@ -87,12 +87,12 @@ struct OnboardingBackdrop: View {
   private var backdropHighlightColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.accent100.opacity(0.16),
+        ThemeColor.accent300.opacity(0.18),
         .clear,
       ]
     } else {
       [
-        Color.white.opacity(0.62),
+        AppTheme.colorHuntCream.opacity(0.62),
         .clear,
       ]
     }
@@ -120,12 +120,12 @@ struct OnboardingHeroPanel<Content: View>: View {
     case .floatingShowcase:
       colorScheme == .dark
         ? [
-          ThemeColor.accent100.opacity(0.22),
-          ThemeColor.backgroundSecondary.opacity(0.86),
+          AppTheme.colorHuntInkRaised.opacity(0.98),
+          ThemeColor.backgroundSecondary.opacity(0.62),
           ThemeColor.backgroundPrimary.opacity(0.98),
         ]
         : [
-          Color.white.opacity(0.98),
+          AppTheme.colorHuntCream.opacity(0.98),
           ThemeColor.backgroundSecondary.opacity(0.95),
           ThemeColor.accent100.opacity(0.82),
         ]
@@ -137,7 +137,7 @@ struct OnboardingHeroPanel<Content: View>: View {
           ThemeColor.backgroundPrimary.opacity(0.98),
         ]
         : [
-          Color.white.opacity(0.98),
+          AppTheme.colorHuntCream.opacity(0.98),
           ThemeColor.backgroundSecondary.opacity(0.92),
           ThemeColor.backgroundPrimary.opacity(0.96),
         ]
@@ -156,9 +156,9 @@ struct OnboardingHeroPanel<Content: View>: View {
             endPoint: .bottom
           )
 
-          PinstripeOverlay(stripeColor: Color.white.opacity(0.18), stripeSpacing: 3.4, stripeWidth: 0.55)
-            .mask(shape.fill(.white))
-            .opacity(colorScheme == .dark ? (style == .desktopCanvas ? 0.18 : 0.32) : 0.12)
+          PinstripeOverlay(stripeColor: AppTheme.colorHuntCream.opacity(0.18), stripeSpacing: 3.4, stripeWidth: 0.55)
+            .mask(shape.fill(AppTheme.colorHuntCream))
+            .opacity(colorScheme == .dark ? (style == .desktopCanvas ? 0.18 : 0.08) : 0.12)
 
           LinearGradient(
             colors: overlayGradientColors,
@@ -205,7 +205,7 @@ struct OnboardingHeroPanel<Content: View>: View {
           )
       )
       .shadow(
-        color: colorScheme == .dark ? Color.black.opacity(style == .desktopCanvas ? 0.0 : 0.25) : ThemeColor.elevatedShadow(for: colorScheme),
+        color: colorScheme == .dark ? AppTheme.colorHuntInk.opacity(style == .desktopCanvas ? 0.0 : 0.25) : ThemeColor.elevatedShadow(for: colorScheme),
         radius: style == .desktopCanvas ? 0 : 36,
         x: 0,
         y: style == .desktopCanvas ? 0 : 24
@@ -215,13 +215,13 @@ struct OnboardingHeroPanel<Content: View>: View {
   private var overlayGradientColors: [Color] {
     if colorScheme == .dark {
       [
-        ThemeColor.accent100.opacity(0.18),
+        ThemeColor.accent300.opacity(style == .floatingShowcase ? 0.12 : 0.18),
         .clear,
-        ThemeColor.backgroundPrimary.opacity(0.58),
+        ThemeColor.backgroundPrimary.opacity(style == .floatingShowcase ? 0.42 : 0.58),
       ]
     } else {
       [
-        Color.white.opacity(0.46),
+        AppTheme.colorHuntCream.opacity(0.46),
         .clear,
         ThemeColor.accent100.opacity(0.26),
       ]
@@ -276,13 +276,13 @@ struct OnboardingHeroPanel<Content: View>: View {
 
   private var panelStrokeStart: Color {
     colorScheme == .dark
-      ? ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.22 : 0.36)
+      ? ThemeColor.accent200.opacity(style == .desktopCanvas ? 0.22 : 0.28)
       : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.62 : 0.92)
   }
 
   private var panelStrokeEnd: Color {
     colorScheme == .dark
-      ? ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.06 : 0.10)
+      ? ThemeColor.accent300.opacity(style == .desktopCanvas ? 0.06 : 0.12)
       : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.12 : 0.28)
   }
 }
@@ -293,7 +293,7 @@ struct PinstripeOverlay: View {
   let stripeWidth: CGFloat
 
   init(
-    stripeColor: Color = Color.white.opacity(0.15),
+    stripeColor: Color = AppTheme.colorHuntCream.opacity(0.15),
     stripeSpacing: CGFloat = 2,
     stripeWidth: CGFloat = 0.5
   ) {
