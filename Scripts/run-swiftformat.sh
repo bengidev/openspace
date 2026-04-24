@@ -13,12 +13,12 @@ if [ -z "$SWIFTFORMAT_BIN" ]; then
 fi
 
 if [ -z "$SWIFTFORMAT_BIN" ]; then
-  echo "warning: SwiftFormat is not installed. Install it or set SWIFTFORMAT_BIN to enable automatic formatting."
+  echo "note: SwiftFormat is not installed. Install it or set SWIFTFORMAT_BIN to enable automatic formatting."
   exit 0
 fi
 
 if [ ! -f "$CONFIG_PATH" ]; then
-  echo "warning: Missing $CONFIG_PATH. Skipping SwiftFormat."
+  echo "note: Missing $CONFIG_PATH. Skipping SwiftFormat."
   exit 0
 fi
 
