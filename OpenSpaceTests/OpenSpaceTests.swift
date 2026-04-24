@@ -10,31 +10,31 @@ import Testing
 @testable import OpenSpace
 
 struct OpenSpaceTests {
-  @Test
-  func promptChangedClearsHighlightedQuickPromptWhenTextDiverges() async {
-    let store = TestStore(initialState: WorkspaceFeature.State(
-      selectedPrompt: WorkspaceQuickPrompt.toDoList.rawValue,
-      highlightedQuickPrompt: .toDoList
-    )) {
-      WorkspaceFeature()
+    @Test
+    func `prompt changed clears highlighted quick prompt when text diverges`() async {
+        let store = TestStore(initialState: WorkspaceFeature.State(
+            selectedPrompt: WorkspaceQuickPrompt.toDoList.rawValue,
+            highlightedQuickPrompt: .toDoList
+        )) {
+            WorkspaceFeature()
+        }
+
+        await store.send(.promptChanged("Draft a release summary")) {
+            $0.selectedPrompt = "Draft a release summary"
+            $0.highlightedQuickPrompt = nil
+        }
     }
 
-    await store.send(.promptChanged("Draft a release summary")) {
-      $0.selectedPrompt = "Draft a release summary"
-      $0.highlightedQuickPrompt = nil
-    }
-  }
+    @Test
+    func `quick prompt tapped updates prompt and focus`() async {
+        let store = TestStore(initialState: WorkspaceFeature.State()) {
+            WorkspaceFeature()
+        }
 
-  @Test
-  func quickPromptTappedUpdatesPromptAndFocus() async {
-    let store = TestStore(initialState: WorkspaceFeature.State()) {
-      WorkspaceFeature()
+        await store.send(.quickPromptTapped(.articleSummary)) {
+            $0.highlightedQuickPrompt = .articleSummary
+            $0.selectedPrompt = WorkspaceQuickPrompt.articleSummary.rawValue
+            $0.isPromptFocused = true
+        }
     }
-
-    await store.send(.quickPromptTapped(.articleSummary)) {
-      $0.highlightedQuickPrompt = .articleSummary
-      $0.selectedPrompt = WorkspaceQuickPrompt.articleSummary.rawValue
-      $0.isPromptFocused = true
-    }
-  }
 }
