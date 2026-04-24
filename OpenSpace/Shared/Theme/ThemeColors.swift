@@ -5,7 +5,98 @@
 //  Created by Bambang Tri Rahmat Doni on 17/04/26.
 //
 
+import Foundation
 import SwiftUI
+
+#if canImport(UIKit)
+  import UIKit
+#endif
+
+// MARK: - Theme Definition
+
+struct AppTheme {
+  static let midnightIndigo = Color(hex: "212842")
+  static let midnightIndigoSoft = Color(hex: "323B5C")
+  static let vanillaCream = Color(hex: "F0E7D5")
+  static let vanillaCreamMuted = Color(hex: "E7DECC")
+
+  static let background = Color("BackgroundPrimary")
+  static let primaryText = Color("TextPrimary")
+  static let secondaryText = Color("TextSecondary")
+
+  static let primaryGradient = LinearGradient(
+    colors: [midnightIndigo, midnightIndigoSoft],
+    startPoint: .topLeading,
+    endPoint: .bottomTrailing
+  )
+
+  static let softBlend = LinearGradient(
+    stops: [
+      .init(color: midnightIndigo, location: 0),
+      .init(color: midnightIndigoSoft, location: 0.68),
+      .init(color: vanillaCream, location: 1),
+    ],
+    startPoint: .top,
+    endPoint: .bottom
+  )
+}
+
+// MARK: - Hex Helpers
+
+extension Color {
+  init(hex: String) {
+    let sanitized = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+    var value: UInt64 = 0
+    Scanner(string: sanitized).scanHexInt64(&value)
+
+    let a: UInt64
+    let r: UInt64
+    let g: UInt64
+    let b: UInt64
+
+    switch sanitized.count {
+    case 3:
+      (a, r, g, b) = (
+        255,
+        (value >> 8) * 17,
+        (value >> 4 & 0xF) * 17,
+        (value & 0xF) * 17
+      )
+    case 6:
+      (a, r, g, b) = (255, value >> 16, value >> 8 & 0xFF, value & 0xFF)
+    case 8:
+      (a, r, g, b) = (value >> 24, value >> 16 & 0xFF, value >> 8 & 0xFF, value & 0xFF)
+    default:
+      (a, r, g, b) = (255, 0, 0, 0)
+    }
+
+    self.init(
+      .sRGB,
+      red: Double(r) / 255,
+      green: Double(g) / 255,
+      blue: Double(b) / 255,
+      opacity: Double(a) / 255
+    )
+  }
+}
+
+#if canImport(UIKit)
+  extension UIColor {
+    convenience init?(hex: String) {
+      let sanitized = hex
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .replacingOccurrences(of: "#", with: "")
+      var rgb: UInt64 = 0
+      Scanner(string: sanitized).scanHexInt64(&rgb)
+
+      let red = CGFloat((rgb & 0xFF0000) >> 16) / 255
+      let green = CGFloat((rgb & 0x00FF00) >> 8) / 255
+      let blue = CGFloat(rgb & 0x0000FF) / 255
+
+      self.init(red: red, green: green, blue: blue, alpha: 1)
+    }
+  }
+#endif
 
 // MARK: - Color Theme
 
@@ -44,53 +135,95 @@ enum ThemeColor {
   static let destructive = Color("DestructiveColor")
 
   // MARK: - Frosted Surfaces
-  static let glassTint = accent300.opacity(0.18)
+  static let glassTint = accent100.opacity(0.14)
   static let glassHighlight = accent100.opacity(0.24)
-  static let glassShadow = Color.black.opacity(0.32)
+  static let glassShadow = AppTheme.midnightIndigo.opacity(0.24)
   static let glow = accent.opacity(0.18)
 
   static func panelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? neutral700.opacity(0.92) : Color.white.opacity(0.96)
+    colorScheme == .dark ? surface.opacity(0.94) : AppTheme.vanillaCream.opacity(0.96)
   }
 
   static func panelSecondaryFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? neutral700.opacity(0.72) : neutral300.opacity(0.72)
+    colorScheme == .dark ? AppTheme.midnightIndigoSoft.opacity(0.78) : AppTheme.vanillaCreamMuted.opacity(0.84)
   }
 
   static func subtlePanelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.08) : accent100.opacity(0.62)
+    colorScheme == .dark ? accent100.opacity(0.12) : accent100.opacity(0.74)
   }
 
   static func elevatedStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.10) : accent100.opacity(0.85)
+    colorScheme == .dark ? accent100.opacity(0.18) : accent300.opacity(0.10)
   }
 
   static func elevatedShadow(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.black.opacity(0.26) : accent300.opacity(0.12)
+    colorScheme == .dark ? AppTheme.midnightIndigo.opacity(0.34) : accent300.opacity(0.10)
   }
 
   static func overlayTextPrimary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white : neutral1000
+    colorScheme == .dark ? accent100 : accent300
   }
 
   static func overlayTextSecondary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.82) : neutral700.opacity(0.90)
+    colorScheme == .dark ? accent100.opacity(0.78) : accent300.opacity(0.74)
   }
 
   static func overlayTextTertiary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.62) : neutral500.opacity(0.92)
+    colorScheme == .dark ? accent100.opacity(0.62) : accent300.opacity(0.56)
   }
 
   static func chromeFill(for colorScheme: ColorScheme, emphasis: Double = 1) -> Color {
+    let normalizedEmphasis = min(max(emphasis, 0.4), 1.4)
+
     if colorScheme == .dark {
-      return Color.white.opacity(0.10 * emphasis)
+      return accent100.opacity(0.10 * normalizedEmphasis)
     } else {
-      return Color.white.opacity(0.96)
+      return accent100.opacity(0.82)
     }
   }
 
   static func chromeStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.08) : accent100.opacity(0.92)
+    colorScheme == .dark ? accent100.opacity(0.16) : accent300.opacity(0.10)
+  }
+
+  static func primaryButtonBackground(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent100 : accent300
+  }
+
+  static func primaryButtonForeground(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent300 : accent100
+  }
+
+  static func accentHighlight(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent100 : accent300
+  }
+
+  static func accentHighlightMuted(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent100.opacity(0.24) : accent300.opacity(0.16)
+  }
+
+  static func heroAccentGradient(for colorScheme: ColorScheme) -> LinearGradient {
+    if colorScheme == .dark {
+      return LinearGradient(
+        colors: [accent100, accent100.opacity(0.78)],
+        startPoint: .leading,
+        endPoint: .trailing
+      )
+    } else {
+      return AppTheme.primaryGradient
+    }
+  }
+
+  static func orbHighlight(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent100.opacity(0.94) : accent100.opacity(0.74)
+  }
+
+  static func orbCore(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent100.opacity(0.82) : accent200
+  }
+
+  static func orbEdge(for colorScheme: ColorScheme) -> Color {
+    colorScheme == .dark ? accent200 : accent300
   }
 }
 
