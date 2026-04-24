@@ -1,154 +1,149 @@
-//
-//  WorkspaceView.swift
-//  OpenSpace
-//
-//  Created by Codex on 22/04/26.
-//
-
+import ComposableArchitecture
 import SwiftUI
-#if os(macOS)
-import AppKit
-#endif
 
 struct WorkspaceView: View {
+  let store: StoreOf<WorkspaceFeature>
+
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @FocusState private var isPromptFocused: Bool
-
-  @State private var selectedDestination: WorkspaceDestination = .home
-  @State private var selectedModel: WorkspaceModel = .chatGPT4o
-  @State private var selectedPrompt = ""
-  @State private var selectedWritingStyle: WorkspaceWritingStyle = .balanced
-  @State private var citationEnabled = true
-  @State private var highlightedQuickPrompt: WorkspaceQuickPrompt?
-  @State private var hasAppeared = false
-  #if os(macOS)
-  @State private var hasConfiguredWindow = false
-  #endif
-
-  let replayOnboarding: () -> Void
-
-  private var platformVariant: WorkspacePlatformVariant {
-    #if os(macOS)
-      return .mac
-    #elseif os(iOS)
-      return UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
-    #else
-      return .ios
-    #endif
-  }
-
-  private var bindings: WorkspaceViewBindings {
-    WorkspaceViewBindings(
-      selectedDestination: $selectedDestination,
-      selectedModel: $selectedModel,
-      selectedPrompt: $selectedPrompt,
-      selectedWritingStyle: $selectedWritingStyle,
-      citationEnabled: $citationEnabled,
-      highlightedQuickPrompt: $highlightedQuickPrompt,
-      isPromptFocused: $isPromptFocused,
-      replayOnboarding: replayOnboarding
-    )
-  }
-
-  private func renderContext(
-    for size: CGSize,
-    variant: WorkspacePlatformVariant
-  ) -> WorkspaceRenderContext {
-    WorkspaceRenderContext(
-      variant: variant,
-      containerSize: size,
-      hasAppeared: hasAppeared,
-      reduceMotion: reduceMotion
-    )
-  }
+  @FocusState private var isPromptFocusedLocal: Bool
 
   var body: some View {
-    let variant = platformVariant
+    WithViewStore(store, observe: { $0 }) { viewStore in
+      GeometryReader { proxy in
+        let profile = layoutProfile(for: proxy.size)
+        let variant = layoutVariant(for: profile)
 
-    GeometryReader { proxy in
-      let context = renderContext(for: proxy.size, variant: variant)
+        ZStack {
+          WorkspaceBackdrop(isAnimated: viewStore.hasAppeared && !reduceMotion)
 
-      ZStack {
-        WorkspaceBackdrop(isAnimated: context.isAnimated)
-
-        contentSurface(context: context, variant: variant)
-      }
-      .task {
-        guard !hasAppeared else { return }
-        hasAppeared = true
-        #if os(macOS)
-          configureMacWindow(context: context)
-        #endif
+          contentSurface(
+            viewStore: viewStore,
+            profile: profile,
+            variant: variant,
+            containerSize: proxy.size
+          )
+        }
+        .onAppear {
+          isPromptFocusedLocal = viewStore.isPromptFocused
+        }
+        .onChange(of: viewStore.isPromptFocused) { _, newValue in
+          isPromptFocusedLocal = newValue
+        }
+        .onChange(of: isPromptFocusedLocal) { _, newValue in
+          viewStore.send(.promptFocused(newValue))
+        }
+        .task {
+          guard !viewStore.hasAppeared else { return }
+          viewStore.send(.appeared)
+        }
       }
     }
   }
 
   @ViewBuilder
   private func contentSurface(
-    context: WorkspaceRenderContext,
-    variant: WorkspacePlatformVariant
+    viewStore: ViewStoreOf<WorkspaceFeature>,
+    profile: WorkspaceLayoutProfile,
+    variant: WorkspacePlatformVariant,
+    containerSize: CGSize
   ) -> some View {
-    let content = WorkspaceAbstractView(
+    let context = WorkspaceRenderContext(
       variant: variant,
-      context: context,
-      bindings: bindings
+      containerSize: containerSize,
+      hasAppeared: viewStore.hasAppeared,
+      reduceMotion: reduceMotion
     )
-    .frame(maxWidth: context.shellMaxWidth)
-    .padding(.horizontal, context.shellHorizontalPadding)
-    .padding(.vertical, context.shellVerticalPadding)
-    .opacity(hasAppeared ? 1 : 0)
-    .offset(y: hasAppeared ? 0 : 24)
-    .scaleEffect(reduceMotion ? 1 : (hasAppeared ? 1 : 0.985))
-    .animation(.easeOut(duration: 0.85), value: hasAppeared)
+
+    let bindings = WorkspaceViewBindings(
+      selectedDestination: Binding(
+        get: { viewStore.selectedDestination },
+        set: { viewStore.send(.destinationSelected($0)) }
+      ),
+      selectedModel: Binding(
+        get: { viewStore.selectedModel },
+        set: { viewStore.send(.modelSelected($0)) }
+      ),
+      selectedPrompt: Binding(
+        get: { viewStore.selectedPrompt },
+        set: { viewStore.send(.promptChanged($0)) }
+      ),
+      selectedWritingStyle: Binding(
+        get: { viewStore.selectedWritingStyle },
+        set: { viewStore.send(.writingStyleSelected($0)) }
+      ),
+      citationEnabled: Binding(
+        get: { viewStore.citationEnabled },
+        set: { viewStore.send(.citationToggled($0)) }
+      ),
+      highlightedQuickPrompt: Binding(
+        get: { viewStore.highlightedQuickPrompt },
+        set: { _ in }
+      ),
+      isPromptFocused: $isPromptFocusedLocal,
+      sendPrompt: { viewStore.send(.sendButtonTapped) },
+      quickPromptTapped: { prompt in viewStore.send(.quickPromptTapped(prompt)) },
+      replayOnboarding: { viewStore.send(.replayOnboarding) }
+    )
+
+    let styledShell = shellView(for: variant, context: context, bindings: bindings)
+      .frame(maxWidth: profile.shellMaxWidth)
+      .padding(.horizontal, profile.shellHorizontalPadding)
+      .padding(.vertical, profile.shellVerticalPadding)
+      .opacity(viewStore.hasAppeared ? 1 : 0)
+      .offset(y: viewStore.hasAppeared ? 0 : 24)
+      .scaleEffect(reduceMotion ? 1 : (viewStore.hasAppeared ? 1 : 0.985))
+      .animation(.easeOut(duration: 0.85), value: viewStore.hasAppeared)
 
     #if os(macOS)
-      if variant == .mac {
-        content
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-      } else {
-        ScrollView(.vertical, showsIndicators: false) {
-          content
-        }
-      }
+    styledShell
     #else
-      ScrollView(.vertical, showsIndicators: false) {
-        content
-      }
+    ScrollView(.vertical, showsIndicators: false) {
+      styledShell
+    }
     #endif
   }
 
-  #if os(macOS)
-    private func configureMacWindow(context: WorkspaceRenderContext) {
-      guard !hasConfiguredWindow else { return }
-
-      DispatchQueue.main.async {
-        guard let window = NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first else { return }
-
-        let minimumSize = NSSize(
-          width: context.minimumWindowSize.width,
-          height: context.minimumWindowSize.height
-        )
-        let idealSize = NSSize(
-          width: context.idealWindowSize.width,
-          height: context.idealWindowSize.height
-        )
-
-        window.minSize = minimumSize
-        window.setContentSize(idealSize)
-        hasConfiguredWindow = true
-      }
+  @ViewBuilder
+  private func shellView(
+    for variant: WorkspacePlatformVariant,
+    context: WorkspaceRenderContext,
+    bindings: WorkspaceViewBindings
+  ) -> some View {
+    switch variant {
+    case .ios:
+      WorkspaceIOSShell(context: context, bindings: bindings)
+    case .ipad:
+      WorkspaceIPadShell(context: context, bindings: bindings)
+    case .mac:
+      WorkspaceMacShell(context: context, bindings: bindings)
     }
-  #endif
-}
+  }
 
-#Preview("Workspace Desktop") {
-  WorkspaceView {}
-    .frame(width: 1280, height: 820)
-    .openSpaceTheme()
-}
+  private func layoutProfile(for size: CGSize) -> WorkspaceLayoutProfile {
+    #if os(macOS)
+      MacLayoutProfile(containerSize: size)
+    #elseif os(iOS)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        IPadLayoutProfile(containerSize: size)
+      } else {
+        IOSLayoutProfile(containerSize: size)
+      }
+    #else
+      IOSLayoutProfile(containerSize: size)
+    #endif
+  }
 
-#Preview("Workspace Compact") {
-  WorkspaceView {}
-    .frame(width: 390, height: 844)
-    .openSpaceTheme()
+  private func layoutVariant(for profile: WorkspaceLayoutProfile) -> WorkspacePlatformVariant {
+    #if os(macOS)
+      return .mac
+    #elseif os(iOS)
+      if profile is IPadLayoutProfile {
+        return .ipad
+      }
+      return .ios
+    #else
+      return .ios
+    #endif
+  }
+
 }

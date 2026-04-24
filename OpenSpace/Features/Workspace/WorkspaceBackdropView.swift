@@ -84,7 +84,7 @@ struct WorkspaceBackdrop: View {
       ]
     } else {
       [
-        Color.white.opacity(0.72),
+        ThemeColor.accent100.opacity(0.72),
         .clear,
       ]
     }
@@ -100,7 +100,7 @@ struct WorkspaceBackdrop: View {
   private var chromeBandColors: [Color] {
     if colorScheme == .dark {
       [
-        Color.white.opacity(0.05),
+        ThemeColor.accent100.opacity(0.06),
         .clear,
       ]
     } else {
