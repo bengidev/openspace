@@ -15,26 +15,29 @@ import SwiftUI
 // MARK: - Theme Definition
 
 struct AppTheme {
-  static let midnightIndigo = Color(hex: "212842")
-  static let midnightIndigoSoft = Color(hex: "323B5C")
-  static let vanillaCream = Color(hex: "F0E7D5")
-  static let vanillaCreamMuted = Color(hex: "E7DECC")
+  static let colorHuntCream = Color(hex: "E9E3DF")
+  static let colorHuntOrange = Color(hex: "FF7A30")
+  static let colorHuntInk = Color(hex: "0B0B0B")
+  static let colorHuntInkRaised = Color(hex: "171717")
+
+  static let vanillaCream = colorHuntCream
+  static let vanillaCreamMuted = Color(hex: "D8D2CF")
 
   static let background = Color("BackgroundPrimary")
   static let primaryText = Color("TextPrimary")
   static let secondaryText = Color("TextSecondary")
 
   static let primaryGradient = LinearGradient(
-    colors: [midnightIndigo, midnightIndigoSoft],
+    colors: [colorHuntInkRaised, colorHuntOrange],
     startPoint: .topLeading,
     endPoint: .bottomTrailing
   )
 
   static let softBlend = LinearGradient(
     stops: [
-      .init(color: midnightIndigo, location: 0),
-      .init(color: midnightIndigoSoft, location: 0.68),
-      .init(color: vanillaCream, location: 1),
+      .init(color: colorHuntInk, location: 0),
+      .init(color: colorHuntInkRaised, location: 0.68),
+      .init(color: colorHuntCream, location: 1),
     ],
     startPoint: .top,
     endPoint: .bottom
@@ -137,27 +140,27 @@ enum ThemeColor {
   // MARK: - Frosted Surfaces
   static let glassTint = accent100.opacity(0.14)
   static let glassHighlight = accent100.opacity(0.24)
-  static let glassShadow = AppTheme.midnightIndigo.opacity(0.24)
+  static let glassShadow = AppTheme.colorHuntInk.opacity(0.24)
   static let glow = accent.opacity(0.18)
 
   static func panelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? surface.opacity(0.94) : AppTheme.vanillaCream.opacity(0.96)
+    colorScheme == .dark ? AppTheme.colorHuntInkRaised.opacity(0.38) : AppTheme.colorHuntCream.opacity(0.96)
   }
 
   static func panelSecondaryFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? AppTheme.midnightIndigoSoft.opacity(0.78) : AppTheme.vanillaCreamMuted.opacity(0.84)
+    colorScheme == .dark ? AppTheme.colorHuntInkRaised.opacity(0.28) : AppTheme.vanillaCreamMuted.opacity(0.84)
   }
 
   static func subtlePanelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.12) : accent100.opacity(0.74)
+    colorScheme == .dark ? accent200.opacity(0.18) : accent100.opacity(0.74)
   }
 
   static func elevatedStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.18) : accent300.opacity(0.10)
+    colorScheme == .dark ? accent200.opacity(0.18) : accent300.opacity(0.14)
   }
 
   static func elevatedShadow(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? AppTheme.midnightIndigo.opacity(0.34) : accent300.opacity(0.10)
+    colorScheme == .dark ? AppTheme.colorHuntInk.opacity(0.40) : accent300.opacity(0.12)
   }
 
   static func overlayTextPrimary(for colorScheme: ColorScheme) -> Color {
@@ -165,47 +168,47 @@ enum ThemeColor {
   }
 
   static func overlayTextSecondary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.78) : accent300.opacity(0.74)
+    colorScheme == .dark ? accent100.opacity(0.84) : accent300.opacity(0.74)
   }
 
   static func overlayTextTertiary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.62) : accent300.opacity(0.56)
+    colorScheme == .dark ? accent100.opacity(0.76) : accent300.opacity(0.56)
   }
 
   static func chromeFill(for colorScheme: ColorScheme, emphasis: Double = 1) -> Color {
     let normalizedEmphasis = min(max(emphasis, 0.4), 1.4)
 
     if colorScheme == .dark {
-      return accent100.opacity(0.10 * normalizedEmphasis)
+      return AppTheme.colorHuntInkRaised.opacity(0.20 * normalizedEmphasis)
     } else {
       return accent100.opacity(0.82)
     }
   }
 
   static func chromeStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.16) : accent300.opacity(0.10)
+    colorScheme == .dark ? accent200.opacity(0.18) : accent300.opacity(0.14)
   }
 
   static func primaryButtonBackground(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100 : accent300
+    colorScheme == .dark ? accent200 : accent200
   }
 
   static func primaryButtonForeground(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent300 : accent100
+    colorScheme == .dark ? AppTheme.colorHuntInk : AppTheme.colorHuntInk
   }
 
   static func accentHighlight(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100 : accent300
+    colorScheme == .dark ? accent200 : accent200
   }
 
   static func accentHighlightMuted(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.24) : accent300.opacity(0.16)
+    colorScheme == .dark ? accent200.opacity(0.24) : accent200.opacity(0.16)
   }
 
   static func heroAccentGradient(for colorScheme: ColorScheme) -> LinearGradient {
     if colorScheme == .dark {
       return LinearGradient(
-        colors: [accent100, accent100.opacity(0.78)],
+        colors: [accent200, accent100.opacity(0.78)],
         startPoint: .leading,
         endPoint: .trailing
       )
@@ -215,26 +218,25 @@ enum ThemeColor {
   }
 
   static func orbHighlight(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.94) : accent100.opacity(0.74)
+    colorScheme == .dark ? accent200.opacity(0.94) : accent200.opacity(0.70)
   }
 
   static func orbCore(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent100.opacity(0.82) : accent200
+    colorScheme == .dark ? accent200.opacity(0.82) : accent200
   }
 
   static func orbEdge(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? accent200 : accent300
+    colorScheme == .dark ? accent100.opacity(0.78) : accent300
   }
 }
 
 // MARK: - View Extensions
 
 extension View {
-  /// Applies the OpenSpace shared theme tokens without forcing a color scheme.
-  func openSpaceTheme() -> some View {
-    self
-      .background(ThemeColor.backgroundPrimary)
-      .tint(ThemeColor.accent)
+  /// Applies the OpenSpace shared theme tokens.
+  /// OpenSpace defaults to its Color Hunt dark appearance when no explicit app-level theme is chosen.
+  func openSpaceTheme(preferredColorScheme: ColorScheme? = .dark) -> some View {
+    modifier(OpenSpaceThemeModifier(preferredColorScheme: preferredColorScheme))
   }
 
   /// Applies a frosted glass treatment with subtle tint, stroke, and shadow.
@@ -260,5 +262,24 @@ extension View {
           )
       )
       .shadow(color: ThemeColor.glassShadow, radius: 30, x: 0, y: 22)
+  }
+}
+
+private struct OpenSpaceThemeModifier: ViewModifier {
+  let preferredColorScheme: ColorScheme?
+
+  @ViewBuilder
+  func body(content: Content) -> some View {
+    let themedContent = content
+      .background(ThemeColor.backgroundPrimary)
+      .tint(ThemeColor.accent)
+      .preferredColorScheme(preferredColorScheme)
+
+    if let preferredColorScheme {
+      themedContent
+        .environment(\.colorScheme, preferredColorScheme)
+    } else {
+      themedContent
+    }
   }
 }
