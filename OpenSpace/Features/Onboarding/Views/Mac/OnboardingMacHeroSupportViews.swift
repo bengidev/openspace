@@ -71,25 +71,11 @@ struct OnboardingMacSessionSurfaceCard: View {
 struct OnboardingMacDesktopNotesCard: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
-      ViewThatFits(in: .horizontal) {
-        HStack(alignment: .top, spacing: 12) {
-          Text("Desktop Notes")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
+      Text("Desktop Notes")
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
 
-          Spacer(minLength: 8)
-
-          desktopMetricStrip
-        }
-
-        VStack(alignment: .leading, spacing: 10) {
-          Text("Desktop Notes")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(ThemeColor.overlayTextSecondary(for: colorScheme))
-
-          desktopMetricStrip
-        }
-      }
+      desktopMetricStrip
 
       VStack(alignment: .leading, spacing: 8) {
         OnboardingMacDetailRow(title: "Chrome", value: "Persistent workspace framing")
@@ -113,6 +99,7 @@ struct OnboardingMacDesktopNotesCard: View {
       OnboardingMacCompactMetric(title: "Density", value: "Desktop-first")
         .frame(maxWidth: .infinity, alignment: .leading)
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -240,15 +227,26 @@ private struct OnboardingMacCompactMetric: View {
       Text(title.uppercased())
         .font(.caption2.monospaced().weight(.medium))
         .foregroundStyle(ThemeColor.overlayTextTertiary(for: colorScheme))
+        .lineLimit(1)
 
       Text(value)
         .font(.caption.weight(.semibold))
         .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
         .lineLimit(1)
+        .minimumScaleFactor(0.86)
     }
-    .padding(.horizontal, 10)
-    .padding(.vertical, 6)
-    .background(OnboardingMacCardBackground(opacity: 0.12))
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(.horizontal, 12)
+    .padding(.vertical, 8)
+    .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+    .background(
+      RoundedRectangle(cornerRadius: 16, style: .continuous)
+        .fill(ThemeColor.subtlePanelFill(for: colorScheme))
+        .overlay(
+          RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .strokeBorder(ThemeColor.chromeStroke(for: colorScheme), lineWidth: 1)
+        )
+    )
   }
 }
 
@@ -272,7 +270,11 @@ private struct OnboardingMacCardBackground: View {
 
   var body: some View {
     RoundedRectangle(cornerRadius: 20, style: .continuous)
-      .fill(colorScheme == .dark ? Color.white.opacity(opacity) : ThemeColor.accent100.opacity(max(opacity * 5.5, 0.42)))
+      .fill(
+        colorScheme == .dark
+          ? ThemeColor.accent100.opacity(max(opacity * 1.15, 0.08))
+          : ThemeColor.accent100.opacity(max(opacity * 5.2, 0.40))
+      )
       .overlay(
         RoundedRectangle(cornerRadius: 20, style: .continuous)
           .strokeBorder(ThemeColor.chromeStroke(for: colorScheme), lineWidth: 1)
