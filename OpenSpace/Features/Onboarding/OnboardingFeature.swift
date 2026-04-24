@@ -2,6 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct OnboardingFeature: Reducer {
+  @ObservableState
   struct State: Equatable {
     var hasAppeared: Bool = false
     var isLoading: Bool = false
@@ -12,6 +13,7 @@ struct OnboardingFeature: Reducer {
     #endif
   }
   
+  @CasePathable
   enum Action {
     case appeared
     case continueButtonTapped
@@ -47,7 +49,7 @@ struct OnboardingFeature: Reducer {
           }))
         }
         
-      case let .preloadResponse(.success):
+      case .preloadResponse(.success):
         state.isLoading = false
         return .none
         
