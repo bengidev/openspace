@@ -8,41 +8,39 @@ struct WorkspaceView: View {
   @FocusState private var isPromptFocusedLocal: Bool
 
   var body: some View {
-    WithViewStore(store, observe: { $0 }) { viewStore in
-      GeometryReader { proxy in
-        let profile = layoutProfile(for: proxy.size)
-        let variant = layoutVariant(for: profile)
+    GeometryReader { proxy in
+      let profile = layoutProfile(for: proxy.size)
+      let variant = layoutVariant(for: profile)
+        
+      ZStack {
+        WorkspaceBackdrop(isAnimated: store.hasAppeared && !reduceMotion)
 
-        ZStack {
-          WorkspaceBackdrop(isAnimated: viewStore.hasAppeared && !reduceMotion)
-
-          contentSurface(
-            viewStore: viewStore,
-            profile: profile,
-            variant: variant,
-            containerSize: proxy.size
-          )
-        }
-        .onAppear {
-          isPromptFocusedLocal = viewStore.isPromptFocused
-        }
-        .onChange(of: viewStore.isPromptFocused) { _, newValue in
-          isPromptFocusedLocal = newValue
-        }
-        .onChange(of: isPromptFocusedLocal) { _, newValue in
-          viewStore.send(.promptFocused(newValue))
-        }
-        .task {
-          guard !viewStore.hasAppeared else { return }
-          viewStore.send(.appeared)
-        }
+        contentSurface(
+          store: store,
+          profile: profile,
+          variant: variant,
+          containerSize: proxy.size
+        )
+      }
+      .onAppear {
+        isPromptFocusedLocal = store.isPromptFocused
+      }
+      .onChange(of: store.isPromptFocused) { _, newValue in
+        isPromptFocusedLocal = newValue
+      }
+      .onChange(of: isPromptFocusedLocal) { _, newValue in
+        store.send(.promptFocused(newValue))
+      }
+      .task {
+        guard !store.hasAppeared else { return }
+        store.send(.appeared)
       }
     }
   }
 
   @ViewBuilder
   private func contentSurface(
-    viewStore: ViewStoreOf<WorkspaceFeature>,
+    store: StoreOf<WorkspaceFeature>,
     profile: WorkspaceLayoutProfile,
     variant: WorkspacePlatformVariant,
     containerSize: CGSize
@@ -50,49 +48,49 @@ struct WorkspaceView: View {
     let context = WorkspaceRenderContext(
       variant: variant,
       containerSize: containerSize,
-      hasAppeared: viewStore.hasAppeared,
+      hasAppeared: store.hasAppeared,
       reduceMotion: reduceMotion
     )
 
     let bindings = WorkspaceViewBindings(
       selectedDestination: Binding(
-        get: { viewStore.selectedDestination },
-        set: { viewStore.send(.destinationSelected($0)) }
+        get: { store.selectedDestination },
+        set: { store.send(.destinationSelected($0)) }
       ),
       selectedModel: Binding(
-        get: { viewStore.selectedModel },
-        set: { viewStore.send(.modelSelected($0)) }
+        get: { store.selectedModel },
+        set: { store.send(.modelSelected($0)) }
       ),
       selectedPrompt: Binding(
-        get: { viewStore.selectedPrompt },
-        set: { viewStore.send(.promptChanged($0)) }
+        get: { store.selectedPrompt },
+        set: { store.send(.promptChanged($0)) }
       ),
       selectedWritingStyle: Binding(
-        get: { viewStore.selectedWritingStyle },
-        set: { viewStore.send(.writingStyleSelected($0)) }
+        get: { store.selectedWritingStyle },
+        set: { store.send(.writingStyleSelected($0)) }
       ),
       citationEnabled: Binding(
-        get: { viewStore.citationEnabled },
-        set: { viewStore.send(.citationToggled($0)) }
+        get: { store.citationEnabled },
+        set: { store.send(.citationToggled($0)) }
       ),
       highlightedQuickPrompt: Binding(
-        get: { viewStore.highlightedQuickPrompt },
+        get: { store.highlightedQuickPrompt },
         set: { _ in }
       ),
       isPromptFocused: $isPromptFocusedLocal,
-      sendPrompt: { viewStore.send(.sendButtonTapped) },
-      quickPromptTapped: { prompt in viewStore.send(.quickPromptTapped(prompt)) },
-      replayOnboarding: { viewStore.send(.replayOnboarding) }
+      sendPrompt: { store.send(.sendButtonTapped) },
+      quickPromptTapped: { prompt in store.send(.quickPromptTapped(prompt)) },
+      replayOnboarding: { store.send(.replayOnboarding) }
     )
 
     let styledShell = shellView(for: variant, context: context, bindings: bindings)
       .frame(maxWidth: profile.shellMaxWidth)
       .padding(.horizontal, profile.shellHorizontalPadding)
       .padding(.vertical, profile.shellVerticalPadding)
-      .opacity(viewStore.hasAppeared ? 1 : 0)
-      .offset(y: viewStore.hasAppeared ? 0 : 24)
-      .scaleEffect(reduceMotion ? 1 : (viewStore.hasAppeared ? 1 : 0.985))
-      .animation(.easeOut(duration: 0.85), value: viewStore.hasAppeared)
+      .opacity(store.hasAppeared ? 1 : 0)
+      .offset(y: store.hasAppeared ? 0 : 24)
+      .scaleEffect(reduceMotion ? 1 : (store.hasAppeared ? 1 : 0.985))
+      .animation(.easeOut(duration: 0.85), value: store.hasAppeared)
 
     #if os(macOS)
     styledShell
