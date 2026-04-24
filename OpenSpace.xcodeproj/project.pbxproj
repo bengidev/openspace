@@ -104,8 +104,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B62D07DC2F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpace" */;
 			buildPhases = (
-				B62D07B52F90865E00334BB1 /* Sources */,
 				B6F100012FA0000000000001 /* SwiftFormat OpenSpace */,
+				B62D07B52F90865E00334BB1 /* Sources */,
 				B62D07B62F90865E00334BB1 /* Frameworks */,
 				B62D07B72F90865E00334BB1 /* Resources */,
 			);
@@ -128,8 +128,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B62D07DF2F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpaceTests" */;
 			buildPhases = (
-				B62D07C42F90865F00334BB1 /* Sources */,
 				B6F100022FA0000000000001 /* SwiftFormat OpenSpaceTests */,
+				B62D07C42F90865F00334BB1 /* Sources */,
 				B62D07C52F90865F00334BB1 /* Frameworks */,
 				B62D07C62F90865F00334BB1 /* Resources */,
 			);
@@ -152,8 +152,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B62D07E22F90865F00334BB1 /* Build configuration list for PBXNativeTarget "OpenSpaceUITests" */;
 			buildPhases = (
-				B62D07CE2F90865F00334BB1 /* Sources */,
 				B6F100032FA0000000000001 /* SwiftFormat OpenSpaceUITests */,
+				B62D07CE2F90865F00334BB1 /* Sources */,
 				B62D07CF2F90865F00334BB1 /* Frameworks */,
 				B62D07D02F90865F00334BB1 /* Resources */,
 			);
@@ -261,7 +261,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpace\"";
+			shellScript = "SWIFTFORMAT_MODE=lint \"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpace\"";
 			showEnvVarsInLog = 0;
 		};
 		B6F100022FA0000000000001 /* SwiftFormat OpenSpaceTests */ = {
@@ -281,7 +281,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceTests\"";
+			shellScript = "SWIFTFORMAT_MODE=lint \"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceTests\"";
 			showEnvVarsInLog = 0;
 		};
 		B6F100032FA0000000000001 /* SwiftFormat OpenSpaceUITests */ = {
@@ -301,7 +301,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceUITests\"";
+			shellScript = "SWIFTFORMAT_MODE=lint \"$SRCROOT/Scripts/run-swiftformat.sh\" \"$SRCROOT/OpenSpaceUITests\"";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -403,6 +403,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -457,6 +458,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -500,7 +502,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 26.4;
 			};
@@ -546,7 +548,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 26.4;
 			};
