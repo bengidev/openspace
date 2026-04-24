@@ -2,7 +2,7 @@ import SwiftUI
 
 enum WorkspacePalette {
   static func shellTop(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.surface.opacity(0.92) : ThemeColor.backgroundSecondary.opacity(0.94)
+    colorScheme == .dark ? AppTheme.colorHuntInkRaised.opacity(0.98) : ThemeColor.backgroundSecondary.opacity(0.94)
   }
 
   static func shellBottom(for colorScheme: ColorScheme) -> Color {
@@ -14,23 +14,23 @@ enum WorkspacePalette {
   }
 
   static func sidebarBackground(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.surface.opacity(0.74) : ThemeColor.backgroundSecondary.opacity(0.78)
+    colorScheme == .dark ? AppTheme.colorHuntInk.opacity(0.92) : ThemeColor.backgroundSecondary.opacity(0.78)
   }
 
   static func sidebarSelection(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.accent100.opacity(0.12) : ThemeColor.subtlePanelFill(for: colorScheme)
+    colorScheme == .dark ? ThemeColor.accent200.opacity(0.18) : ThemeColor.subtlePanelFill(for: colorScheme)
   }
 
   static func panelBackground(for colorScheme: ColorScheme) -> Color {
-    ThemeColor.panelFill(for: colorScheme)
+    colorScheme == .dark ? AppTheme.colorHuntInkRaised.opacity(0.98) : ThemeColor.panelFill(for: colorScheme)
   }
 
   static func panelSecondary(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.panelSecondaryFill(for: colorScheme) : ThemeColor.subtlePanelFill(for: colorScheme)
+    colorScheme == .dark ? AppTheme.colorHuntInkRaised.opacity(0.86) : ThemeColor.subtlePanelFill(for: colorScheme)
   }
 
   static func cardStroke(for colorScheme: ColorScheme) -> Color {
-    ThemeColor.elevatedStroke(for: colorScheme)
+    colorScheme == .dark ? ThemeColor.accent200.opacity(0.20) : ThemeColor.elevatedStroke(for: colorScheme)
   }
 
   static let primaryText = ThemeColor.textPrimary
@@ -41,7 +41,7 @@ enum WorkspacePalette {
 
   static let accent = ThemeColor.accent
   static func accentSoft(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? ThemeColor.accent100.opacity(0.16) : ThemeColor.accent200.opacity(0.14)
+    colorScheme == .dark ? ThemeColor.accent200.opacity(0.16) : ThemeColor.accent200.opacity(0.14)
   }
 
   static func border(for colorScheme: ColorScheme) -> Color {
@@ -49,7 +49,7 @@ enum WorkspacePalette {
   }
 
   static func shadow(for colorScheme: ColorScheme) -> Color {
-    ThemeColor.elevatedShadow(for: colorScheme)
+    colorScheme == .dark ? AppTheme.colorHuntInk.opacity(0.34) : ThemeColor.elevatedShadow(for: colorScheme)
   }
 
   static func orbCore(for colorScheme: ColorScheme) -> Color {

@@ -218,7 +218,7 @@ private struct WorkspaceComposerCard: View {
       .foregroundStyle(WorkspacePalette.primaryText)
       .padding(.horizontal, 14)
       .padding(.vertical, 10)
-      .background(Capsule().fill(WorkspacePalette.panelBackground(for: colorScheme)))
+      .background(Capsule().fill(WorkspacePalette.panelSecondary(for: colorScheme)))
       .overlay(
         Capsule()
           .stroke(WorkspacePalette.cardStroke(for: colorScheme), lineWidth: 1)
@@ -246,7 +246,7 @@ private struct WorkspaceComposerCard: View {
       .foregroundStyle(WorkspacePalette.primaryText)
       .padding(.horizontal, 14)
       .padding(.vertical, 10)
-      .background(Capsule().fill(WorkspacePalette.panelBackground(for: colorScheme)))
+      .background(Capsule().fill(WorkspacePalette.panelSecondary(for: colorScheme)))
       .overlay(
         Capsule()
           .stroke(WorkspacePalette.cardStroke(for: colorScheme), lineWidth: 1)
@@ -302,7 +302,7 @@ private struct WorkspaceSurfaceChip: View {
       .foregroundStyle(WorkspacePalette.primaryText)
       .padding(.horizontal, 14)
       .padding(.vertical, 10)
-      .background(Capsule().fill(WorkspacePalette.panelBackground(for: colorScheme)))
+      .background(Capsule().fill(WorkspacePalette.panelSecondary(for: colorScheme)))
       .overlay(
         Capsule()
           .stroke(WorkspacePalette.cardStroke(for: colorScheme), lineWidth: 1)
