@@ -83,8 +83,13 @@ struct WorkspaceView: View {
       replayOnboarding: { store.send(.replayOnboarding) }
     )
 
+    let shellWidth = min(
+      profile.shellMaxWidth,
+      max(containerSize.width - (profile.shellHorizontalPadding * 2), 0)
+    )
+
     let styledShell = shellView(for: variant, context: context, bindings: bindings)
-      .frame(maxWidth: profile.shellMaxWidth)
+      .frame(width: shellWidth)
       .padding(.horizontal, profile.shellHorizontalPadding)
       .padding(.vertical, profile.shellVerticalPadding)
       .opacity(store.hasAppeared ? 1 : 0)
