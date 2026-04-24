@@ -427,7 +427,7 @@ import SwiftUI
 #endif
 
 struct AppTheme {
-  static let midnightIndigo = Color(hex: "212842")
+  static let colorHuntInk = Color(hex: "0B0B0B")
   // ... more constants + gradients
 }
 
@@ -460,13 +460,13 @@ extension Color {
 import SwiftUI
 
 struct AppTheme {
-  static let midnightIndigo = Color(hex: "212842")
-  static let midnightIndigoSoft = Color(hex: "323B5C")
-  static let vanillaCream = Color(hex: "F0E7D5")
-  static let vanillaCreamMuted = Color(hex: "E7DECC")
+  static let colorHuntInk = Color(hex: "0B0B0B")
+  static let colorHuntInkRaised = Color(hex: "171717")
+  static let vanillaCream = Color(hex: "E9E3DF")
+  static let vanillaCreamMuted = Color(hex: "D8D2CF")
 
   static let primaryGradient = LinearGradient(
-    colors: [midnightIndigo, midnightIndigoSoft],
+    colors: [colorHuntInkRaised, vanillaCream],
     startPoint: .topLeading, endPoint: .bottomTrailing
   )
 }
