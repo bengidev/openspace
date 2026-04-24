@@ -136,7 +136,7 @@ struct WorkspaceRenderContext {
   var heroCopyMaxWidth: CGFloat {
     switch variant {
     case .ios:
-      440
+      min(containerSize.width - 72, 360)
     case .ipad:
       620
     case .mac:
@@ -147,7 +147,7 @@ struct WorkspaceRenderContext {
   var composerMaxWidth: CGFloat {
     switch variant {
     case .ios:
-      560
+      min(containerSize.width - 64, 360)
     case .ipad:
       780
     case .mac:
@@ -158,7 +158,7 @@ struct WorkspaceRenderContext {
   var quickPromptMaxWidth: CGFloat {
     switch variant {
     case .ios:
-      580
+      min(containerSize.width - 64, 360)
     case .ipad:
       860
     case .mac:
