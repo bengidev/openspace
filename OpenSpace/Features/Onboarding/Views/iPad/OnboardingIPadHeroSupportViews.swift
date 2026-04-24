@@ -45,7 +45,7 @@ struct OnboardingIPadFeatureCard<Content: View>: View {
 
   private var cardBackground: some View {
     RoundedRectangle(cornerRadius: 24, style: .continuous)
-      .fill(colorScheme == .dark ? Color.white.opacity(0.09) : ThemeColor.accent100.opacity(0.54))
+      .fill(colorScheme == .dark ? ThemeColor.accent100.opacity(0.10) : ThemeColor.accent100.opacity(0.54))
       .overlay(
         RoundedRectangle(cornerRadius: 24, style: .continuous)
           .strokeBorder(ThemeColor.chromeStroke(for: colorScheme), lineWidth: 1)
