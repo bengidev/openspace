@@ -8,44 +8,23 @@
 import SwiftUI
 
 struct WorkspaceIOSShell: View {
-  @Environment(\.colorScheme) private var colorScheme
-  let context: WorkspaceRenderContext
-  let bindings: WorkspaceViewBindings
+    let context: WorkspaceRenderContext
+    let bindings: WorkspaceViewBindings
 
-  var body: some View {
-    let shellShape = RoundedRectangle(cornerRadius: context.shellCornerRadius, style: .continuous)
-
-    WorkspaceIOSMainContent(context: context, bindings: bindings)
-      .frame(maxWidth: .infinity, minHeight: context.minimumShellHeight, maxHeight: .infinity, alignment: .topLeading)
-      .background(
-        shellShape
-          .fill(
-            LinearGradient(
-              colors: [
-                WorkspacePalette.shellTop(for: colorScheme),
-                WorkspacePalette.shellBottom(for: colorScheme),
-              ],
-              startPoint: .top,
-              endPoint: .bottom
-            )
-          )
-      )
-      .clipShape(shellShape)
-      .overlay(
-        shellShape
-          .strokeBorder(WorkspacePalette.shellStroke(for: colorScheme), lineWidth: 1)
-      )
-      .shadow(color: WorkspacePalette.shadow(for: colorScheme), radius: 32, x: 0, y: 18)
-  }
+    var body: some View {
+        WorkspaceRoundedShellContainer(context: context) {
+            WorkspaceIOSMainContent(context: context, bindings: bindings)
+        }
+    }
 }
 
 #Preview("iPhone Workspace Shell") {
-  WorkspacePreviewSupport.preview(
-    variant: .ios,
-    size: CGSize(width: 390, height: 844),
-    selectedDestination: .home
-  ) { context, bindings in
-    WorkspaceIOSShell(context: context, bindings: bindings)
-  }
-  .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
+    WorkspacePreviewSupport.preview(
+        variant: .ios,
+        size: CGSize(width: 390, height: 844),
+        selectedDestination: .home
+    ) { context, bindings in
+        WorkspaceIOSShell(context: context, bindings: bindings)
+    }
+    .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
 }
