@@ -123,14 +123,16 @@ struct WorkspaceIPadCompactNavigation: View {
 }
 
 private struct WorkspaceIPadRailBrandButton: View {
+  @Environment(\.colorScheme) private var colorScheme
+
   var body: some View {
     ZStack {
       Circle()
         .fill(
           RadialGradient(
             colors: [
-              Color.white.opacity(0.92),
-              WorkspacePalette.sidebarSelection(for: .light),
+              ThemeColor.orbHighlight(for: colorScheme),
+              WorkspacePalette.sidebarSelection(for: colorScheme),
             ],
             center: .center,
             startRadius: 2,
@@ -158,7 +160,7 @@ private struct WorkspaceIPadRailButton: View {
     Button(action: action) {
       Image(systemName: systemImage)
         .font(.system(size: 16, weight: isSelected ? .semibold : .medium))
-        .foregroundStyle(isSelected ? WorkspacePalette.accentGradientEnd : WorkspacePalette.secondaryText)
+        .foregroundStyle(isSelected ? WorkspacePalette.accentHighlight(for: colorScheme) : WorkspacePalette.secondaryText)
         .frame(width: 38, height: 38)
         .background(
           RoundedRectangle(cornerRadius: 12, style: .continuous)
