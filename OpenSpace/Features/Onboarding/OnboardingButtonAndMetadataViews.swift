@@ -48,13 +48,13 @@ struct OnboardingPrimaryButton: View {
     Button(action: action) {
       Text(title)
         .font(font)
-        .foregroundStyle(colorScheme == .dark ? ThemeColor.neutral1000 : ThemeColor.textPrimary)
+        .foregroundStyle(ThemeColor.primaryButtonForeground(for: colorScheme))
         .frame(minWidth: minWidth, minHeight: minHeight)
         .padding(.horizontal, horizontalPadding)
         .padding(.vertical, verticalPadding)
         .background(
           Capsule()
-            .fill(colorScheme == .dark ? Color.white : ThemeColor.accent100)
+            .fill(ThemeColor.primaryButtonBackground(for: colorScheme))
         )
     }
     .buttonStyle(.plain)

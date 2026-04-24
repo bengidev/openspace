@@ -85,12 +85,12 @@ struct AnimatedSignalDot: View {
 
   var body: some View {
     Circle()
-      .fill(colorScheme == .dark ? Color.white : ThemeColor.accent)
+      .fill(ThemeColor.accentHighlight(for: colorScheme))
       .frame(width: 6, height: 6)
       .overlay(
         Circle()
           .stroke(
-            (colorScheme == .dark ? Color.white : ThemeColor.accent).opacity(isAnimated ? 0.22 : 0.32),
+            ThemeColor.accentHighlight(for: colorScheme).opacity(isAnimated ? 0.22 : 0.32),
             lineWidth: 5
           )
           .frame(width: isExpanded ? 20 : 16, height: isExpanded ? 20 : 16)

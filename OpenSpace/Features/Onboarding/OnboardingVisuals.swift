@@ -71,9 +71,9 @@ struct OnboardingBackdrop: View {
   private var backdropGradientColors: [Color] {
     if colorScheme == .dark {
       [
-        Color(red: 0.24, green: 0.34, blue: 0.39).opacity(0.82),
-        Color(red: 0.07, green: 0.15, blue: 0.18).opacity(0.95),
-        Color(red: 0.02, green: 0.08, blue: 0.10),
+        ThemeColor.backgroundSecondary.opacity(0.92),
+        ThemeColor.surface.opacity(0.96),
+        ThemeColor.backgroundPrimary,
       ]
     } else {
       [
@@ -87,7 +87,7 @@ struct OnboardingBackdrop: View {
   private var backdropHighlightColors: [Color] {
     if colorScheme == .dark {
       [
-        Color(red: 0.82, green: 0.88, blue: 0.90).opacity(0.16),
+        ThemeColor.accent100.opacity(0.16),
         .clear,
       ]
     } else {
@@ -120,9 +120,9 @@ struct OnboardingHeroPanel<Content: View>: View {
     case .floatingShowcase:
       colorScheme == .dark
         ? [
-          Color.white.opacity(0.94),
-          Color(red: 0.88, green: 0.92, blue: 0.93).opacity(0.9),
-          Color(red: 0.08, green: 0.17, blue: 0.21).opacity(0.92),
+          ThemeColor.accent100.opacity(0.22),
+          ThemeColor.backgroundSecondary.opacity(0.86),
+          ThemeColor.backgroundPrimary.opacity(0.98),
         ]
         : [
           Color.white.opacity(0.98),
@@ -132,9 +132,9 @@ struct OnboardingHeroPanel<Content: View>: View {
     case .desktopCanvas:
       colorScheme == .dark
         ? [
-          Color.white.opacity(0.82),
-          Color(red: 0.78, green: 0.85, blue: 0.88).opacity(0.72),
-          Color(red: 0.06, green: 0.14, blue: 0.17).opacity(0.97),
+          ThemeColor.accent100.opacity(0.16),
+          ThemeColor.backgroundSecondary.opacity(0.82),
+          ThemeColor.backgroundPrimary.opacity(0.98),
         ]
         : [
           Color.white.opacity(0.98),
@@ -215,9 +215,9 @@ struct OnboardingHeroPanel<Content: View>: View {
   private var overlayGradientColors: [Color] {
     if colorScheme == .dark {
       [
-        Color.white.opacity(0.28),
+        ThemeColor.accent100.opacity(0.18),
         .clear,
-        Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.55),
+        ThemeColor.backgroundPrimary.opacity(0.58),
       ]
     } else {
       [
@@ -231,8 +231,8 @@ struct OnboardingHeroPanel<Content: View>: View {
   private var desktopShadeColors: [Color] {
     if colorScheme == .dark {
       [
-        Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.78),
-        Color(red: 0.06, green: 0.10, blue: 0.12).opacity(0.28),
+        ThemeColor.backgroundPrimary.opacity(0.72),
+        ThemeColor.backgroundPrimary.opacity(0.28),
         .clear,
       ]
     } else {
@@ -247,7 +247,7 @@ struct OnboardingHeroPanel<Content: View>: View {
   private var desktopGlowColors: [Color] {
     if colorScheme == .dark {
       [
-        Color(red: 0.12, green: 0.19, blue: 0.22).opacity(0.26),
+        ThemeColor.accent200.opacity(0.30),
         .clear,
       ]
     } else {
@@ -262,8 +262,8 @@ struct OnboardingHeroPanel<Content: View>: View {
     if colorScheme == .dark {
       [
         Color.clear,
-        Color(red: 0.01, green: 0.07, blue: 0.10).opacity(0.14),
-        Color(red: 0.01, green: 0.06, blue: 0.09).opacity(0.24),
+        ThemeColor.backgroundPrimary.opacity(0.12),
+        ThemeColor.backgroundPrimary.opacity(0.24),
       ]
     } else {
       [
@@ -276,13 +276,13 @@ struct OnboardingHeroPanel<Content: View>: View {
 
   private var panelStrokeStart: Color {
     colorScheme == .dark
-      ? Color.white.opacity(style == .desktopCanvas ? 0.28 : 0.46)
+      ? ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.22 : 0.36)
       : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.62 : 0.92)
   }
 
   private var panelStrokeEnd: Color {
     colorScheme == .dark
-      ? Color.white.opacity(style == .desktopCanvas ? 0.05 : 0.08)
+      ? ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.06 : 0.10)
       : ThemeColor.accent100.opacity(style == .desktopCanvas ? 0.12 : 0.28)
   }
 }
