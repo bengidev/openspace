@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct OnboardingRenderContext {
-  let capabilityChips: [String]
-  let containerSize: CGSize
-  let hasAppeared: Bool
-  let reduceMotion: Bool
+    let capabilityChips: [String]
+    let containerSize: CGSize
+    let hasAppeared: Bool
+    let reduceMotion: Bool
 
-  var isAnimated: Bool {
-    !reduceMotion && hasAppeared
-  }
+    var isAnimated: Bool {
+        !reduceMotion && hasAppeared
+    }
 }
