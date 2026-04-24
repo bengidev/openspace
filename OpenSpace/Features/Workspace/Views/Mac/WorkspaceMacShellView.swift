@@ -13,34 +13,24 @@ struct WorkspaceMacShell: View {
   let bindings: WorkspaceViewBindings
 
   var body: some View {
-    HStack(spacing: 0) {
-      WorkspaceMacIconRail(context: context, bindings: bindings)
-        .frame(width: context.sidebarWidth)
-        .background(WorkspacePalette.sidebarBackground(for: colorScheme))
-
-      Rectangle()
-        .fill(WorkspacePalette.border(for: colorScheme))
-        .frame(width: 1)
-
-      WorkspaceMacMainContent(context: context, bindings: bindings)
-    }
-    .frame(maxWidth: .infinity, minHeight: context.minimumShellHeight, maxHeight: .infinity, alignment: .topLeading)
-    .background(
-      LinearGradient(
-        colors: [
-          WorkspacePalette.shellTop(for: colorScheme),
-          WorkspacePalette.shellBottom(for: colorScheme),
-        ],
-        startPoint: .top,
-        endPoint: .bottom
+    WorkspaceMacMainContent(context: context, bindings: bindings)
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+      .background(
+        LinearGradient(
+          colors: [
+            WorkspacePalette.shellTop(for: colorScheme),
+            WorkspacePalette.shellBottom(for: colorScheme),
+          ],
+          startPoint: .top,
+          endPoint: .bottom
+        )
       )
-    )
-    .overlay(alignment: .top) {
-      Rectangle()
-        .fill(WorkspacePalette.shellStroke(for: colorScheme))
-        .frame(height: 1)
-        .opacity(0.55)
-    }
+      .overlay(alignment: .top) {
+        Rectangle()
+          .fill(WorkspacePalette.shellStroke(for: colorScheme))
+          .frame(height: 1)
+          .opacity(0.55)
+      }
   }
 }
 

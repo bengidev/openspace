@@ -69,20 +69,11 @@ struct WorkspaceMacIconRail: View {
         }
 
         Circle()
-          .fill(
-            LinearGradient(
-              colors: [
-                WorkspacePalette.accentGradientStart,
-                WorkspacePalette.accentGradientEnd,
-              ],
-              startPoint: .topLeading,
-              endPoint: .bottomTrailing
-            )
-          )
+          .fill(AppTheme.primaryGradient)
           .overlay(
             Text("BT")
               .font(.caption.weight(.bold))
-              .foregroundStyle(Color.white)
+              .foregroundStyle(AppTheme.vanillaCream)
           )
           .frame(width: 42, height: 42)
           .padding(.top, 8)
@@ -96,14 +87,16 @@ struct WorkspaceMacIconRail: View {
 }
 
 private struct WorkspaceMacRailBrandButton: View {
+  @Environment(\.colorScheme) private var colorScheme
+
   var body: some View {
     ZStack {
       Circle()
         .fill(
           RadialGradient(
             colors: [
-              Color.white.opacity(0.92),
-              WorkspacePalette.sidebarSelection(for: .light),
+              ThemeColor.orbHighlight(for: colorScheme),
+              WorkspacePalette.sidebarSelection(for: colorScheme),
             ],
             center: .center,
             startRadius: 2,
@@ -131,7 +124,7 @@ private struct WorkspaceMacRailButton: View {
     Button(action: action) {
       Image(systemName: systemImage)
         .font(.system(size: 16, weight: isSelected ? .semibold : .medium))
-        .foregroundStyle(isSelected ? WorkspacePalette.accentGradientEnd : WorkspacePalette.secondaryText)
+        .foregroundStyle(isSelected ? WorkspacePalette.accentHighlight(for: colorScheme) : WorkspacePalette.secondaryText)
         .frame(width: 38, height: 38)
         .background(
           RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -143,7 +136,7 @@ private struct WorkspaceMacRailButton: View {
         )
         .overlay(alignment: .leading) {
           RoundedRectangle(cornerRadius: 2, style: .continuous)
-            .fill(WorkspacePalette.accentGradientEnd)
+            .fill(WorkspacePalette.accentHighlight(for: colorScheme))
             .frame(width: 3, height: isSelected ? 18 : 0)
             .opacity(isSelected ? 1 : 0)
             .offset(x: -8)
