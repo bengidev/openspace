@@ -32,7 +32,10 @@ struct WorkspaceMainContent: View {
                 WorkspaceComposerCard(
                     context: context,
                     destination: selectedDestination,
-                    selectedModel: bindings.selectedModel,
+                    providers: bindings.providers,
+                    selectedProviderID: bindings.selectedProviderID,
+                    isLoadingProviders: bindings.isLoadingProviders,
+                    providerErrorMessage: bindings.providerErrorMessage,
                     selectedWritingStyle: bindings.selectedWritingStyle,
                     citationEnabled: bindings.citationEnabled,
                     selectedPrompt: bindings.selectedPrompt,
@@ -149,7 +152,10 @@ private struct WorkspaceComposerCard: View {
 
     let context: WorkspaceRenderContext
     let destination: WorkspaceDestination
-    @Binding var selectedModel: WorkspaceModel
+    let providers: [AIProvider]
+    @Binding var selectedProviderID: String?
+    let isLoadingProviders: Bool
+    let providerErrorMessage: String?
     @Binding var selectedWritingStyle: WorkspaceWritingStyle
     @Binding var citationEnabled: Bool
     @Binding var selectedPrompt: String
@@ -201,27 +207,43 @@ private struct WorkspaceComposerCard: View {
     // MARK: Private
 
     @Environment(\.colorScheme) private var colorScheme
+    @State private var activeProviderPopup: WorkspaceProviderPopup?
 
-    private var modelMenu: some View {
-        Menu {
-            Picker("Model", selection: $selectedModel) {
-                ForEach(WorkspaceModel.allCases) { model in
-                    Text(model.rawValue).tag(model)
-                }
+    private enum WorkspaceProviderPopup: Identifiable {
+        case picker
+        case connection(AIProvider)
+
+        var id: String {
+            switch self {
+            case .picker:
+                "picker"
+            case let .connection(provider):
+                "connection-\(provider.id)"
             }
+        }
+    }
+
+    private var providerMenu: some View {
+        Button {
+            activeProviderPopup = .picker
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: "sparkles")
+                Image(systemName: providerIconName)
                     .font(.system(size: context.composerControlIconSize, weight: .semibold))
 
-                Text(selectedModel.rawValue)
+                Text(providerMenuTitle)
                     .lineLimit(1)
 
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 10, weight: .semibold))
+                if isLoadingProviders {
+                    ProgressView()
+                        .controlSize(.mini)
+                } else {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10, weight: .semibold))
+                }
             }
             .font(context.composerControlFont)
-            .foregroundStyle(WorkspacePalette.primaryText)
+            .foregroundStyle(providerMenuForegroundStyle)
             .padding(.horizontal, context.composerControlHorizontalPadding)
             .padding(.vertical, context.composerControlVerticalPadding)
             .background(Capsule().fill(WorkspacePalette.panelSecondary(for: colorScheme)))
@@ -231,7 +253,80 @@ private struct WorkspaceComposerCard: View {
             )
         }
         .buttonStyle(.plain)
+        .disabled(isProviderMenuDisabled)
         .fixedSize(horizontal: true, vertical: false)
+        .accessibilityLabel("AI provider")
+        .accessibilityValue(providerMenuTitle)
+        .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
+            switch popup {
+            case .picker:
+                WorkspaceProviderPickerPopup(
+                    providers: providers,
+                    selectedProviderID: selectedProviderID,
+                    selectProvider: selectProviderForConnection,
+                    dismiss: { activeProviderPopup = nil }
+                )
+                .presentationCompactAdaptation(.popover)
+
+            case let .connection(provider):
+                WorkspaceProviderConnectionPopup(
+                    provider: provider,
+                    dismiss: { activeProviderPopup = nil },
+                    back: showProviderPickerFromConnection,
+                    connect: completeProviderConnection
+                )
+                .presentationCompactAdaptation(.popover)
+            }
+        }
+    }
+
+    private var selectedProvider: AIProvider? {
+        guard let selectedProviderID else { return nil }
+        return providers.first { $0.id == selectedProviderID }
+    }
+
+    private func selectProviderForConnection(_ provider: AIProvider) {
+        activeProviderPopup = .connection(provider)
+    }
+
+    private func completeProviderConnection(_ provider: AIProvider) {
+        selectedProviderID = provider.id
+        activeProviderPopup = nil
+    }
+
+    private func showProviderPickerFromConnection() {
+        activeProviderPopup = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            activeProviderPopup = .picker
+        }
+    }
+
+    private var providerMenuTitle: String {
+        if isLoadingProviders {
+            return "Loading providers…"
+        }
+
+        if providerErrorMessage != nil {
+            return "Providers unavailable"
+        }
+
+        if providers.isEmpty {
+            return "No providers"
+        }
+
+        return selectedProvider?.name ?? "Connect provider"
+    }
+
+    private var providerIconName: String {
+        providerErrorMessage == nil ? "sparkles" : "exclamationmark.triangle"
+    }
+
+    private var isProviderMenuDisabled: Bool {
+        isLoadingProviders || providerErrorMessage != nil || providers.isEmpty
+    }
+
+    private var providerMenuForegroundStyle: Color {
+        isProviderMenuDisabled ? WorkspacePalette.secondaryText : WorkspacePalette.primaryText
     }
 
     @ViewBuilder
@@ -240,7 +335,7 @@ private struct WorkspaceComposerCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 10) {
                     WorkspaceSurfaceChip(title: "Attach", systemImage: "paperclip", colorScheme: colorScheme, context: context)
-                    modelMenu
+                    providerMenu
                 }
 
                 HStack(spacing: 8) {
@@ -254,7 +349,7 @@ private struct WorkspaceComposerCard: View {
             HStack(alignment: .center, spacing: 12) {
                 HStack(spacing: 10) {
                     WorkspaceSurfaceChip(title: "Attach", systemImage: "paperclip", colorScheme: colorScheme, context: context)
-                    modelMenu
+                    providerMenu
                     writingStyleMenu
                 }
                 .layoutPriority(1)
