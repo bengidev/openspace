@@ -53,10 +53,13 @@ struct WorkspaceView: View {
                 get: { store.selectedDestination },
                 set: { store.send(.destinationSelected($0)) }
             ),
-            selectedModel: Binding(
-                get: { store.selectedModel },
-                set: { store.send(.modelSelected($0)) }
+            providers: store.providers,
+            selectedProviderID: Binding(
+                get: { store.selectedProviderID },
+                set: { store.send(.providerSelected($0)) }
             ),
+            isLoadingProviders: store.isLoadingProviders,
+            providerErrorMessage: store.providerErrorMessage,
             selectedPrompt: Binding(
                 get: { store.selectedPrompt },
                 set: { store.send(.promptChanged($0)) }
