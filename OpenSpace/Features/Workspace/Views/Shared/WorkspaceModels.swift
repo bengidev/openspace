@@ -37,7 +37,10 @@ enum WorkspaceQuickPrompt: String, CaseIterable, Hashable, Identifiable {
 
 struct WorkspaceViewBindings {
     var selectedDestination: Binding<WorkspaceDestination>
-    var selectedModel: Binding<WorkspaceModel>
+    var providers: [AIProvider]
+    var selectedProviderID: Binding<String?>
+    var isLoadingProviders: Bool
+    var providerErrorMessage: String?
     var selectedPrompt: Binding<String>
     var selectedWritingStyle: Binding<WorkspaceWritingStyle>
     var citationEnabled: Binding<Bool>
