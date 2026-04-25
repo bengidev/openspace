@@ -29,7 +29,10 @@ import SwiftUI
             hasAppeared: Bool = true,
             reduceMotion: Bool = true,
             selectedDestination: WorkspaceDestination = .home,
-            selectedModel: WorkspaceModel = .chatGPT4o,
+            providers: [AIProvider] = WorkspacePreviewSupport.defaultProviders,
+            selectedProviderID: String? = WorkspacePreviewSupport.defaultProviders.first?.id,
+            isLoadingProviders: Bool = false,
+            providerErrorMessage: String? = nil,
             selectedPrompt: String = "",
             selectedWritingStyle: WorkspaceWritingStyle = .balanced,
             citationEnabled: Bool = true,
@@ -44,7 +47,10 @@ import SwiftUI
                     reduceMotion: reduceMotion
                 ),
                 initialDestination: selectedDestination,
-                initialModel: selectedModel,
+                initialProviders: providers,
+                initialProviderID: selectedProviderID,
+                initialLoadingProviders: isLoadingProviders,
+                initialProviderErrorMessage: providerErrorMessage,
                 initialPrompt: selectedPrompt,
                 initialWritingStyle: selectedWritingStyle,
                 initialCitationEnabled: citationEnabled,
@@ -52,6 +58,25 @@ import SwiftUI
                 content: content
             )
         }
+
+        static let defaultProviders = [
+            AIProvider(
+                id: "openai",
+                name: "OpenAI",
+                npm: "@ai-sdk/openai",
+                api: "https://api.openai.com/v1",
+                env: ["OPENAI_API_KEY"],
+                doc: "https://platform.openai.com/docs"
+            ),
+            AIProvider(
+                id: "anthropic",
+                name: "Anthropic",
+                npm: "@ai-sdk/anthropic",
+                api: "https://api.anthropic.com",
+                env: ["ANTHROPIC_API_KEY"],
+                doc: "https://docs.anthropic.com"
+            ),
+        ]
     }
 
     private struct WorkspacePreviewHarness<Content: View>: View {
@@ -60,7 +85,10 @@ import SwiftUI
         init(
             context: WorkspaceRenderContext,
             initialDestination: WorkspaceDestination,
-            initialModel: WorkspaceModel,
+            initialProviders: [AIProvider],
+            initialProviderID: String?,
+            initialLoadingProviders: Bool,
+            initialProviderErrorMessage: String?,
             initialPrompt: String,
             initialWritingStyle: WorkspaceWritingStyle,
             initialCitationEnabled: Bool,
@@ -69,14 +97,17 @@ import SwiftUI
         ) {
             self.context = context
             self.initialDestination = initialDestination
-            self.initialModel = initialModel
+            self.initialProviders = initialProviders
+            self.initialProviderID = initialProviderID
+            self.initialLoadingProviders = initialLoadingProviders
+            self.initialProviderErrorMessage = initialProviderErrorMessage
             self.initialPrompt = initialPrompt
             self.initialWritingStyle = initialWritingStyle
             self.initialCitationEnabled = initialCitationEnabled
             self.initialHighlightedQuickPrompt = initialHighlightedQuickPrompt
             self.content = content
             _selectedDestination = State(initialValue: initialDestination)
-            _selectedModel = State(initialValue: initialModel)
+            _selectedProviderID = State(initialValue: initialProviderID)
             _selectedPrompt = State(initialValue: initialPrompt)
             _selectedWritingStyle = State(initialValue: initialWritingStyle)
             _citationEnabled = State(initialValue: initialCitationEnabled)
@@ -87,7 +118,10 @@ import SwiftUI
 
         let context: WorkspaceRenderContext
         let initialDestination: WorkspaceDestination
-        let initialModel: WorkspaceModel
+        let initialProviders: [AIProvider]
+        let initialProviderID: String?
+        let initialLoadingProviders: Bool
+        let initialProviderErrorMessage: String?
         let initialPrompt: String
         let initialWritingStyle: WorkspaceWritingStyle
         let initialCitationEnabled: Bool
@@ -102,7 +136,7 @@ import SwiftUI
 
         @FocusState private var isPromptFocused: Bool
         @State private var selectedDestination: WorkspaceDestination
-        @State private var selectedModel: WorkspaceModel
+        @State private var selectedProviderID: String?
         @State private var selectedPrompt: String
         @State private var selectedWritingStyle: WorkspaceWritingStyle
         @State private var citationEnabled: Bool
@@ -111,7 +145,10 @@ import SwiftUI
         private var bindings: WorkspaceViewBindings {
             WorkspaceViewBindings(
                 selectedDestination: $selectedDestination,
-                selectedModel: $selectedModel,
+                providers: initialProviders,
+                selectedProviderID: $selectedProviderID,
+                isLoadingProviders: initialLoadingProviders,
+                providerErrorMessage: initialProviderErrorMessage,
                 selectedPrompt: $selectedPrompt,
                 selectedWritingStyle: $selectedWritingStyle,
                 citationEnabled: $citationEnabled,
