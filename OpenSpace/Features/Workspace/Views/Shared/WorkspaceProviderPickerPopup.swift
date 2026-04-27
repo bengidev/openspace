@@ -438,8 +438,16 @@ private struct WorkspaceProviderIcon: View {
                 .foregroundStyle(WorkspaceProviderPickerPalette.icon)
                 .lineLimit(1)
         }
-        .frame(width: 36, height: 36)
+        .frame(width: iconSize, height: iconSize)
         .accessibilityHidden(true)
+    }
+
+    private var iconSize: CGFloat {
+        #if os(macOS)
+            32
+        #else
+            34
+        #endif
     }
 
     private var initials: String {
