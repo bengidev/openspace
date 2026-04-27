@@ -39,6 +39,7 @@ struct WorkspaceMainContent: View {
             WorkspaceCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
                 providerPopupContent(for: popup)
             }
+            .presentationBackground(.clear)
         }
         #endif
     }
