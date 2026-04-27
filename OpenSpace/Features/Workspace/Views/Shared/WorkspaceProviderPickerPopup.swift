@@ -581,31 +581,71 @@ struct WorkspaceProviderConnectionPopup: View {
 
     private var popupTopPadding: CGFloat {
         #if os(macOS)
-            28
+            22
         #else
-            34
+            26
         #endif
     }
 
     private var popupHorizontalPadding: CGFloat {
         #if os(macOS)
-            34
+            28
         #else
-            26
+            22
+        #endif
+    }
+
+    private var bodySpacing: CGFloat {
+        #if os(macOS)
+            13
+        #else
+            12
+        #endif
+    }
+
+    private var instructionFontSize: CGFloat {
+        #if os(macOS)
+            14
+        #else
+            15
+        #endif
+    }
+
+    private var scrollContentBottomPadding: CGFloat {
+        #if os(macOS)
+            18
+        #else
+            22
         #endif
     }
 
     private var titleBlock: some View {
         HStack(spacing: 16) {
             WorkspaceProviderIcon(provider: provider)
-                .frame(width: 38, height: 38)
+                .frame(width: titleIconSize, height: titleIconSize)
 
             Text("Connect \(provider.name)")
-                .font(.system(size: 25, weight: .semibold))
+                .font(.system(size: titleFontSize, weight: .semibold))
                 .foregroundStyle(WorkspaceProviderPickerPalette.primaryText)
                 .lineLimit(2)
                 .minimumScaleFactor(0.82)
         }
+    }
+
+    private var titleIconSize: CGFloat {
+        #if os(macOS)
+            34
+        #else
+            34
+        #endif
+    }
+
+    private var titleFontSize: CGFloat {
+        #if os(macOS)
+            22
+        #else
+            22
+        #endif
     }
 
     @ViewBuilder
