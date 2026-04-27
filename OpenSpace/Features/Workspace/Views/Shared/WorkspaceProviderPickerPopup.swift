@@ -780,9 +780,17 @@ private struct WorkspaceProviderConnectionFooter: View {
 
     private var horizontalPadding: CGFloat {
         #if os(macOS)
-            34
+            28
         #else
-            26
+            22
+        #endif
+    }
+
+    private var buttonHeight: CGFloat {
+        #if os(macOS)
+            46
+        #else
+            46
         #endif
     }
 
@@ -792,7 +800,7 @@ private struct WorkspaceProviderConnectionFooter: View {
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(WorkspaceProviderPickerPalette.primaryButtonText)
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
+                .frame(height: buttonHeight)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(WorkspaceProviderPickerPalette.primaryButtonBackground)
@@ -807,8 +815,8 @@ private struct WorkspaceProviderConnectionFooter: View {
         .opacity(isDisabled ? 0.56 : 1)
         .accessibilityLabel(title)
         .padding(.horizontal, horizontalPadding)
-        .padding(.top, 12)
-        .padding(.bottom, 18)
+        .padding(.top, 10)
+        .padding(.bottom, 16)
         .background(
             WorkspaceProviderPickerPalette.background
                 .overlay(alignment: .top) {
