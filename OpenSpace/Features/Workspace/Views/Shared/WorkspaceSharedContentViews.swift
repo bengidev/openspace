@@ -33,14 +33,26 @@ struct WorkspaceMainContent: View {
     @State private var activeProviderPopup: WorkspaceProviderPopup?
 
     var body: some View {
-        mainContent
-        #if !os(macOS)
-        .fullScreenCover(item: $activeProviderPopup) { popup in
-            WorkspaceCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
-                providerPopupContent(for: popup)
+        #if os(macOS)
+            ZStack {
+                mainContent
+
+                if let activeProviderPopup {
+                    WorkspaceCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
+                        providerPopupContent(for: activeProviderPopup)
+                    }
+                    .zIndex(1)
+                }
             }
-            .presentationBackground(.clear)
-        }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #else
+            mainContent
+                .fullScreenCover(item: $activeProviderPopup) { popup in
+                    WorkspaceCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
+                        providerPopupContent(for: popup)
+                    }
+                    .presentationBackground(.clear)
+                }
         #endif
     }
 
