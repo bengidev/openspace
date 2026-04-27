@@ -287,22 +287,22 @@ private struct WorkspaceProviderPickerRow: View {
 
     var body: some View {
         Button(action: select) {
-            HStack(alignment: .center, spacing: 16) {
+            HStack(alignment: .center, spacing: rowSpacing) {
                 WorkspaceProviderIcon(provider: provider)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(provider.name)
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: titleFontSize, weight: .semibold))
                         .foregroundStyle(WorkspaceProviderPickerPalette.primaryText)
                         .lineLimit(1)
 
                     Text(providerSummary)
-                        .font(.system(size: 13, weight: .regular))
+                        .font(.system(size: summaryFontSize, weight: .regular))
                         .foregroundStyle(WorkspaceProviderPickerPalette.secondaryText)
                         .lineLimit(1)
                 }
 
-                Spacer(minLength: 14)
+                Spacer(minLength: trailingSpacerMinLength)
 
                 if isSelected {
                     Image(systemName: "checkmark")
@@ -316,8 +316,8 @@ private struct WorkspaceProviderPickerRow: View {
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 11)
+            .padding(.horizontal, horizontalPadding)
+            .padding(.vertical, verticalPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(rowBackground)
             .overlay(rowStroke)
@@ -327,6 +327,54 @@ private struct WorkspaceProviderPickerRow: View {
         .accessibilityLabel(provider.name)
         .accessibilityValue(isSelected ? "Selected" : providerSummary)
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+    }
+
+    private var rowSpacing: CGFloat {
+        #if os(macOS)
+            12
+        #else
+            12
+        #endif
+    }
+
+    private var titleFontSize: CGFloat {
+        #if os(macOS)
+            16
+        #else
+            17
+        #endif
+    }
+
+    private var summaryFontSize: CGFloat {
+        #if os(macOS)
+            12
+        #else
+            12
+        #endif
+    }
+
+    private var trailingSpacerMinLength: CGFloat {
+        #if os(macOS)
+            10
+        #else
+            10
+        #endif
+    }
+
+    private var horizontalPadding: CGFloat {
+        #if os(macOS)
+            10
+        #else
+            10
+        #endif
+    }
+
+    private var verticalPadding: CGFloat {
+        #if os(macOS)
+            8
+        #else
+            8
+        #endif
     }
 
     private var rowBackground: some View {
