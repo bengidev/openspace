@@ -133,17 +133,17 @@ struct WorkspaceProviderPickerPopup: View {
 
     private var popupWidth: CGFloat {
         #if os(macOS)
-            640
+            500
         #else
-            360
+            320
         #endif
     }
 
     private var popupHeight: CGFloat {
         #if os(macOS)
-            560
+            460
         #else
-            520
+            420
         #endif
     }
 }
