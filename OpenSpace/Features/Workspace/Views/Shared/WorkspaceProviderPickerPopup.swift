@@ -744,9 +744,9 @@ struct WorkspaceProviderConnectionPopup: View {
 
     private var popupWidth: CGFloat {
         #if os(macOS)
-            640
+            500
         #else
-            340
+            318
         #endif
     }
 
