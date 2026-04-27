@@ -343,33 +343,6 @@ private struct WorkspaceComposerCard: View {
         .fixedSize(horizontal: true, vertical: false)
         .accessibilityLabel("AI provider")
         .accessibilityValue(providerMenuTitle)
-        #if os(macOS)
-            .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
-                providerPopupContent(for: popup)
-                    .workspaceProviderPopupPresentation()
-            }
-        #endif
-    }
-
-    @ViewBuilder
-    private func providerPopupContent(for popup: WorkspaceProviderPopup) -> some View {
-        switch popup {
-        case .picker:
-            WorkspaceProviderPickerPopup(
-                providers: providers,
-                selectedProviderID: selectedProviderID,
-                selectProvider: selectProviderForConnection,
-                dismiss: dismissProviderPopup
-            )
-
-        case let .connection(provider):
-            WorkspaceProviderConnectionPopup(
-                provider: provider,
-                dismiss: dismissProviderPopup,
-                back: showProviderPickerFromConnection,
-                connect: completeProviderConnection
-            )
-        }
     }
 
     private var selectedProvider: AIProvider? {
