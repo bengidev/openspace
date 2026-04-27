@@ -334,7 +334,7 @@ private struct WorkspaceComposerCard: View {
         #if os(macOS)
             .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
                 providerPopupContent(for: popup)
-                    .presentationCompactAdaptation(.popover)
+                    .workspaceProviderPopupPresentation()
             }
         #endif
     }
