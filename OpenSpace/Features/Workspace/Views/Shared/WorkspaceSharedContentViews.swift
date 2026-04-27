@@ -261,25 +261,29 @@ private struct WorkspaceComposerCard: View {
         .accessibilityLabel("AI provider")
         .accessibilityValue(providerMenuTitle)
         .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
-            switch popup {
-            case .picker:
-                WorkspaceProviderPickerPopup(
-                    providers: providers,
-                    selectedProviderID: selectedProviderID,
-                    selectProvider: selectProviderForConnection,
-                    dismiss: { activeProviderPopup = nil }
-                )
+            providerPopupContent(for: popup)
                 .presentationCompactAdaptation(.popover)
+        }
+    }
 
-            case let .connection(provider):
-                WorkspaceProviderConnectionPopup(
-                    provider: provider,
-                    dismiss: { activeProviderPopup = nil },
-                    back: showProviderPickerFromConnection,
-                    connect: completeProviderConnection
-                )
-                .presentationCompactAdaptation(.popover)
-            }
+    @ViewBuilder
+    private func providerPopupContent(for popup: WorkspaceProviderPopup) -> some View {
+        switch popup {
+        case .picker:
+            WorkspaceProviderPickerPopup(
+                providers: providers,
+                selectedProviderID: selectedProviderID,
+                selectProvider: selectProviderForConnection,
+                dismiss: dismissProviderPopup
+            )
+
+        case let .connection(provider):
+            WorkspaceProviderConnectionPopup(
+                provider: provider,
+                dismiss: dismissProviderPopup,
+                back: showProviderPickerFromConnection,
+                connect: completeProviderConnection
+            )
         }
     }
 
