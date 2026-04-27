@@ -8,6 +8,20 @@
 
 import SwiftUI
 
+private enum WorkspaceProviderPopup: Identifiable {
+    case picker
+    case connection(AIProvider)
+
+    var id: String {
+        switch self {
+        case .picker:
+            "picker"
+        case let .connection(provider):
+            "connection-\(provider.id)"
+        }
+    }
+}
+
 // MARK: - WorkspaceMainContent
 
 struct WorkspaceMainContent: View {
@@ -208,20 +222,6 @@ private struct WorkspaceComposerCard: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @State private var activeProviderPopup: WorkspaceProviderPopup?
-
-    private enum WorkspaceProviderPopup: Identifiable {
-        case picker
-        case connection(AIProvider)
-
-        var id: String {
-            switch self {
-            case .picker:
-                "picker"
-            case let .connection(provider):
-                "connection-\(provider.id)"
-            }
-        }
-    }
 
     private var providerMenu: some View {
         Button {
