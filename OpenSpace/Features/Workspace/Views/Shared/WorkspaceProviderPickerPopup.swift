@@ -156,21 +156,45 @@ private struct WorkspaceProviderPickerHeader: View {
     var body: some View {
         HStack(alignment: .center) {
             Text("Connect provider")
-                .font(.system(size: 27, weight: .semibold))
+                .font(.system(size: titleFontSize, weight: .semibold))
                 .foregroundStyle(WorkspaceProviderPickerPalette.primaryText)
 
             Spacer(minLength: 16)
 
             Button(action: dismiss) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 20, weight: .light))
+                    .font(.system(size: closeIconSize, weight: .light))
                     .foregroundStyle(WorkspaceProviderPickerPalette.icon)
-                    .frame(width: 38, height: 38)
+                    .frame(width: closeButtonSize, height: closeButtonSize)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Close provider picker")
         }
+    }
+
+    private var titleFontSize: CGFloat {
+        #if os(macOS)
+            24
+        #else
+            23
+        #endif
+    }
+
+    private var closeIconSize: CGFloat {
+        #if os(macOS)
+            18
+        #else
+            18
+        #endif
+    }
+
+    private var closeButtonSize: CGFloat {
+        #if os(macOS)
+            34
+        #else
+            34
+        #endif
     }
 }
 
