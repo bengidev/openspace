@@ -362,18 +362,6 @@ private struct WorkspaceComposerCard: View {
         #endif
     }
 
-    private func dismissProviderPopup() {
-        #if os(macOS)
-            activeProviderPopup = nil
-        #else
-            var transaction = Transaction(animation: nil)
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                activeProviderPopup = nil
-            }
-        #endif
-    }
-
     private var providerMenuTitle: String {
         if isLoadingProviders {
             return "Loading providers…"
