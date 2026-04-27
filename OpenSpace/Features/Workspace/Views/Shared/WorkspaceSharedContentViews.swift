@@ -135,11 +135,27 @@ struct WorkspaceMainContent: View {
     }
 
     private func presentProviderPopup(_ popup: WorkspaceProviderPopup) {
-        activeProviderPopup = popup
+        #if os(macOS)
+            activeProviderPopup = popup
+        #else
+            var transaction = Transaction(animation: nil)
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                activeProviderPopup = popup
+            }
+        #endif
     }
 
     private func dismissProviderPopup() {
-        activeProviderPopup = nil
+        #if os(macOS)
+            activeProviderPopup = nil
+        #else
+            var transaction = Transaction(animation: nil)
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                activeProviderPopup = nil
+            }
+        #endif
     }
 }
 
@@ -366,11 +382,27 @@ private struct WorkspaceComposerCard: View {
     }
 
     private func presentProviderPopup(_ popup: WorkspaceProviderPopup) {
-        activeProviderPopup = popup
+        #if os(macOS)
+            activeProviderPopup = popup
+        #else
+            var transaction = Transaction(animation: nil)
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                activeProviderPopup = popup
+            }
+        #endif
     }
 
     private func dismissProviderPopup() {
-        activeProviderPopup = nil
+        #if os(macOS)
+            activeProviderPopup = nil
+        #else
+            var transaction = Transaction(animation: nil)
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                activeProviderPopup = nil
+            }
+        #endif
     }
 
     private var providerMenuTitle: String {
