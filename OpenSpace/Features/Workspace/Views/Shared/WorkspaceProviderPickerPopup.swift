@@ -746,7 +746,7 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
 
     var body: some View {
         ZStack {
-            Button(action: dismiss) {
+            Button(action: dismissFromCenter) {
                 Rectangle()
                     .fill(Color.black.opacity(isPresented ? 0.56 : 0))
                     .ignoresSafeArea()
@@ -771,6 +771,16 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
     // MARK: Private
 
     @State private var isPresented = false
+
+    private func dismissFromCenter() {
+        withAnimation(.easeInOut(duration: 0.16)) {
+            isPresented = false
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
+            dismiss()
+        }
+    }
 }
 
 // MARK: - WorkspaceProviderPickerPalette
