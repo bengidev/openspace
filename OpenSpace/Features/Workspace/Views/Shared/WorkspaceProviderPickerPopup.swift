@@ -548,7 +548,7 @@ struct WorkspaceProviderConnectionPopup: View {
                     connectionDetails
                 }
                 .padding(.horizontal, popupHorizontalPadding)
-                .padding(.bottom, 24)
+                .padding(.bottom, scrollContentBottomPadding)
             }
             .frame(maxHeight: .infinity)
 
