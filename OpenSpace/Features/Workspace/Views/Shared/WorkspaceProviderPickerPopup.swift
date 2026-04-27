@@ -204,15 +204,15 @@ private struct WorkspaceProviderSearchField: View {
     @Binding var searchText: String
 
     var body: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: fieldSpacing) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 20, weight: .regular))
+                .font(.system(size: iconSize, weight: .regular))
                 .foregroundStyle(WorkspaceProviderPickerPalette.icon)
                 .accessibilityHidden(true)
 
             TextField("Search providers", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 20, weight: .regular))
+                .font(.system(size: textFontSize, weight: .regular))
                 .foregroundStyle(WorkspaceProviderPickerPalette.primaryText)
                 .tint(WorkspaceProviderPickerPalette.secondaryText)
                 .focused($isSearchFocused)
@@ -222,8 +222,8 @@ private struct WorkspaceProviderSearchField: View {
                     #endif
                 }
         }
-        .padding(.horizontal, 18)
-        .frame(height: 58)
+        .padding(.horizontal, horizontalPadding)
+        .frame(height: fieldHeight)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(WorkspaceProviderPickerPalette.fieldBackground)
@@ -236,6 +236,46 @@ private struct WorkspaceProviderSearchField: View {
     }
 
     @FocusState private var isSearchFocused: Bool
+
+    private var fieldSpacing: CGFloat {
+        #if os(macOS)
+            10
+        #else
+            10
+        #endif
+    }
+
+    private var iconSize: CGFloat {
+        #if os(macOS)
+            17
+        #else
+            18
+        #endif
+    }
+
+    private var textFontSize: CGFloat {
+        #if os(macOS)
+            16
+        #else
+            17
+        #endif
+    }
+
+    private var horizontalPadding: CGFloat {
+        #if os(macOS)
+            14
+        #else
+            14
+        #endif
+    }
+
+    private var fieldHeight: CGFloat {
+        #if os(macOS)
+            44
+        #else
+            48
+        #endif
+    }
 }
 
 // MARK: - WorkspaceProviderPickerRow
