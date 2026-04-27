@@ -228,7 +228,7 @@ private struct WorkspaceComposerCard: View {
 
     private var providerMenu: some View {
         Button {
-            activeProviderPopup = .picker
+            presentProviderPopup(.picker)
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: providerIconName)
@@ -289,19 +289,27 @@ private struct WorkspaceComposerCard: View {
     }
 
     private func selectProviderForConnection(_ provider: AIProvider) {
-        activeProviderPopup = .connection(provider)
+        presentProviderPopup(.connection(provider))
     }
 
     private func completeProviderConnection(_ provider: AIProvider) {
         selectedProviderID = provider.id
-        activeProviderPopup = nil
+        dismissProviderPopup()
     }
 
     private func showProviderPickerFromConnection() {
-        activeProviderPopup = nil
+        dismissProviderPopup()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            activeProviderPopup = .picker
+            presentProviderPopup(.picker)
         }
+    }
+
+    private func presentProviderPopup(_ popup: WorkspaceProviderPopup) {
+        activeProviderPopup = popup
+    }
+
+    private func dismissProviderPopup() {
+        activeProviderPopup = nil
     }
 
     private var providerMenuTitle: String {
