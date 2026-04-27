@@ -754,7 +754,7 @@ struct WorkspaceProviderConnectionPopup: View {
         #if os(macOS)
             560
         #else
-            540
+            560
         #endif
     }
 
