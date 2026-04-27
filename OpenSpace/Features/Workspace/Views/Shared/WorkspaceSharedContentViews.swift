@@ -33,6 +33,18 @@ struct WorkspaceMainContent: View {
     @State private var activeProviderPopup: WorkspaceProviderPopup?
 
     var body: some View {
+        mainContent
+        #if !os(macOS)
+        .fullScreenCover(item: $activeProviderPopup) { popup in
+            WorkspaceCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
+                providerPopupContent(for: popup)
+            }
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
         VStack(alignment: .leading, spacing: context.mainSectionSpacing) {
             VStack(spacing: context.heroSectionSpacing) {
                 WorkspaceHeroOrb(context: context)
@@ -85,6 +97,48 @@ struct WorkspaceMainContent: View {
 
     private var selectedDestination: WorkspaceDestination {
         bindings.selectedDestination.wrappedValue
+    }
+
+    @ViewBuilder
+    private func providerPopupContent(for popup: WorkspaceProviderPopup) -> some View {
+        switch popup {
+        case .picker:
+            WorkspaceProviderPickerPopup(
+                providers: bindings.providers,
+                selectedProviderID: bindings.selectedProviderID.wrappedValue,
+                selectProvider: selectProviderForConnection,
+                dismiss: dismissProviderPopup
+            )
+
+        case let .connection(provider):
+            WorkspaceProviderConnectionPopup(
+                provider: provider,
+                dismiss: dismissProviderPopup,
+                back: showProviderPickerFromConnection,
+                connect: completeProviderConnection
+            )
+        }
+    }
+
+    private func selectProviderForConnection(_ provider: AIProvider) {
+        presentProviderPopup(.connection(provider))
+    }
+
+    private func completeProviderConnection(_ provider: AIProvider) {
+        bindings.selectedProviderID.wrappedValue = provider.id
+        dismissProviderPopup()
+    }
+
+    private func showProviderPickerFromConnection() {
+        presentProviderPopup(.picker)
+    }
+
+    private func presentProviderPopup(_ popup: WorkspaceProviderPopup) {
+        activeProviderPopup = popup
+    }
+
+    private func dismissProviderPopup() {
+        activeProviderPopup = nil
     }
 }
 
