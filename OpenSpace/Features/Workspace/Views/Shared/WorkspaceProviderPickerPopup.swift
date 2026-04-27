@@ -783,19 +783,6 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
     }
 }
 
-// MARK: - WorkspaceProviderPopupPresentation
-
-extension View {
-    @ViewBuilder
-    func workspaceProviderPopupPresentation() -> some View {
-        #if os(macOS)
-            presentationCompactAdaptation(.popover)
-        #else
-            self
-        #endif
-    }
-}
-
 // MARK: - WorkspaceProviderPickerPalette
 
 private enum WorkspaceProviderPickerPalette {
