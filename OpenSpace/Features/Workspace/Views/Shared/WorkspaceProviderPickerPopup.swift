@@ -45,7 +45,7 @@ struct WorkspaceProviderPickerPopup: View {
         #if os(macOS)
             34
         #else
-            58
+            36
         #endif
     }
 
