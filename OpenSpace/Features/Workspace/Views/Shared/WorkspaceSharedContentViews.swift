@@ -260,10 +260,12 @@ private struct WorkspaceComposerCard: View {
         .fixedSize(horizontal: true, vertical: false)
         .accessibilityLabel("AI provider")
         .accessibilityValue(providerMenuTitle)
-        .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
-            providerPopupContent(for: popup)
-                .presentationCompactAdaptation(.popover)
-        }
+        #if os(macOS)
+            .popover(item: $activeProviderPopup, arrowEdge: .bottom) { popup in
+                providerPopupContent(for: popup)
+                    .presentationCompactAdaptation(.popover)
+            }
+        #endif
     }
 
     @ViewBuilder
