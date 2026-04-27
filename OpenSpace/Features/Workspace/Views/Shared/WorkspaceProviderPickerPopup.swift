@@ -530,12 +530,12 @@ struct WorkspaceProviderConnectionPopup: View {
                 .padding(.horizontal, popupHorizontalPadding)
                 .padding(.bottom, 10)
 
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 14) {
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: bodySpacing) {
                     titleBlock
 
                     Text(instructionText)
-                        .font(.system(size: 15, weight: .regular))
+                        .font(.system(size: instructionFontSize, weight: .regular))
                         .foregroundStyle(WorkspaceProviderPickerPalette.secondaryText)
                         .lineSpacing(3)
                         .fixedSize(horizontal: false, vertical: true)
