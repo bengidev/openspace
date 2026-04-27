@@ -748,7 +748,7 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
         ZStack {
             Button(action: dismiss) {
                 Rectangle()
-                    .fill(Color.black.opacity(0.56))
+                    .fill(Color.black.opacity(isPresented ? 0.56 : 0))
                     .ignoresSafeArea()
             }
             .buttonStyle(.plain)
@@ -757,9 +757,20 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
             content()
                 .padding(.horizontal, 16)
                 .padding(.vertical, 24)
+                .scaleEffect(isPresented ? 1 : 0.92, anchor: .center)
+                .opacity(isPresented ? 1 : 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .onAppear {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                isPresented = true
+            }
+        }
     }
+
+    // MARK: Private
+
+    @State private var isPresented = false
 }
 
 // MARK: - WorkspaceProviderPickerPalette
