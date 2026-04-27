@@ -13,16 +13,16 @@ struct WorkspaceProviderPickerPopup: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             WorkspaceProviderPickerHeader(dismiss: dismiss)
-                .padding(.bottom, 32)
+                .padding(.bottom, headerBottomPadding)
 
             WorkspaceProviderSearchField(searchText: $searchText)
-                .padding(.bottom, 28)
+                .padding(.bottom, searchBottomPadding)
 
             providerList
         }
         .padding(.top, popupTopPadding)
-        .padding(.horizontal, 34)
-        .padding(.bottom, 30)
+        .padding(.horizontal, popupHorizontalPadding)
+        .padding(.bottom, popupBottomPadding)
         .frame(width: popupWidth, height: popupHeight, alignment: .topLeading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -43,18 +43,50 @@ struct WorkspaceProviderPickerPopup: View {
 
     private var popupTopPadding: CGFloat {
         #if os(macOS)
-            34
+            26
         #else
-            36
+            24
+        #endif
+    }
+
+    private var popupHorizontalPadding: CGFloat {
+        #if os(macOS)
+            28
+        #else
+            24
+        #endif
+    }
+
+    private var popupBottomPadding: CGFloat {
+        #if os(macOS)
+            24
+        #else
+            22
+        #endif
+    }
+
+    private var headerBottomPadding: CGFloat {
+        #if os(macOS)
+            20
+        #else
+            20
+        #endif
+    }
+
+    private var searchBottomPadding: CGFloat {
+        #if os(macOS)
+            16
+        #else
+            14
         #endif
     }
 
     private var providerList: some View {
         ScrollView(.vertical, showsIndicators: true) {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(alignment: .leading, spacing: rowSpacing) {
                 if filteredProviders.isEmpty {
                     WorkspaceProviderEmptyState(searchText: searchText)
-                        .frame(maxWidth: .infinity, minHeight: 180)
+                        .frame(maxWidth: .infinity, minHeight: emptyStateMinHeight)
                 } else {
                     ForEach(filteredProviders) { provider in
                         WorkspaceProviderPickerRow(
@@ -70,6 +102,22 @@ struct WorkspaceProviderPickerPopup: View {
             .padding(.vertical, 2)
         }
         .frame(maxHeight: .infinity)
+    }
+
+    private var rowSpacing: CGFloat {
+        #if os(macOS)
+            6
+        #else
+            6
+        #endif
+    }
+
+    private var emptyStateMinHeight: CGFloat {
+        #if os(macOS)
+            130
+        #else
+            120
+        #endif
     }
 
     private var filteredProviders: [AIProvider] {
