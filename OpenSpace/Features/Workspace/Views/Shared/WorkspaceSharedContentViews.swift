@@ -30,6 +30,8 @@ struct WorkspaceMainContent: View {
     let context: WorkspaceRenderContext
     let bindings: WorkspaceViewBindings
 
+    @State private var activeProviderPopup: WorkspaceProviderPopup?
+
     var body: some View {
         VStack(alignment: .leading, spacing: context.mainSectionSpacing) {
             VStack(spacing: context.heroSectionSpacing) {
@@ -54,6 +56,7 @@ struct WorkspaceMainContent: View {
                     citationEnabled: bindings.citationEnabled,
                     selectedPrompt: bindings.selectedPrompt,
                     isPromptFocused: bindings.isPromptFocused,
+                    activeProviderPopup: $activeProviderPopup,
                     sendPrompt: bindings.sendPrompt
                 )
                 .frame(maxWidth: context.composerMaxWidth)
@@ -174,6 +177,7 @@ private struct WorkspaceComposerCard: View {
     @Binding var citationEnabled: Bool
     @Binding var selectedPrompt: String
     @FocusState.Binding var isPromptFocused: Bool
+    @Binding var activeProviderPopup: WorkspaceProviderPopup?
 
     let sendPrompt: () -> Void
 
@@ -221,7 +225,6 @@ private struct WorkspaceComposerCard: View {
     // MARK: Private
 
     @Environment(\.colorScheme) private var colorScheme
-    @State private var activeProviderPopup: WorkspaceProviderPopup?
 
     private var providerMenu: some View {
         Button {
