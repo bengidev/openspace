@@ -350,22 +350,6 @@ private struct WorkspaceComposerCard: View {
         return providers.first { $0.id == selectedProviderID }
     }
 
-    private func selectProviderForConnection(_ provider: AIProvider) {
-        presentProviderPopup(.connection(provider))
-    }
-
-    private func completeProviderConnection(_ provider: AIProvider) {
-        selectedProviderID = provider.id
-        dismissProviderPopup()
-    }
-
-    private func showProviderPickerFromConnection() {
-        dismissProviderPopup()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            presentProviderPopup(.picker)
-        }
-    }
-
     private func presentProviderPopup(_ popup: WorkspaceProviderPopup) {
         #if os(macOS)
             activeProviderPopup = popup
