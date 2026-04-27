@@ -738,6 +738,30 @@ private struct WorkspaceProviderConnectionMethodRow: View {
     }
 }
 
+// MARK: - WorkspaceCenteredProviderPopupOverlay
+
+struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
+    let dismiss: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ZStack {
+            Button(action: dismiss) {
+                Rectangle()
+                    .fill(Color.black.opacity(0.56))
+                    .ignoresSafeArea()
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss provider popup")
+
+            content()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 24)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+    }
+}
+
 // MARK: - WorkspaceProviderPickerPalette
 
 private enum WorkspaceProviderPickerPalette {
