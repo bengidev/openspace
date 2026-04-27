@@ -964,7 +964,7 @@ struct WorkspaceCenteredProviderPopupOverlay<Content: View>: View {
         ZStack {
             Button(action: dismissFromCenter) {
                 Rectangle()
-                    .fill(Color.black.opacity(isPresented ? 0.56 : 0))
+                    .fill(Color.black.opacity(isPresented ? 0.62 : 0))
                     .ignoresSafeArea()
             }
             .buttonStyle(.plain)
