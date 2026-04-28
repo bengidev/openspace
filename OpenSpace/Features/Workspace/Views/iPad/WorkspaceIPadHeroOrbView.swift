@@ -41,7 +41,7 @@ struct WorkspaceIPadHeroOrb: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("iPad Workspace Hero Orb") {
+#Preview("Workspace Hero Orb Component") {
     let context = WorkspacePreviewSupport.context(
         variant: .ipad,
         size: CGSize(width: 1024, height: 820)
@@ -49,5 +49,5 @@ struct WorkspaceIPadHeroOrb: View {
 
     WorkspaceIPadHeroOrb(context: context)
         .padding(48)
-        .workspacePreviewSurface(size: CGSize(width: 240, height: 240))
+        .workspaceComponentPreviewSurface()
 }
