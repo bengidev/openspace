@@ -37,6 +37,26 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "bash \"${workspaceFolder}/.vscode/run-ios-simulator.sh\""
+    },
+    {
+      "name": "Debug OpenSpace (iPad Air 13-inch M4 Simulator Attach)",
+      "type": "lldb",
+      "request": "attach",
+      "program": "${workspaceFolder}/.vscode/DerivedData-iPadAir13M4/Build/Products/Debug-iphonesimulator/OpenSpace.app/OpenSpace",
+      "pid": "${command:pickMyProcess}",
+      "preLaunchTask": "Prepare OpenSpace (iPad Air 13-inch M4 Simulator for Attach)",
+      "initCommands": [
+        "platform select ios-simulator"
+      ],
+      "sourceLanguages": [
+        "swift"
+      ]
+    },
+    {
+      "name": "Run OpenSpace (iPad Air 13-inch M4 Simulator)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bash \"${workspaceFolder}/.vscode/run-ipad-air-13-m4-simulator.sh\""
     }
   ]
 }

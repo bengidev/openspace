@@ -105,6 +105,56 @@
         "panel": "shared",
         "clear": true
       }
+    },
+    {
+      "label": "Build OpenSpace (iPad Air 13-inch M4 Simulator Debug)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/run-ipad-air-13-m4-simulator.sh",
+        "--build-only"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Run OpenSpace (iPad Air 13-inch M4 Simulator)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/run-ipad-air-13-m4-simulator.sh"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Prepare OpenSpace (iPad Air 13-inch M4 Simulator for Attach)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/run-ipad-air-13-m4-simulator.sh",
+        "--wait-for-debugger"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
     }
   ]
 }
