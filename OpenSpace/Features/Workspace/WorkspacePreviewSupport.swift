@@ -174,5 +174,12 @@ import SwiftUI
             .frame(width: size.width, height: size.height)
             .openSpaceTheme()
         }
+
+        func workspaceComponentPreviewSurface() -> some View {
+            padding(28)
+                .background(ThemeColor.backgroundPrimary)
+                .openSpaceTheme()
+                .previewLayout(.sizeThatFits)
+        }
     }
 #endif
