@@ -16,7 +16,7 @@ struct OnboardingMacView: View {
             VStack(spacing: 0) {
                 Spacer(minLength: layout.screenTopSpacing)
 
-                OnboardingAnimatedPanel(
+                OnboardingMacAnimatedPanel(
                     style: .desktopCanvas,
                     cornerRadius: layout.panelCornerRadius,
                     maxWidth: layout.panelMaxWidth,
@@ -40,7 +40,7 @@ struct OnboardingMacView: View {
                         .accessibilityIdentifier("onboarding.mac.hero-container")
 
                         VStack(alignment: .leading, spacing: 10) {
-                            OnboardingFooterView(
+                            OnboardingMacFooterView(
                                 labels: ["LOCAL-FIRST WORKBENCH", "DESKTOP DENSITY", "MULTI-WINDOW READY"],
                                 hasAppeared: context.hasAppeared,
                                 alignment: .leading,
