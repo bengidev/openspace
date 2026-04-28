@@ -91,15 +91,3 @@ struct OnboardingIOSView: View {
         OnboardingIOSLayout(context: context)
     }
 }
-
-#Preview("iPhone Onboarding Content") {
-    OnboardingIOSView(
-        context: OnboardingPreviewSupport.context(
-            variant: .ios,
-            size: CGSize(width: 390, height: 844)
-        ),
-        onContinue: { }
-    )
-    .padding(.vertical, 18)
-    .onboardingPreviewSurface(size: CGSize(width: 390, height: 844))
-}
