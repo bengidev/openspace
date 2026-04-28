@@ -1025,22 +1025,122 @@ enum WorkspaceMacProviderPickerPalette {
     static let primaryButtonText = Color(hex: "151515")
 }
 
-#Preview("Mac Provider Picker Popup") {
-    WorkspaceMacProviderPickerPopup(
-        providers: WorkspacePreviewSupport.defaultProviders,
-        selectedProviderID: WorkspacePreviewSupport.defaultProviders.first?.id,
-        selectProvider: { _ in },
-        dismiss: { }
-    )
-    .workspacePreviewSurface(size: CGSize(width: 1240, height: 820))
-}
+#if DEBUG
+    private struct WorkspaceMacProviderPickerPopupPreview: View {
+        @State private var selectedProviderID = WorkspacePreviewSupport.defaultProviders.first?.id
 
-#Preview("Mac Provider Connection Popup") {
-    WorkspaceMacProviderConnectionPopup(
-        provider: WorkspacePreviewSupport.defaultProviders[0],
-        dismiss: { },
-        back: { },
-        connect: { _ in }
-    )
-    .workspacePreviewSurface(size: CGSize(width: 1240, height: 820))
-}
+        var body: some View {
+            WorkspaceMacProviderPickerPopup(
+                providers: WorkspacePreviewSupport.defaultProviders,
+                selectedProviderID: selectedProviderID,
+                selectProvider: { provider in
+                    selectedProviderID = provider.id
+                },
+                dismiss: { }
+            )
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceMacProviderSearchFieldPreview: View {
+        @State private var searchText = ""
+
+        var body: some View {
+            WorkspaceMacProviderSearchField(searchText: $searchText)
+                .frame(width: 500)
+                .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceMacProviderPickerRowsPreview: View {
+        @State private var selectedProviderID = WorkspacePreviewSupport.defaultProviders.first?.id
+
+        var body: some View {
+            VStack(spacing: 8) {
+                ForEach(WorkspacePreviewSupport.defaultProviders) { provider in
+                    WorkspaceMacProviderPickerRow(
+                        provider: provider,
+                        isSelected: provider.id == selectedProviderID
+                    ) {
+                        selectedProviderID = provider.id
+                    }
+                }
+            }
+            .frame(width: 500)
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceMacProviderConnectionPopupPreview: View {
+        var body: some View {
+            WorkspaceMacProviderConnectionPopup(
+                provider: WorkspacePreviewSupport.defaultProviders[0],
+                dismiss: { },
+                back: { },
+                connect: { _ in }
+            )
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceMacProviderConnectionMethodPickerPreview: View {
+        @State private var selectedMethod: AIProviderConnectionMethod = .apiKey
+
+        var body: some View {
+            WorkspaceMacProviderConnectionMethodPicker(
+                methods: WorkspacePreviewSupport.defaultProviders[0].availableConnectionMethods,
+                selectedMethod: $selectedMethod
+            )
+            .frame(width: 500)
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    #Preview("Provider Picker Popup Component") {
+        WorkspaceMacProviderPickerPopupPreview()
+    }
+
+    #Preview("Provider Picker Header Component") {
+        WorkspaceMacProviderPickerHeader(dismiss: { })
+            .frame(width: 500)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Search Field Component") {
+        WorkspaceMacProviderSearchFieldPreview()
+    }
+
+    #Preview("Provider Picker Rows Component") {
+        WorkspaceMacProviderPickerRowsPreview()
+    }
+
+    #Preview("Provider Empty State Component") {
+        WorkspaceMacProviderEmptyState(searchText: "OpenRouter")
+            .frame(width: 500)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Connection Popup Component") {
+        WorkspaceMacProviderConnectionPopupPreview()
+    }
+
+    #Preview("Provider Connection Navigation Component") {
+        WorkspaceMacProviderConnectionNavigation(dismiss: { }, back: { })
+            .frame(width: 500)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Connection Method Component") {
+        WorkspaceMacProviderConnectionMethodPickerPreview()
+    }
+
+    #Preview("Provider Connection Footer Component") {
+        WorkspaceMacProviderConnectionFooter(
+            title: "Continue",
+            isDisabled: false,
+            action: { }
+        )
+        .frame(width: 500)
+        .workspaceComponentPreviewSurface()
+    }
+#endif
