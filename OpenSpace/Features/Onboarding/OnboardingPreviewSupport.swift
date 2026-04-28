@@ -41,5 +41,12 @@ import SwiftUI
             .frame(width: size.width, height: size.height)
             .openSpaceTheme()
         }
+
+        func onboardingComponentPreviewSurface() -> some View {
+            padding(28)
+                .background(ThemeColor.backgroundPrimary)
+                .openSpaceTheme()
+                .previewLayout(.sizeThatFits)
+        }
     }
 #endif
