@@ -336,7 +336,7 @@ private struct OnboardingMacCardBackground: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("Mac Capability Strip") {
+#Preview("Onboarding Capability Strip Component") {
     OnboardingMacCapabilityStrip(
         chips: ["Code", "Images", "Research", "Automation"],
         hasAppeared: true,
@@ -344,13 +344,13 @@ private struct OnboardingMacCardBackground: View {
         identifierPrefix: "preview.onboarding.mac.capabilities"
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 640, height: 180))
+    .onboardingComponentPreviewSurface()
 }
 
 #Preview("Mac Session Surface Card") {
     OnboardingMacSessionSurfaceCard()
         .padding(24)
-        .onboardingPreviewSurface(size: CGSize(width: 520, height: 340))
+        .onboardingComponentPreviewSurface()
 }
 
 #Preview("Mac Workflow Highlights") {
@@ -359,11 +359,11 @@ private struct OnboardingMacCardBackground: View {
         reduceMotion: true
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 520, height: 280))
+    .onboardingComponentPreviewSurface()
 }
 
 #Preview("Desktop Workspace Card") {
     OnboardingMacSessionSurfaceCard()
         .padding(24)
-        .onboardingPreviewSurface(size: CGSize(width: 480, height: 260))
+        .onboardingComponentPreviewSurface()
 }

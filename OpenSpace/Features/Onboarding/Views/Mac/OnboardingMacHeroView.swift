@@ -159,5 +159,5 @@ struct OnboardingMacHeroView: View {
         onContinue: { }
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 1120, height: 460))
+    .onboardingComponentPreviewSurface()
 }

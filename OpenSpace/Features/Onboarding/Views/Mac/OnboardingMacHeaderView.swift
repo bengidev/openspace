@@ -85,5 +85,5 @@ struct OnboardingMacHeaderView: View {
 #Preview("Desktop Header") {
     OnboardingMacHeaderView()
         .padding(24)
-        .onboardingPreviewSurface(size: CGSize(width: 1120, height: 120))
+        .onboardingComponentPreviewSurface()
 }

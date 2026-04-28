@@ -83,15 +83,3 @@ struct OnboardingMacView: View {
         OnboardingMacLayout(context: context)
     }
 }
-
-#Preview("Desktop Onboarding Content") {
-    OnboardingMacView(
-        context: OnboardingPreviewSupport.context(
-            variant: .mac,
-            size: CGSize(width: 1120, height: 620)
-        ),
-        onContinue: { }
-    )
-    .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 1120, height: 620))
-}
