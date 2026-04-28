@@ -244,7 +244,7 @@ struct WorkspaceIOSComposerCard: View {
     }
 }
 
-#Preview("iPhone Workspace Composer Card") {
+#Preview("Workspace Composer Card Component") {
     WorkspacePreviewSupport.preview(
         variant: .ios,
         size: CGSize(width: 390, height: 844),
@@ -265,8 +265,8 @@ struct WorkspaceIOSComposerCard: View {
             activeProviderPopup: .constant(nil),
             sendPrompt: { }
         )
-        .frame(maxWidth: context.composerMaxWidth)
+        .frame(width: context.composerMaxWidth)
         .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
+    .workspaceComponentPreviewSurface()
 }

@@ -47,7 +47,7 @@ struct WorkspaceIOSHeroHeading: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("iPhone Workspace Hero Heading") {
+#Preview("Workspace Hero Heading Component") {
     let context = WorkspacePreviewSupport.context(
         variant: .ios,
         size: CGSize(width: 390, height: 844)
@@ -56,5 +56,5 @@ struct WorkspaceIOSHeroHeading: View {
     WorkspaceIOSHeroHeading(context: context, destination: .home)
         .frame(width: 360)
         .padding(32)
-        .workspacePreviewSurface(size: CGSize(width: 390, height: 240))
+        .workspaceComponentPreviewSurface()
 }

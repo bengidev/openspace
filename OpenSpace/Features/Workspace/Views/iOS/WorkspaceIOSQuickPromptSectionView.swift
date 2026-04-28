@@ -83,7 +83,7 @@ struct WorkspaceIOSQuickPromptSection: View {
     }
 }
 
-#Preview("iPhone Workspace Quick Prompts") {
+#Preview("Workspace Quick Prompts Component") {
     WorkspacePreviewSupport.preview(
         variant: .ios,
         size: CGSize(width: 390, height: 844),
@@ -96,8 +96,8 @@ struct WorkspaceIOSQuickPromptSection: View {
             isPromptFocused: bindings.isPromptFocused,
             quickPromptTapped: bindings.quickPromptTapped
         )
-        .frame(maxWidth: context.quickPromptMaxWidth)
+        .frame(width: context.quickPromptMaxWidth)
         .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
+    .workspaceComponentPreviewSurface()
 }
