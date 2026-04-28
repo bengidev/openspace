@@ -51,7 +51,7 @@ struct OnboardingMacSupportingNote: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("Mac Onboarding Supporting Note") {
+#Preview("Onboarding Supporting Note Component") {
     OnboardingMacSupportingNote(
         text: "Mac preview keeps the supporting-note component isolated for platform-specific layout debugging.",
         hasAppeared: true,
@@ -59,5 +59,5 @@ struct OnboardingMacSupportingNote: View {
         maxWidth: 920
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 1_000, height: 180))
+    .onboardingComponentPreviewSurface()
 }

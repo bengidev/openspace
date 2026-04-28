@@ -25,7 +25,7 @@ struct OnboardingMacFooterView: View {
     }
 }
 
-#Preview("Mac Onboarding Footer") {
+#Preview("Onboarding Footer Component") {
     OnboardingMacFooterView(
         labels: ["LOCAL-FIRST WORKBENCH", "DESKTOP DENSITY", "MULTI-WINDOW READY"],
         hasAppeared: true,
@@ -33,5 +33,5 @@ struct OnboardingMacFooterView: View {
         identifierPrefix: "preview.onboarding.mac"
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 1_000, height: 160))
+    .onboardingComponentPreviewSurface()
 }
