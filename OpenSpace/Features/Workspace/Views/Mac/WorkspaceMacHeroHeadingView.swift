@@ -47,7 +47,7 @@ struct WorkspaceMacHeroHeading: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("Mac Workspace Hero Heading") {
+#Preview("Workspace Hero Heading Component") {
     let context = WorkspacePreviewSupport.context(
         variant: .mac,
         size: CGSize(width: 1280, height: 820)
@@ -56,5 +56,5 @@ struct WorkspaceMacHeroHeading: View {
     WorkspaceMacHeroHeading(context: context, destination: .home)
         .frame(width: 920)
         .padding(32)
-        .workspacePreviewSurface(size: CGSize(width: 1_000, height: 240))
+        .workspaceComponentPreviewSurface()
 }

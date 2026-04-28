@@ -244,7 +244,7 @@ struct WorkspaceMacComposerCard: View {
     }
 }
 
-#Preview("Mac Workspace Composer Card") {
+#Preview("Workspace Composer Card Component") {
     WorkspacePreviewSupport.preview(
         variant: .mac,
         size: CGSize(width: 1280, height: 820),
@@ -265,8 +265,8 @@ struct WorkspaceMacComposerCard: View {
             activeProviderPopup: .constant(nil),
             sendPrompt: { }
         )
-        .frame(maxWidth: context.composerMaxWidth)
+        .frame(width: context.composerMaxWidth)
         .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 1240, height: 820))
+    .workspaceComponentPreviewSurface()
 }

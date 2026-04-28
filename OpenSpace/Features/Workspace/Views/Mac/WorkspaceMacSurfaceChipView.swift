@@ -39,7 +39,7 @@ struct WorkspaceMacSurfaceChip: View {
     }
 }
 
-#Preview("Mac Workspace Surface Chip") {
+#Preview("Workspace Surface Chip Component") {
     let context = WorkspacePreviewSupport.context(
         variant: .mac,
         size: CGSize(width: 1280, height: 820)
@@ -52,5 +52,5 @@ struct WorkspaceMacSurfaceChip: View {
         context: context
     )
     .padding(32)
-    .workspacePreviewSurface(size: CGSize(width: 260, height: 160))
+    .workspaceComponentPreviewSurface()
 }
