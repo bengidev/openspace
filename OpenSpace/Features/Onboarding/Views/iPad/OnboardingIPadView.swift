@@ -14,12 +14,10 @@ struct OnboardingIPadView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: layout.screenStackSpacing) {
-                Spacer(minLength: layout.screenTopSpacing)
-
-                OnboardingAnimatedPanel(
+                OnboardingIPadAnimatedPanel(
                     cornerRadius: layout.panelCornerRadius,
                     maxWidth: layout.panelMaxWidth,
-                    minHeight: layout.panelMinHeight,
+                    minHeight: 0,
                     horizontalPadding: layout.panelHorizontalPadding,
                     hasAppeared: context.hasAppeared,
                     reduceMotion: context.reduceMotion,
@@ -31,10 +29,9 @@ struct OnboardingIPadView: View {
                             .accessibilityIdentifier("onboarding.ipad.header-container")
                             .padding(.horizontal, layout.headerHorizontalPadding)
                             .padding(.top, layout.headerTopPadding)
+                            .padding(.bottom, layout.heroBottomPadding)
 
-                        Spacer(minLength: layout.capabilityTopSpacing)
-
-                        OnboardingCapabilityStrip(
+                        OnboardingIPadCapabilityStrip(
                             chips: context.capabilityChips + ["Multiplatform", "Local-First"],
                             hasAppeared: context.hasAppeared,
                             reduceMotion: context.reduceMotion,
@@ -44,7 +41,8 @@ struct OnboardingIPadView: View {
                         )
                         .padding(.horizontal, layout.capabilityHorizontalPadding)
 
-                        Spacer(minLength: layout.heroTopSpacing)
+                        Spacer()
+                            .frame(height: 100)
 
                         OnboardingIPadHeroView(
                             context: context,
@@ -55,9 +53,10 @@ struct OnboardingIPadView: View {
                         .padding(.horizontal, layout.heroHorizontalPadding)
                         .padding(.bottom, layout.heroBottomPadding)
 
-                        Spacer(minLength: layout.footerTopSpacing)
+                        Spacer()
+                            .frame(height: 50)
 
-                        OnboardingFooterView(
+                        OnboardingIPadFooterView(
                             labels: ["IPAD WORKSPACE", "EXPANSIVE COMPOSITION", "FOCUS + BREADTH"],
                             hasAppeared: context.hasAppeared,
                             alignment: .center,
@@ -69,7 +68,7 @@ struct OnboardingIPadView: View {
                     }
                 }
 
-                OnboardingSupportingNote(
+                OnboardingIPadSupportingNote(
                     text: "On iPad, onboarding uses the extra canvas for hierarchy and glanceable setup context, so the first screen already feels like a workspace instead of a blown-up phone sheet.",
                     hasAppeared: context.hasAppeared,
                     alignment: .center,
@@ -82,7 +81,7 @@ struct OnboardingIPadView: View {
             .frame(
                 maxWidth: .infinity,
                 minHeight: layout.screenContentMinHeight,
-                alignment: .top
+                alignment: .center
             )
         }
         .safeAreaPadding(.vertical, layout.screenVerticalPadding)

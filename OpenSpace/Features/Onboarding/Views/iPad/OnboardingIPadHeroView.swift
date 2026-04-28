@@ -15,14 +15,15 @@ struct OnboardingIPadHeroView: View {
     let onContinue: () -> Void
 
     var body: some View {
-        Group {
-            if layout.prefersStackedHero {
-                stackedHero
-            } else {
-                wideHero
-            }
-        }
-        .accessibilityIdentifier("onboarding.ipad.hero")
+//        Group {
+//            if layout.prefersStackedHero {
+//                stackedHero
+//            } else {
+//                wideHero
+//            }
+//        }
+        wideHero
+            .accessibilityIdentifier("onboarding.ipad.hero")
     }
 
     // MARK: Private
@@ -34,10 +35,12 @@ struct OnboardingIPadHeroView: View {
             copyColumn(alignment: .leading, isLeadingAligned: true)
                 .frame(maxWidth: layout.heroCopyColumnMaxWidth, alignment: .leading)
 
+            Spacer()
+
             capabilityColumn
                 .frame(width: layout.heroCardColumnWidth, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var stackedHero: some View {
@@ -93,7 +96,6 @@ struct OnboardingIPadHeroView: View {
                     .multilineTextAlignment(isLeadingAligned ? .leading : .center)
                     .foregroundStyle(ThemeColor.overlayTextPrimary(for: colorScheme))
                     .frame(maxWidth: layout.heroTextMaxWidth, alignment: isLeadingAligned ? .leading : .center)
-                    .lineLimit(2)
                     .minimumScaleFactor(0.82)
                     .opacity(context.hasAppeared ? 1 : 0)
                     .offset(y: context.hasAppeared ? 0 : 18)
@@ -131,7 +133,7 @@ struct OnboardingIPadHeroView: View {
                 identifier: "onboarding.ipad.hero.primary-action",
                 action: onContinue
             )
-            .padding(.top, layout.heroActionTopSpacing)
+            .padding([.top, .bottom], layout.heroActionTopSpacing * 2)
             .frame(maxWidth: .infinity, alignment: isLeadingAligned ? .leading : .center)
         }
         .frame(maxWidth: .infinity, alignment: isLeadingAligned ? .leading : .center)
