@@ -179,5 +179,5 @@ private struct WorkspaceMacRailButton: View {
             .background(WorkspacePalette.sidebarBackground(for: .light))
             .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 220, height: 820))
+    .workspaceComponentPreviewSurface()
 }
