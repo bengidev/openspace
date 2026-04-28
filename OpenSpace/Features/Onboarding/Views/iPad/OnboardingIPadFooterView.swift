@@ -25,7 +25,7 @@ struct OnboardingIPadFooterView: View {
     }
 }
 
-#Preview("iPad Onboarding Footer") {
+#Preview("Onboarding Footer Component") {
     OnboardingIPadFooterView(
         labels: ["IPAD WORKSPACE", "EXPANSIVE COMPOSITION", "FOCUS + BREADTH"],
         hasAppeared: true,
@@ -33,5 +33,5 @@ struct OnboardingIPadFooterView: View {
         identifierPrefix: "preview.onboarding.ipad"
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 840, height: 160))
+    .onboardingComponentPreviewSurface()
 }

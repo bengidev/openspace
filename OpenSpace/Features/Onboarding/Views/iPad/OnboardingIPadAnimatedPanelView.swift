@@ -73,7 +73,7 @@ struct OnboardingIPadAnimatedPanel<Content: View>: View {
     }
 }
 
-#Preview("iPad Onboarding Animated Panel") {
+#Preview("Onboarding Animated Panel Component") {
     let context = OnboardingPreviewSupport.context(
         variant: .ipad,
         size: CGSize(width: 1024, height: 820)
@@ -100,5 +100,5 @@ struct OnboardingIPadAnimatedPanel<Content: View>: View {
         .foregroundStyle(.white)
         .padding(32)
     }
-    .onboardingPreviewSurface(size: CGSize(width: 1024, height: 820))
+    .onboardingComponentPreviewSurface()
 }

@@ -37,7 +37,7 @@ struct OnboardingIPadCapabilityStrip: View {
     }
 }
 
-#Preview("iPad Onboarding Capability Strip") {
+#Preview("Onboarding Capability Strip Component") {
     let context = OnboardingPreviewSupport.context(
         variant: .ipad,
         size: CGSize(width: 1024, height: 820)
@@ -53,5 +53,5 @@ struct OnboardingIPadCapabilityStrip: View {
         identifierPrefix: "preview.onboarding.ipad.capabilities"
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 840, height: 160))
+    .onboardingComponentPreviewSurface()
 }

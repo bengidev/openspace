@@ -51,7 +51,7 @@ struct OnboardingIPadSupportingNote: View {
     @Environment(\.colorScheme) private var colorScheme
 }
 
-#Preview("iPad Onboarding Supporting Note") {
+#Preview("Onboarding Supporting Note Component") {
     OnboardingIPadSupportingNote(
         text: "iPad preview keeps the supporting-note component isolated for platform-specific layout debugging.",
         hasAppeared: true,
@@ -59,5 +59,5 @@ struct OnboardingIPadSupportingNote: View {
         maxWidth: 760
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 840, height: 180))
+    .onboardingComponentPreviewSurface()
 }
