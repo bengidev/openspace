@@ -68,5 +68,5 @@ struct WorkspaceIOSCompactNavigation: View {
         WorkspaceIOSCompactNavigation(selectedDestination: bindings.selectedDestination)
             .padding(20)
     }
-    .workspacePreviewSurface(size: CGSize(width: 390, height: 180))
+    .workspaceComponentPreviewSurface()
 }
