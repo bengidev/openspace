@@ -26,8 +26,8 @@ struct OnboardingView: View {
                 OnboardingBackdrop(isAnimated: context.isAnimated)
                     .accessibilityIdentifier("onboarding.backdrop")
 
-                OnboardingAbstractView(
-                    variant: variant,
+                OnboardingPlatformViewFactory.makeContent(
+                    for: variant,
                     context: context,
                     onContinue: onContinue
                 )
