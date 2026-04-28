@@ -95,16 +95,3 @@ struct OnboardingIPadView: View {
         OnboardingIPadLayout(context: context)
     }
 }
-
-#Preview("iPad Onboarding Content") {
-    OnboardingIPadView(
-        context: OnboardingPreviewSupport.context(
-            variant: .ipad,
-            size: CGSize(width: 834, height: 1194),
-            capabilityChips: OnboardingPreviewSupport.defaultCapabilityChips + ["Multiplatform", "Local-First"]
-        ),
-        onContinue: { }
-    )
-    .padding(.vertical, 24)
-    .onboardingPreviewSurface(size: CGSize(width: 834, height: 1194))
-}

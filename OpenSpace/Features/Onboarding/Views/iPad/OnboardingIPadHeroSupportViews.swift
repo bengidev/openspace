@@ -94,5 +94,5 @@ struct OnboardingIPadDetailRow: View {
         OnboardingIPadDetailRow(title: "Rhythm", value: "Context stays visible without crowding")
     }
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 420, height: 260))
+    .onboardingComponentPreviewSurface()
 }

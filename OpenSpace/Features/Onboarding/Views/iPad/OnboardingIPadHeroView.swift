@@ -153,5 +153,5 @@ struct OnboardingIPadHeroView: View {
         onContinue: { }
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 834, height: 430))
+    .onboardingComponentPreviewSurface()
 }

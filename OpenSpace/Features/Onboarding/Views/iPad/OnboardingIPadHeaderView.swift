@@ -87,5 +87,5 @@ struct OnboardingIPadHeaderView: View {
 #Preview("iPad Header") {
     OnboardingIPadHeaderView()
         .padding(24)
-        .onboardingPreviewSurface(size: CGSize(width: 834, height: 130))
+        .onboardingComponentPreviewSurface()
 }
