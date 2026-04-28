@@ -16,7 +16,7 @@ struct OnboardingIOSView: View {
             VStack(spacing: layout.screenStackSpacing) {
                 Spacer(minLength: layout.screenTopSpacing)
 
-                OnboardingAnimatedPanel(
+                OnboardingIOSAnimatedPanel(
                     cornerRadius: layout.panelCornerRadius,
                     maxWidth: layout.panelMaxWidth,
                     minHeight: layout.panelMinHeight,
@@ -32,7 +32,7 @@ struct OnboardingIOSView: View {
                             .padding(.horizontal, layout.headerHorizontalPadding)
                             .padding(.top, layout.headerTopPadding)
 
-                        OnboardingCapabilityStrip(
+                        OnboardingIOSCapabilityStrip(
                             chips: context.capabilityChips,
                             hasAppeared: context.hasAppeared,
                             reduceMotion: context.reduceMotion,
@@ -52,7 +52,7 @@ struct OnboardingIOSView: View {
 
                         Spacer(minLength: layout.footerTopSpacing)
 
-                        OnboardingFooterView(
+                        OnboardingIOSFooterView(
                             labels: ["FIRST-RUN ONBOARDING", "FUTURISTIC CALM", "LOCAL-FIRST"],
                             hasAppeared: context.hasAppeared,
                             alignment: .center,
@@ -64,7 +64,7 @@ struct OnboardingIOSView: View {
                     }
                 }
 
-                OnboardingSupportingNote(
+                OnboardingIOSSupportingNote(
                     text: "OpenSpace keeps first-run setup calm on iPhone, so you can understand the workspace quickly and keep momentum when you enter the app.",
                     hasAppeared: context.hasAppeared,
                     alignment: .center,
