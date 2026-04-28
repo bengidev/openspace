@@ -82,7 +82,7 @@ struct WorkspaceView: View {
             replayOnboarding: { store.send(.replayOnboarding) }
         )
 
-        let styledShell = shellView(for: context.variant, context: context, bindings: bindings)
+        let styledShell = WorkspacePlatformViewFactory.makeShell(for: context.variant, context: context, bindings: bindings)
             .frame(width: context.shellWidth)
             .padding(.horizontal, context.shellHorizontalPadding)
             .padding(.vertical, context.shellVerticalPadding)
@@ -98,21 +98,5 @@ struct WorkspaceView: View {
                 styledShell
             }
         #endif
-    }
-
-    @ViewBuilder
-    private func shellView(
-        for variant: WorkspacePlatformVariant,
-        context: WorkspaceRenderContext,
-        bindings: WorkspaceViewBindings
-    ) -> some View {
-        switch variant {
-        case .ios:
-            WorkspaceIOSShell(context: context, bindings: bindings)
-        case .ipad:
-            WorkspaceIPadShell(context: context, bindings: bindings)
-        case .mac:
-            WorkspaceMacShell(context: context, bindings: bindings)
-        }
     }
 }
