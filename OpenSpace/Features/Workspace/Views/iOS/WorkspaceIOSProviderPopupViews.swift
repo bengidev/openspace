@@ -1025,22 +1025,122 @@ enum WorkspaceIOSProviderPickerPalette {
     static let primaryButtonText = Color(hex: "151515")
 }
 
-#Preview("iPhone Provider Picker Popup") {
-    WorkspaceIOSProviderPickerPopup(
-        providers: WorkspacePreviewSupport.defaultProviders,
-        selectedProviderID: WorkspacePreviewSupport.defaultProviders.first?.id,
-        selectProvider: { _ in },
-        dismiss: { }
-    )
-    .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
-}
+#if DEBUG
+    private struct WorkspaceIOSProviderPickerPopupPreview: View {
+        @State private var selectedProviderID = WorkspacePreviewSupport.defaultProviders.first?.id
 
-#Preview("iPhone Provider Connection Popup") {
-    WorkspaceIOSProviderConnectionPopup(
-        provider: WorkspacePreviewSupport.defaultProviders[0],
-        dismiss: { },
-        back: { },
-        connect: { _ in }
-    )
-    .workspacePreviewSurface(size: CGSize(width: 390, height: 844))
-}
+        var body: some View {
+            WorkspaceIOSProviderPickerPopup(
+                providers: WorkspacePreviewSupport.defaultProviders,
+                selectedProviderID: selectedProviderID,
+                selectProvider: { provider in
+                    selectedProviderID = provider.id
+                },
+                dismiss: { }
+            )
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceIOSProviderSearchFieldPreview: View {
+        @State private var searchText = ""
+
+        var body: some View {
+            WorkspaceIOSProviderSearchField(searchText: $searchText)
+                .frame(width: 320)
+                .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceIOSProviderPickerRowsPreview: View {
+        @State private var selectedProviderID = WorkspacePreviewSupport.defaultProviders.first?.id
+
+        var body: some View {
+            VStack(spacing: 8) {
+                ForEach(WorkspacePreviewSupport.defaultProviders) { provider in
+                    WorkspaceIOSProviderPickerRow(
+                        provider: provider,
+                        isSelected: provider.id == selectedProviderID
+                    ) {
+                        selectedProviderID = provider.id
+                    }
+                }
+            }
+            .frame(width: 320)
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceIOSProviderConnectionPopupPreview: View {
+        var body: some View {
+            WorkspaceIOSProviderConnectionPopup(
+                provider: WorkspacePreviewSupport.defaultProviders[0],
+                dismiss: { },
+                back: { },
+                connect: { _ in }
+            )
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    private struct WorkspaceIOSProviderConnectionMethodPickerPreview: View {
+        @State private var selectedMethod: AIProviderConnectionMethod = .apiKey
+
+        var body: some View {
+            WorkspaceIOSProviderConnectionMethodPicker(
+                methods: WorkspacePreviewSupport.defaultProviders[0].availableConnectionMethods,
+                selectedMethod: $selectedMethod
+            )
+            .frame(width: 320)
+            .workspaceComponentPreviewSurface()
+        }
+    }
+
+    #Preview("Provider Picker Popup Component") {
+        WorkspaceIOSProviderPickerPopupPreview()
+    }
+
+    #Preview("Provider Picker Header Component") {
+        WorkspaceIOSProviderPickerHeader(dismiss: { })
+            .frame(width: 320)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Search Field Component") {
+        WorkspaceIOSProviderSearchFieldPreview()
+    }
+
+    #Preview("Provider Picker Rows Component") {
+        WorkspaceIOSProviderPickerRowsPreview()
+    }
+
+    #Preview("Provider Empty State Component") {
+        WorkspaceIOSProviderEmptyState(searchText: "OpenRouter")
+            .frame(width: 320)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Connection Popup Component") {
+        WorkspaceIOSProviderConnectionPopupPreview()
+    }
+
+    #Preview("Provider Connection Navigation Component") {
+        WorkspaceIOSProviderConnectionNavigation(dismiss: { }, back: { })
+            .frame(width: 320)
+            .workspaceComponentPreviewSurface()
+    }
+
+    #Preview("Provider Connection Method Component") {
+        WorkspaceIOSProviderConnectionMethodPickerPreview()
+    }
+
+    #Preview("Provider Connection Footer Component") {
+        WorkspaceIOSProviderConnectionFooter(
+            title: "Continue",
+            isDisabled: false,
+            action: { }
+        )
+        .frame(width: 320)
+        .workspaceComponentPreviewSurface()
+    }
+#endif
