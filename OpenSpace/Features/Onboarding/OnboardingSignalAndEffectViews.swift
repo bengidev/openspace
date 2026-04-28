@@ -186,7 +186,7 @@ struct AmbientBreathingEffect: ViewModifier {
         identifierPrefix: "preview.onboarding.signal"
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 520, height: 180))
+    .onboardingComponentPreviewSurface()
 }
 
 #Preview("Onboarding Capability Chips") {
@@ -219,5 +219,5 @@ struct AmbientBreathingEffect: ViewModifier {
         )
     }
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 520, height: 180))
+    .onboardingComponentPreviewSurface()
 }

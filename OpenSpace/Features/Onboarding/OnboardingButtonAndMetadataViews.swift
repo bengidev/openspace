@@ -157,7 +157,7 @@ struct OnboardingMetadataBar: View {
         identifier: "preview.onboarding.primary"
     ) { }
         .padding(24)
-        .onboardingPreviewSurface(size: CGSize(width: 420, height: 180))
+        .onboardingComponentPreviewSurface()
 }
 
 #Preview("Onboarding Metadata Bar") {
@@ -168,5 +168,5 @@ struct OnboardingMetadataBar: View {
         identifierPrefix: "preview.onboarding.metadata"
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 720, height: 160))
+    .onboardingComponentPreviewSurface()
 }
