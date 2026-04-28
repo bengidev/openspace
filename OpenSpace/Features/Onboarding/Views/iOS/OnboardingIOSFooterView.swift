@@ -25,7 +25,7 @@ struct OnboardingIOSFooterView: View {
     }
 }
 
-#Preview("iPhone Onboarding Footer") {
+#Preview("Onboarding Footer Component") {
     OnboardingIOSFooterView(
         labels: ["FIRST-RUN ONBOARDING", "FUTURISTIC CALM", "LOCAL-FIRST"],
         hasAppeared: true,
@@ -33,5 +33,5 @@ struct OnboardingIOSFooterView: View {
         identifierPrefix: "preview.onboarding.ios"
     )
     .padding(32)
-    .onboardingPreviewSurface(size: CGSize(width: 390, height: 160))
+    .onboardingComponentPreviewSurface()
 }

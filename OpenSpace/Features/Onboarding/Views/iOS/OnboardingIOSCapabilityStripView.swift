@@ -37,7 +37,7 @@ struct OnboardingIOSCapabilityStrip: View {
     }
 }
 
-#Preview("iPhone Onboarding Capability Strip") {
+#Preview("Onboarding Capability Strip Component") {
     let context = OnboardingPreviewSupport.context(
         variant: .ios,
         size: CGSize(width: 390, height: 844)
@@ -53,5 +53,5 @@ struct OnboardingIOSCapabilityStrip: View {
         identifierPrefix: "preview.onboarding.ios.capabilities"
     )
     .padding(24)
-    .onboardingPreviewSurface(size: CGSize(width: 390, height: 160))
+    .onboardingComponentPreviewSurface()
 }
