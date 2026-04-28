@@ -215,7 +215,7 @@ private struct WorkspaceIPadRailButton: View {
             .background(WorkspacePalette.sidebarBackground(for: .light))
             .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 240, height: 820))
+    .workspaceComponentPreviewSurface()
 }
 
 #Preview("iPad Compact Navigation") {
@@ -227,5 +227,5 @@ private struct WorkspaceIPadRailButton: View {
         WorkspaceIPadCompactNavigation(selectedDestination: bindings.selectedDestination)
             .padding(24)
     }
-    .workspacePreviewSurface(size: CGSize(width: 744, height: 180))
+    .workspaceComponentPreviewSurface()
 }

@@ -155,19 +155,3 @@ struct WorkspaceIPadMainContent: View {
         #endif
     }
 }
-
-#Preview("iPad Workspace Content") {
-    WorkspacePreviewSupport.preview(
-        variant: .ipad,
-        size: CGSize(width: 1024, height: 820),
-        selectedDestination: .threads,
-        selectedPrompt: "Continue the design sync thread and extract unresolved decisions.",
-        selectedWritingStyle: .strategic,
-        highlightedQuickPrompt: .emailReply
-    ) { context, bindings in
-        WorkspaceIPadMainContent(context: context, bindings: bindings)
-            .frame(width: 920, height: context.minimumShellHeight, alignment: .topLeading)
-            .padding(24)
-    }
-    .workspacePreviewSurface(size: CGSize(width: 1024, height: 820))
-}
