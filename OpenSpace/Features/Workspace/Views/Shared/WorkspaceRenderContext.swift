@@ -25,8 +25,6 @@ struct WorkspaceRenderContext {
             false
         case .ipad:
             false
-        case .mac:
-            false
         }
     }
 
@@ -36,8 +34,6 @@ struct WorkspaceRenderContext {
             760
         case .ipad:
             1380
-        case .mac:
-            .infinity
         }
     }
 
@@ -54,8 +50,6 @@ struct WorkspaceRenderContext {
             min(max(containerSize.width * 0.038, 16), 22)
         case .ipad:
             min(max(containerSize.width * 0.03, 18), 32)
-        case .mac:
-            0
         }
     }
 
@@ -65,8 +59,6 @@ struct WorkspaceRenderContext {
             14
         case .ipad:
             usesSidebar ? 18 : 16
-        case .mac:
-            0
         }
     }
 
@@ -76,8 +68,6 @@ struct WorkspaceRenderContext {
             30
         case .ipad:
             36
-        case .mac:
-            0
         }
     }
 
@@ -85,8 +75,6 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios, .ipad:
             max(containerSize.height - (shellVerticalPadding * 2), preferredShellHeight)
-        case .mac:
-            max(containerSize.height - (shellVerticalPadding * 2), 0)
         }
     }
 
@@ -95,8 +83,6 @@ struct WorkspaceRenderContext {
         case .ios:
             720
         case .ipad:
-            820
-        case .mac:
             820
         }
     }
@@ -107,8 +93,6 @@ struct WorkspaceRenderContext {
             0
         case .ipad:
             88
-        case .mac:
-            72
         }
     }
 
@@ -118,8 +102,6 @@ struct WorkspaceRenderContext {
             22
         case .ipad:
             28
-        case .mac:
-            macUsesCompactVerticalLayout ? 14 : 24
         }
     }
 
@@ -134,13 +116,6 @@ struct WorkspaceRenderContext {
 
         case .ipad:
             .system(size: 52, weight: .semibold, design: .default)
-
-        case .mac:
-            .system(
-                size: min(max(min(containerSize.width * 0.04, containerSize.height * 0.06), 30), 46),
-                weight: .semibold,
-                design: .default
-            )
         }
     }
 
@@ -154,8 +129,6 @@ struct WorkspaceRenderContext {
             min(containerSize.width - 72, 360)
         case .ipad:
             620
-        case .mac:
-            min(max(containerSize.width * 0.26, 560), 700)
         }
     }
 
@@ -165,8 +138,6 @@ struct WorkspaceRenderContext {
             min(containerSize.width - 64, 360)
         case .ipad:
             780
-        case .mac:
-            min(max(containerSize.width * 0.42, 720), 980)
         }
     }
 
@@ -176,8 +147,6 @@ struct WorkspaceRenderContext {
             min(containerSize.width - 64, 360)
         case .ipad:
             860
-        case .mac:
-            min(max(containerSize.width * 0.44, 760), 1060)
         }
     }
 
@@ -195,8 +164,6 @@ struct WorkspaceRenderContext {
             10
         case .ipad:
             34
-        case .mac:
-            macUsesCompactVerticalLayout ? 10 : min(max(containerSize.height * 0.045, 22), 58)
         }
     }
 
@@ -206,8 +173,6 @@ struct WorkspaceRenderContext {
             14
         case .ipad:
             22
-        case .mac:
-            macUsesCompactVerticalLayout ? 12 : 18
         }
     }
 
@@ -217,8 +182,6 @@ struct WorkspaceRenderContext {
             160
         case .ipad:
             160
-        case .mac:
-            156
         }
     }
 
@@ -228,15 +191,11 @@ struct WorkspaceRenderContext {
             12
         case .ipad:
             18
-        case .mac:
-            16
         }
     }
 
     var mainHorizontalPadding: CGFloat {
         switch variant {
-        case .mac:
-            min(max(containerSize.width * 0.018, 26), 48)
         case .ipad:
             28
         case .ios:
@@ -246,8 +205,6 @@ struct WorkspaceRenderContext {
 
     var mainVerticalPadding: CGFloat {
         switch variant {
-        case .mac:
-            macUsesCompactVerticalLayout ? 16 : min(max(containerSize.height * 0.024, 22), 44)
         case .ipad:
             24
         case .ios:
@@ -261,8 +218,6 @@ struct WorkspaceRenderContext {
             CGSize(width: 390, height: 844)
         case .ipad:
             CGSize(width: 1180, height: 860)
-        case .mac:
-            CGSize(width: 1400, height: 860)
         }
     }
 
@@ -272,8 +227,6 @@ struct WorkspaceRenderContext {
             CGSize(width: 390, height: 844)
         case .ipad:
             CGSize(width: 900, height: 720)
-        case .mac:
-            CGSize(width: 1200, height: 760)
         }
     }
 
@@ -283,8 +236,6 @@ struct WorkspaceRenderContext {
             48
         case .ipad:
             usesSidebar ? 66 : 56
-        case .mac:
-            macUsesCompactVerticalLayout ? 38 : min(max(containerSize.height * 0.065, 40), 54)
         }
     }
 
@@ -294,8 +245,6 @@ struct WorkspaceRenderContext {
             16
         case .ipad:
             usesSidebar ? 20 : 16
-        case .mac:
-            macUsesCompactVerticalLayout ? 12 : 20
         }
     }
 
@@ -305,8 +254,6 @@ struct WorkspaceRenderContext {
             .body
         case .ipad:
             .title3
-        case .mac:
-            macUsesCompactVerticalLayout ? .body : .title3
         }
     }
 
@@ -316,8 +263,6 @@ struct WorkspaceRenderContext {
             96
         case .ipad:
             usesSidebar ? 132 : 110
-        case .mac:
-            macUsesCompactVerticalLayout ? 78 : 104
         }
     }
 
@@ -327,8 +272,6 @@ struct WorkspaceRenderContext {
             4 ... 6
         case .ipad:
             usesSidebar ? 4 ... 8 : 4 ... 6
-        case .mac:
-            4 ... 8
         }
     }
 
@@ -338,8 +281,6 @@ struct WorkspaceRenderContext {
             16
         case .ipad:
             usesSidebar ? 22 : 18
-        case .mac:
-            macUsesCompactVerticalLayout ? 12 : 18
         }
     }
 
@@ -347,8 +288,6 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios, .ipad:
             26
-        case .mac:
-            22
         }
     }
 
@@ -360,7 +299,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             0.72
-        case .ipad, .mac:
+        case .ipad:
             0.84
         }
     }
@@ -369,7 +308,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             .footnote.weight(.semibold)
-        case .ipad, .mac:
+        case .ipad:
             .subheadline.weight(.medium)
         }
     }
@@ -382,7 +321,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             .callout.weight(.medium)
-        case .ipad, .mac:
+        case .ipad:
             .subheadline.weight(.medium)
         }
     }
@@ -407,8 +346,6 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             116
-        case .mac:
-            macUsesCompactVerticalLayout ? 96 : 128
         case .ipad:
             154
         }
@@ -420,8 +357,6 @@ struct WorkspaceRenderContext {
             16
         case .ipad:
             18
-        case .mac:
-            macUsesCompactVerticalLayout ? 14 : 16
         }
     }
 
@@ -429,8 +364,6 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios, .ipad:
             160
-        case .mac:
-            156
         }
     }
 
@@ -446,7 +379,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             17
-        case .ipad, .mac:
+        case .ipad:
             16
         }
     }
@@ -455,7 +388,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             11
-        case .ipad, .mac:
+        case .ipad:
             12
         }
     }
@@ -464,15 +397,13 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             4
-        case .ipad, .mac:
+        case .ipad:
             2
         }
     }
 
     var heroHeadingMaxWidth: CGFloat? {
         switch variant {
-        case .mac:
-            900
         default:
             nil
         }
@@ -500,8 +431,6 @@ struct WorkspaceRenderContext {
             390
         case .ipad:
             920
-        case .mac:
-            1160
         }
     }
 
@@ -509,7 +438,7 @@ struct WorkspaceRenderContext {
         switch variant {
         case .ios:
             844
-        case .ipad, .mac:
+        case .ipad:
             820
         }
     }
@@ -533,14 +462,8 @@ struct WorkspaceRenderContext {
             .body
         case .ipad:
             usesSidebar ? .title3.weight(.regular) : .body
-        case .mac:
-            .body
         }
     }
 
     // MARK: Private
-
-    private var macUsesCompactVerticalLayout: Bool {
-        variant == .mac && containerSize.height < 760
-    }
 }
