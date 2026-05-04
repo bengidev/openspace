@@ -8,7 +8,6 @@
 enum OnboardingPlatformVariant {
     case ios
     case ipad
-    case mac
 
     var identifierPrefix: String {
         switch self {
@@ -16,8 +15,6 @@ enum OnboardingPlatformVariant {
             "onboarding.ios"
         case .ipad:
             "onboarding.ipad"
-        case .mac:
-            "onboarding.mac"
         }
     }
 }

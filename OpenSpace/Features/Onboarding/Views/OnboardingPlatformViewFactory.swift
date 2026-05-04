@@ -19,8 +19,6 @@ enum OnboardingPlatformViewFactory {
             OnboardingIOSView(context: context, onContinue: onContinue)
         case .ipad:
             OnboardingIPadView(context: context, onContinue: onContinue)
-        case .mac:
-            OnboardingMacView(context: context, onContinue: onContinue)
         }
     }
 }
