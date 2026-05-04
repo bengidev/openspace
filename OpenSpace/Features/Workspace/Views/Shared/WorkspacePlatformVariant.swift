@@ -10,14 +10,11 @@ import SwiftUI
 enum WorkspacePlatformVariant {
     case ios
     case ipad
-    case mac
 
     // MARK: Internal
 
     static var current: WorkspacePlatformVariant {
-        #if os(macOS)
-            .mac
-        #elseif os(iOS)
+        #if os(iOS)
             UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
         #else
             .ios
@@ -30,8 +27,6 @@ enum WorkspacePlatformVariant {
             "workspace.ios"
         case .ipad:
             "workspace.ipad"
-        case .mac:
-            "workspace.mac"
         }
     }
 }

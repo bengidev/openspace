@@ -19,8 +19,6 @@ enum WorkspacePlatformViewFactory {
             WorkspaceIOSShell(context: context, bindings: bindings)
         case .ipad:
             WorkspaceIPadShell(context: context, bindings: bindings)
-        case .mac:
-            WorkspaceMacShell(context: context, bindings: bindings)
         }
     }
 }
