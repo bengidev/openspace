@@ -113,15 +113,11 @@ struct WorkspaceIOSComposerCard: View {
     }
 
     private func presentProviderPopup(_ popup: WorkspaceIOSProviderPopup) {
-        #if os(macOS)
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
             activeProviderPopup = popup
-        #else
-            var transaction = Transaction(animation: nil)
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                activeProviderPopup = popup
-            }
-        #endif
+        }
     }
 
     private var providerMenuTitle: String {
