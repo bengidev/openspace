@@ -2,8 +2,6 @@ import ComposableArchitecture
 import SwiftUI
 #if os(iOS)
     import UIKit
-#elseif os(macOS)
-    import AppKit
 #endif
 
 // MARK: - OpenSpaceApp
@@ -17,8 +15,6 @@ struct OpenSpaceApp: App {
             let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
             UIView.appearance().tintColor = accent
             UIView.appearance().overrideUserInterfaceStyle = .dark
-        #elseif os(macOS)
-            NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
         #endif
     }
 
@@ -33,11 +29,5 @@ struct OpenSpaceApp: App {
             AppRootView(store: store)
                 .openSpaceTheme()
         }
-        #if os(macOS)
-        .defaultSize(width: 1280, height: 820)
-        .defaultPosition(.center)
-        .windowToolbarStyle(.unifiedCompact)
-        .windowResizability(.contentMinSize)
-        #endif
     }
 }
