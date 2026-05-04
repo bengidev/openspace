@@ -91,12 +91,8 @@ struct WorkspaceView: View {
             .scaleEffect(context.reduceMotion ? 1 : (context.hasAppeared ? 1 : 0.985))
             .animation(.easeOut(duration: 0.85), value: context.hasAppeared)
 
-        #if os(macOS)
+        ScrollView(.vertical, showsIndicators: false) {
             styledShell
-        #else
-            ScrollView(.vertical, showsIndicators: false) {
-                styledShell
-            }
-        #endif
+        }
     }
 }
