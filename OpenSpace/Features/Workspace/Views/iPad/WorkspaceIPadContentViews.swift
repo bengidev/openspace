@@ -18,27 +18,13 @@ struct WorkspaceIPadMainContent: View {
     @State private var activeProviderPopup: WorkspaceIPadProviderPopup?
 
     var body: some View {
-        #if os(macOS)
-            ZStack {
-                mainContent
-
-                if let activeProviderPopup {
-                    WorkspaceIPadCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
-                        providerPopupContent(for: activeProviderPopup)
-                    }
-                    .zIndex(1)
+        mainContent
+            .fullScreenCover(item: $activeProviderPopup) { popup in
+                WorkspaceIPadCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
+                    providerPopupContent(for: popup)
                 }
+                .presentationBackground(.clear)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        #else
-            mainContent
-                .fullScreenCover(item: $activeProviderPopup) { popup in
-                    WorkspaceIPadCenteredProviderPopupOverlay(dismiss: dismissProviderPopup) {
-                        providerPopupContent(for: popup)
-                    }
-                    .presentationBackground(.clear)
-                }
-        #endif
     }
 
     @ViewBuilder
@@ -132,26 +118,18 @@ struct WorkspaceIPadMainContent: View {
     }
 
     private func presentProviderPopup(_ popup: WorkspaceIPadProviderPopup) {
-        #if os(macOS)
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
             activeProviderPopup = popup
-        #else
-            var transaction = Transaction(animation: nil)
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                activeProviderPopup = popup
-            }
-        #endif
+        }
     }
 
     private func dismissProviderPopup() {
-        #if os(macOS)
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
             activeProviderPopup = nil
-        #else
-            var transaction = Transaction(animation: nil)
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                activeProviderPopup = nil
-            }
-        #endif
+        }
     }
 }
