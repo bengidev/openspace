@@ -7,10 +7,6 @@ struct OnboardingFeature: Reducer {
         var hasAppeared = false
         var isLoading = false
         var errorMessage: String?
-
-        #if os(macOS)
-            var hasConfiguredWindow = false
-        #endif
     }
 
     @CasePathable

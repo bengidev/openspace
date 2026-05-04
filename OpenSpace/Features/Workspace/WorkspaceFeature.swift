@@ -22,10 +22,6 @@ struct WorkspaceFeature: Reducer {
         var isLoading = false
         var threads = [WorkspaceThread]()
         var errorMessage: String?
-
-        #if os(macOS)
-            var hasConfiguredWindow = false
-        #endif
     }
 
     @CasePathable
