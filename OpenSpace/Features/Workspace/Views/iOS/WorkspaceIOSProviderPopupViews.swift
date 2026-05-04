@@ -49,43 +49,23 @@ struct WorkspaceIOSProviderPickerPopup: View {
     @State private var searchText = ""
 
     private var popupTopPadding: CGFloat {
-        #if os(macOS)
-            26
-        #else
-            24
-        #endif
+        24
     }
 
     private var popupHorizontalPadding: CGFloat {
-        #if os(macOS)
-            28
-        #else
-            24
-        #endif
+        24
     }
 
     private var popupBottomPadding: CGFloat {
-        #if os(macOS)
-            24
-        #else
-            22
-        #endif
+        22
     }
 
     private var headerBottomPadding: CGFloat {
-        #if os(macOS)
-            20
-        #else
-            20
-        #endif
+        20
     }
 
     private var searchBottomPadding: CGFloat {
-        #if os(macOS)
-            16
-        #else
-            14
-        #endif
+        14
     }
 
     private var providerList: some View {
@@ -112,19 +92,11 @@ struct WorkspaceIOSProviderPickerPopup: View {
     }
 
     private var rowSpacing: CGFloat {
-        #if os(macOS)
-            6
-        #else
-            6
-        #endif
+        6
     }
 
     private var emptyStateMinHeight: CGFloat {
-        #if os(macOS)
-            130
-        #else
-            120
-        #endif
+        120
     }
 
     private var filteredProviders: [AIProvider] {
@@ -139,19 +111,11 @@ struct WorkspaceIOSProviderPickerPopup: View {
     }
 
     private var popupWidth: CGFloat {
-        #if os(macOS)
-            500
-        #else
-            320
-        #endif
+        320
     }
 
     private var popupHeight: CGFloat {
-        #if os(macOS)
-            460
-        #else
-            420
-        #endif
+        420
     }
 }
 
@@ -181,27 +145,15 @@ struct WorkspaceIOSProviderPickerHeader: View {
     }
 
     private var titleFontSize: CGFloat {
-        #if os(macOS)
-            24
-        #else
-            23
-        #endif
+        23
     }
 
     private var closeIconSize: CGFloat {
-        #if os(macOS)
-            18
-        #else
-            18
-        #endif
+        18
     }
 
     private var closeButtonSize: CGFloat {
-        #if os(macOS)
-            34
-        #else
-            34
-        #endif
+        34
     }
 }
 
@@ -224,9 +176,6 @@ struct WorkspaceIOSProviderSearchField: View {
                 .tint(WorkspaceIOSProviderPickerPalette.secondaryText)
                 .focused($isSearchFocused)
                 .onAppear {
-                    #if os(macOS)
-                        isSearchFocused = true
-                    #endif
                 }
         }
         .padding(.horizontal, horizontalPadding)
@@ -245,43 +194,23 @@ struct WorkspaceIOSProviderSearchField: View {
     @FocusState private var isSearchFocused: Bool
 
     private var fieldSpacing: CGFloat {
-        #if os(macOS)
-            10
-        #else
-            10
-        #endif
+        10
     }
 
     private var iconSize: CGFloat {
-        #if os(macOS)
-            17
-        #else
-            18
-        #endif
+        18
     }
 
     private var textFontSize: CGFloat {
-        #if os(macOS)
-            16
-        #else
-            17
-        #endif
+        17
     }
 
     private var horizontalPadding: CGFloat {
-        #if os(macOS)
-            14
-        #else
-            14
-        #endif
+        14
     }
 
     private var fieldHeight: CGFloat {
-        #if os(macOS)
-            44
-        #else
-            48
-        #endif
+        48
     }
 }
 
@@ -337,51 +266,27 @@ struct WorkspaceIOSProviderPickerRow: View {
     }
 
     private var rowSpacing: CGFloat {
-        #if os(macOS)
-            12
-        #else
-            12
-        #endif
+        12
     }
 
     private var titleFontSize: CGFloat {
-        #if os(macOS)
-            16
-        #else
-            17
-        #endif
+        17
     }
 
     private var summaryFontSize: CGFloat {
-        #if os(macOS)
-            12
-        #else
-            12
-        #endif
+        12
     }
 
     private var trailingSpacerMinLength: CGFloat {
-        #if os(macOS)
-            10
-        #else
-            10
-        #endif
+        10
     }
 
     private var horizontalPadding: CGFloat {
-        #if os(macOS)
-            10
-        #else
-            10
-        #endif
+        10
     }
 
     private var verticalPadding: CGFloat {
-        #if os(macOS)
-            8
-        #else
-            8
-        #endif
+        8
     }
 
     private var rowBackground: some View {
@@ -450,11 +355,7 @@ struct WorkspaceIOSProviderIcon: View {
     }
 
     private var iconSize: CGFloat {
-        #if os(macOS)
-            32
-        #else
-            34
-        #endif
+        34
     }
 
     private var initials: String {
@@ -587,43 +488,23 @@ struct WorkspaceIOSProviderConnectionPopup: View {
     @State private var selectedMethod: AIProviderConnectionMethod
 
     private var popupTopPadding: CGFloat {
-        #if os(macOS)
-            22
-        #else
-            26
-        #endif
+        26
     }
 
     private var popupHorizontalPadding: CGFloat {
-        #if os(macOS)
-            28
-        #else
-            22
-        #endif
+        22
     }
 
     private var bodySpacing: CGFloat {
-        #if os(macOS)
-            13
-        #else
-            12
-        #endif
+        12
     }
 
     private var instructionFontSize: CGFloat {
-        #if os(macOS)
-            14
-        #else
-            15
-        #endif
+        15
     }
 
     private var scrollContentBottomPadding: CGFloat {
-        #if os(macOS)
-            18
-        #else
-            22
-        #endif
+        22
     }
 
     private var titleBlock: some View {
@@ -640,19 +521,11 @@ struct WorkspaceIOSProviderConnectionPopup: View {
     }
 
     private var titleIconSize: CGFloat {
-        #if os(macOS)
-            34
-        #else
-            34
-        #endif
+        34
     }
 
     private var titleFontSize: CGFloat {
-        #if os(macOS)
-            22
-        #else
-            22
-        #endif
+        22
     }
 
     @ViewBuilder
@@ -682,9 +555,6 @@ struct WorkspaceIOSProviderConnectionPopup: View {
                     )
                     .accessibilityLabel("\(provider.name) API key")
                     .onAppear {
-                        #if os(macOS)
-                            isAPIKeyFocused = true
-                        #endif
                     }
 
                 Text("Use \(provider.preferredAPIKeyName) from \(provider.name).")
@@ -750,19 +620,11 @@ struct WorkspaceIOSProviderConnectionPopup: View {
     }
 
     private var popupWidth: CGFloat {
-        #if os(macOS)
-            500
-        #else
-            318
-        #endif
+        318
     }
 
     private var popupHeight: CGFloat {
-        #if os(macOS)
-            560
-        #else
-            560
-        #endif
+        560
     }
 
     private func continueConnection() {
@@ -786,19 +648,11 @@ struct WorkspaceIOSProviderConnectionFooter: View {
     let action: () -> Void
 
     private var horizontalPadding: CGFloat {
-        #if os(macOS)
-            28
-        #else
-            22
-        #endif
+        22
     }
 
     private var buttonHeight: CGFloat {
-        #if os(macOS)
-            46
-        #else
-            46
-        #endif
+        46
     }
 
     var body: some View {
