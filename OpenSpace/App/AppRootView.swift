@@ -10,9 +10,6 @@ struct AppRootView: View {
                 WorkspaceView(
                     store: store.scope(state: \.workspace, action: \.workspace)
                 )
-                #if os(macOS)
-                .frame(minWidth: 640, idealWidth: 1120, minHeight: 520, idealHeight: 760)
-                #endif
             } else {
                 OnboardingView(
                     store: store.scope(state: \.onboarding, action: \.onboarding),
@@ -20,9 +17,6 @@ struct AppRootView: View {
                         store.send(.onboarding(.continueButtonTapped))
                     }
                 )
-                #if os(macOS)
-                .frame(minWidth: 760, idealWidth: 1120, minHeight: 560, idealHeight: 720)
-                #endif
             }
         }
     }
