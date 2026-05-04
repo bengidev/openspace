@@ -42,6 +42,12 @@ struct WorkspaceIOSProviderPickerPopup: View {
         .compositingGroup()
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .shadow(color: .black.opacity(0.36), radius: 30, x: 0, y: 22)
+        .borderBeamOverlay(
+            border: WorkspaceIOSProviderPickerPalette.stroke,
+            beam: [ThemeColor.accent, ThemeColor.accent100, ThemeColor.accent200],
+            beamBlur: 12,
+            cornerRadius: 18
+        )
     }
 
     // MARK: Private

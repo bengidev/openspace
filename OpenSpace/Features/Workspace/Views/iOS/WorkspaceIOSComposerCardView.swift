@@ -65,6 +65,13 @@ struct WorkspaceIOSComposerCard: View {
                 .stroke(WorkspacePalette.cardStroke(for: colorScheme), lineWidth: 1)
         )
         .shadow(color: WorkspacePalette.shadow(for: colorScheme), radius: 18, x: 0, y: 14)
+        .concentricRectangle(
+            count: 3,
+            spacing: 3,
+            cornerRadius: context.composerCornerRadius,
+            colors: [ThemeColor.accent, ThemeColor.accent100, ThemeColor.accent200],
+            animate: false
+        )
     }
 
     // MARK: Private
