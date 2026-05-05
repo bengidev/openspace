@@ -46,10 +46,6 @@ struct OnboardingView: View {
     private let capabilityChips = ["Code", "Images", "Research", "Automation"]
 
     private func platformVariant(for _: CGSize) -> OnboardingPlatformVariant {
-        #if os(iOS)
-            UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
-        #else
-            .ios
-        #endif
+        UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
     }
 }
