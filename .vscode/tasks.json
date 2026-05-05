@@ -28,22 +28,6 @@
       }
     },
     {
-      "label": "Run OpenSpace (macOS)",
-      "type": "process",
-      "command": "bash",
-      "args": [
-        "${workspaceFolder}/.vscode/run-macos.sh"
-      ],
-      "problemMatcher": [
-        "$gcc"
-      ],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "clear": true
-      }
-    },
-    {
       "label": "Run OpenSpace (iOS Simulator)",
       "type": "process",
       "command": "bash",
