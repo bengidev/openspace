@@ -1,8 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
-#if os(iOS)
-    import UIKit
-#endif
+import UIKit
 
 // MARK: - OpenSpaceApp
 
