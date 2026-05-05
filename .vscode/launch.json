@@ -2,12 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run OpenSpace (macOS)",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "bash \"${workspaceFolder}/.vscode/run-macos.sh\""
-    },
-    {
       "name": "Debug OpenSpace (iOS Simulator Attach)",
       "type": "lldb",
       "request": "attach",
