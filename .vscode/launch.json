@@ -2,17 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug OpenSpace (macOS)",
-      "type": "lldb",
-      "request": "launch",
-      "program": "${workspaceFolder}/.vscode/DerivedData/Build/Products/Debug/OpenSpace.app/Contents/MacOS/OpenSpace",
-      "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Build OpenSpace (macOS Debug)",
-      "sourceLanguages": [
-        "swift"
-      ]
-    },
-    {
       "name": "Run OpenSpace (macOS)",
       "type": "node-terminal",
       "request": "launch",
