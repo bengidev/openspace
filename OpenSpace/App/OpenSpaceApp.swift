@@ -9,11 +9,9 @@ struct OpenSpaceApp: App {
     // MARK: Lifecycle
 
     init() {
-        #if os(iOS)
-            let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
-            UIView.appearance().tintColor = accent
-            UIView.appearance().overrideUserInterfaceStyle = .dark
-        #endif
+        let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
+        UIView.appearance().tintColor = accent
+        UIView.appearance().overrideUserInterfaceStyle = .dark
     }
 
     // MARK: Internal
