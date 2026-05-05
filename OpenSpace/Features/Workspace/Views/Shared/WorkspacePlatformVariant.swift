@@ -14,11 +14,7 @@ enum WorkspacePlatformVariant {
     // MARK: Internal
 
     static var current: WorkspacePlatformVariant {
-        #if os(iOS)
-            UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
-        #else
-            .ios
-        #endif
+        UIDevice.current.userInterfaceIdiom == .pad ? .ipad : .ios
     }
 
     var identifierPrefix: String {
