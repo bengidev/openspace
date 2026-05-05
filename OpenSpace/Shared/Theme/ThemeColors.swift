@@ -7,10 +7,7 @@
 
 import Foundation
 import SwiftUI
-
-#if canImport(UIKit)
-    import UIKit
-#endif
+import UIKit
 
 // MARK: - AppTheme
 
