@@ -225,7 +225,7 @@ enum ThemeColor {
 extension View {
     /// Applies the OpenSpace shared theme tokens.
     /// OpenSpace defaults to its Color Hunt dark appearance when no explicit app-level theme is chosen.
-    func openSpaceTheme(preferredColorScheme: ColorScheme? = .dark) -> some View {
+    func openSpaceTheme(preferredColorScheme: ColorScheme? = nil) -> some View {
         modifier(OpenSpaceThemeModifier(preferredColorScheme: preferredColorScheme))
     }
 
