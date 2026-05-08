@@ -31,7 +31,7 @@ struct OnboardingView: View {
                 DiagonalHatchPattern(
                     palette: palette,
                     spacing: 10,
-                    opacity: palette.isDark ? 0.025 : 0.04
+                    opacity: palette.isDark ? 0.10 : 0.04
                 )
                 .ignoresSafeArea()
 
@@ -247,7 +247,7 @@ private struct FeaturePageView: View {
                     DiagonalHatchPattern(
                         palette: palette,
                         spacing: 10,
-                        opacity: palette.isDark ? 0.025 : 0.04
+                        opacity: palette.isDark ? 0.10 : 0.04
                     )
 
                     if page.model == .promptQueue {
