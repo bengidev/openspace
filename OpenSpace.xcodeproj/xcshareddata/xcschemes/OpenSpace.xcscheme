@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B62D07B82F90865E00334BB1"
+               BlueprintIdentifier = "B6DBF4DC2FACF8C100FA7D2C"
                BuildableName = "OpenSpace.app"
                BlueprintName = "OpenSpace"
                ReferencedContainer = "container:OpenSpace.xcodeproj">
@@ -35,7 +35,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B62D07C72F90865F00334BB1"
+               BlueprintIdentifier = "B6DBF4EB2FACF8C200FA7D2C"
                BuildableName = "OpenSpaceTests.xctest"
                BlueprintName = "OpenSpaceTests"
                ReferencedContainer = "container:OpenSpace.xcodeproj">
@@ -58,7 +58,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B62D07B82F90865E00334BB1"
+            BlueprintIdentifier = "B6DBF4DC2FACF8C100FA7D2C"
             BuildableName = "OpenSpace.app"
             BlueprintName = "OpenSpace"
             ReferencedContainer = "container:OpenSpace.xcodeproj">
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B62D07B82F90865E00334BB1"
+            BlueprintIdentifier = "B6DBF4DC2FACF8C100FA7D2C"
             BuildableName = "OpenSpace.app"
             BlueprintName = "OpenSpace"
             ReferencedContainer = "container:OpenSpace.xcodeproj">
