@@ -112,7 +112,7 @@ struct OnboardingPage: Equatable, Identifiable {
             indexLabel: "AI-02",
             eyebrow: "Model workspace",
             headline: "Ask questions, write, and explore ideas with AI models",
-            body: "OpenSpace turns prompts into a focused working surface for drafting, refactoring, research, and SwiftUI decisions.",
+            body: "OpenSpace turns prompts into a focused working surface for drafting, refactoring, research, and interface decisions.",
             metric: "MODEL STUDIO",
             command: "ask --model adaptive --context project",
             shaderIntensity: 0.55,
