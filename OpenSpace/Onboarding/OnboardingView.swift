@@ -373,7 +373,7 @@ private struct FeaturePageView: View {
 
             Spacer()
 
-            Text("SWIFTUI / SWIFTDATA / TCA / MODEL")
+            Text("AGENTS / PROMPTS / MODELS / REVIEW")
                 .font(.system(size: 8.5, weight: .medium, design: .monospaced))
                 .tracking(-0.24)
                 .foregroundStyle(palette.textMuted)
