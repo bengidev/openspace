@@ -102,7 +102,7 @@ struct OnboardingPage: Equatable, Identifiable {
             command: "pair --device workspace --mode sealed",
             shaderIntensity: 0.78,
             highlights: [
-                FeatureHighlight(title: "SwiftData memory", detail: "Persists locally", symbol: "externaldrive.badge.checkmark"),
+                FeatureHighlight(title: "Local memory", detail: "Persists offline", symbol: "externaldrive.badge.checkmark"),
                 FeatureHighlight(title: "Secure session", detail: "Rotates keys", symbol: "lock.shield"),
             ]
         ),
