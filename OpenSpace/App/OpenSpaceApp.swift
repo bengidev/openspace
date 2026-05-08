@@ -1,24 +1,33 @@
-import ComposableArchitecture
-import SwiftUI
-import UIKit
+//
+//  OpenSpaceApp.swift
+//  OpenSpace
+//
+//  Created by Bambang Tri Rahmat Doni on 07/05/26.
+//
 
-// MARK: - OpenSpaceApp
+import SwiftUI
+import SwiftData
 
 @main
 struct OpenSpaceApp: App {
-    // MARK: Lifecycle
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            Item.self,
+            OnboardingProgress.self,
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
-    init() {
-        let accent = UIColor(hex: "FF7A30") ?? UIColor(ThemeColor.accent)
-        UIView.appearance().tintColor = accent
-    }
-
-    // MARK: Internal
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
 
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
-                .openSpaceTheme()
+            OnboardingContainerView()
         }
+        .modelContainer(sharedModelContainer)
     }
 }
