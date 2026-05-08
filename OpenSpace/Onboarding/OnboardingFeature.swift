@@ -187,9 +187,9 @@ struct PromptQueueItem: Equatable, Identifiable {
     let status: Status
 
     static let samples: [PromptQueueItem] = [
-        PromptQueueItem(title: "Map onboarding state", detail: "Reducer already owns current page", status: .running),
-        PromptQueueItem(title: "Generate SwiftUI cards", detail: "No vertical scroll, compact content", status: .next),
-        PromptQueueItem(title: "Persist completion", detail: "SwiftData writes local progress", status: .queued),
+        PromptQueueItem(title: "Map onboarding state", detail: "Engine already owns current page", status: .running),
+        PromptQueueItem(title: "Generate interface cards", detail: "No vertical scroll, compact content", status: .next),
+        PromptQueueItem(title: "Persist completion", detail: "Storage writes local progress", status: .queued),
         PromptQueueItem(title: "Review model budget", detail: "Reasoning slider updates the run", status: .ready),
     ]
 }
