@@ -132,7 +132,7 @@ struct OnboardingPage: Equatable, Identifiable {
             command: "queue append --while-running follow-up",
             shaderIntensity: 0.66,
             highlights: [
-                FeatureHighlight(title: "TCA reducer", detail: "Explicit actions", symbol: "point.3.connected.trianglepath.dotted"),
+                FeatureHighlight(title: "State engine", detail: "Explicit actions", symbol: "point.3.connected.trianglepath.dotted"),
                 FeatureHighlight(title: "Run steering", detail: "Visible follow-ups", symbol: "arrow.triangle.branch"),
             ]
         ),
