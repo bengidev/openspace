@@ -482,7 +482,7 @@ private struct EncryptedPairingVisual: View {
     var body: some View {
         ZStack {
             HStack(spacing: 0) {
-                DeviceNode(title: "LOCAL", subtitle: "SwiftData key", systemImage: "iphone", palette: palette, active: isConfirmed)
+                DeviceNode(title: "LOCAL", subtitle: "Local key", systemImage: "iphone", palette: palette, active: isConfirmed)
                     .offset(x: appeared ? 0 : -24)
                 Spacer(minLength: 6)
                 DeviceNode(title: "OPENSPACE", subtitle: "AI chat lane", systemImage: "macbook", palette: palette, active: true)
