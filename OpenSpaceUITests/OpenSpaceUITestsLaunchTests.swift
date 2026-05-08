@@ -2,7 +2,7 @@
 //  OpenSpaceUITestsLaunchTests.swift
 //  OpenSpaceUITests
 //
-//  Created by Bambang Tri Rahmat Doni on 16/04/26.
+//  Created by Bambang Tri Rahmat Doni on 07/05/26.
 //
 
 import XCTest
@@ -17,7 +17,7 @@ final class OpenSpaceUITestsLaunchTests: XCTestCase {
     }
 
     @MainActor
-    func testLaunch() {
+    func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
 
