@@ -167,9 +167,9 @@ struct PromptOption: Equatable, Identifiable {
     let prompt: String
 
     static let samples: [PromptOption] = [
-        PromptOption(label: "ASK", prompt: "How should I structure the SwiftData model for this workflow?"),
-        PromptOption(label: "WRITE", prompt: "Draft a concise SwiftUI view for the secure pairing step."),
-        PromptOption(label: "EXPLORE", prompt: "Compare TCA actions for queued prompts and reasoning controls."),
+        PromptOption(label: "ASK", prompt: "How should I structure the memory model for this workflow?"),
+        PromptOption(label: "WRITE", prompt: "Draft a concise interface view for the secure pairing step."),
+        PromptOption(label: "EXPLORE", prompt: "Compare state actions for queued prompts and reasoning controls."),
     ]
 }
 
