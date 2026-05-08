@@ -30,7 +30,7 @@ struct ContentView: View {
                     .foregroundStyle(palette.textPrimary)
 
                 Text(
-                    "Your AI assistance workspace is initialized with SwiftUI surfaces, SwiftData persistence, TCA state, and model controls ready for the next task."
+                    "Your AI-native command center. Deploy specialized agents to handle code, review, test, and ship — all within your existing workflow without context switching."
                 )
                 .font(.system(size: 15, weight: .regular))
                 .foregroundStyle(palette.textSecondary)
