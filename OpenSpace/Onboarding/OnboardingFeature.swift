@@ -117,7 +117,7 @@ struct OnboardingPage: Equatable, Identifiable {
             command: "ask --model adaptive --context project",
             shaderIntensity: 0.55,
             highlights: [
-                FeatureHighlight(title: "SwiftUI canvas", detail: "Native cards", symbol: "square.stack.3d.up"),
+                FeatureHighlight(title: "Design canvas", detail: "Native cards", symbol: "square.stack.3d.up"),
                 FeatureHighlight(title: "AI assistance", detail: "Structured sessions", symbol: "sparkles"),
             ]
         ),
