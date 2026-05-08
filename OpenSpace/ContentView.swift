@@ -39,7 +39,7 @@ struct ContentView: View {
                 .frame(maxWidth: 420)
 
                 HStack(spacing: 10) {
-                    ForEach(["SWIFT", "SWIFTUI", "SWIFTDATA", "TCA", "AI MODEL"], id: \.self) { item in
+                    ForEach(["AGENTS", "PROMPTS", "MODELS", "REVIEW", "SHIP"], id: \.self) { item in
                         Text(item)
                             .font(.system(size: 10, weight: .medium, design: .monospaced))
                             .tracking(-0.24)
