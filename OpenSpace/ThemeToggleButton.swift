@@ -68,12 +68,12 @@ struct ThemeToggleButton: View {
         .frame(width: 30, height: 26)
         .scaleEffect(tapped ? 0.94 : 1.0)
         .onTapGesture {
-            withAnimation(.spring(response: 0.28, dampingFraction: 0.65)) {
+            withAnimation(.spring(response: 0.22, dampingFraction: 0.72)) {
                 tapped = true
             }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-                withAnimation(.spring(response: 0.32, dampingFraction: 0.70)) {
+                withAnimation(.spring(response: 0.22, dampingFraction: 0.72)) {
                     tapped = false
                     appTheme.wrappedValue = appTheme.wrappedValue.next
                 }
