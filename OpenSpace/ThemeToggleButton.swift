@@ -80,12 +80,6 @@ struct ThemeToggleButton: View {
             }
         }
     }
-
-    private var thumbColor: Color {
-        resolvedIsDark
-            ? Color(red: 0.98, green: 0.55, blue: 0.20)
-            : Color(red: 0.95, green: 0.42, blue: 0.11)
-    }
 }
 
 #Preview("System Light") {
