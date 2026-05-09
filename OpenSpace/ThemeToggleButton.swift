@@ -38,10 +38,10 @@ struct ThemeToggleButton: View {
                 }
 
                 RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                    .fill(thumbColor)
+                    .fill(palette.accent)
                     .frame(width: 10, height: 20)
                     .shadow(
-                        color: thumbColor.opacity(isSystemMode ? 0.30 : 0.50),
+                        color: palette.accent.opacity(isSystemMode ? 0.30 : 0.50),
                         radius: isSystemMode ? 2 : 4,
                         x: 0,
                         y: 2
@@ -50,8 +50,8 @@ struct ThemeToggleButton: View {
                         RoundedRectangle(cornerRadius: 2.5, style: .continuous)
                             .stroke(
                                 isSystemMode
-                                    ? Color.white.opacity(0.08)
-                                    : Color.white.opacity(0.18),
+                                    ? palette.textPrimary.opacity(0.08)
+                                    : palette.textPrimary.opacity(0.18),
                                 lineWidth: 0.5
                             )
                     )
