@@ -83,23 +83,39 @@ struct ThemeToggleButton: View {
 }
 
 #Preview("System Light") {
-    ThemeToggleButton(appTheme: .constant(.system), resolvedIsDark: false)
-        .padding()
+    ThemeToggleButton(
+        appTheme: .constant(.system),
+        resolvedIsDark: false,
+        palette: OpenSpaceOnboardingPalette.resolve(.light)
+    )
+    .padding()
 }
 
 #Preview("System Dark") {
-    ThemeToggleButton(appTheme: .constant(.system), resolvedIsDark: true)
-        .padding()
-        .preferredColorScheme(.dark)
+    ThemeToggleButton(
+        appTheme: .constant(.system),
+        resolvedIsDark: true,
+        palette: OpenSpaceOnboardingPalette.resolve(.dark)
+    )
+    .padding()
+    .preferredColorScheme(.dark)
 }
 
 #Preview("Manual Light") {
-    ThemeToggleButton(appTheme: .constant(.light), resolvedIsDark: false)
-        .padding()
+    ThemeToggleButton(
+        appTheme: .constant(.light),
+        resolvedIsDark: false,
+        palette: OpenSpaceOnboardingPalette.resolve(.light)
+    )
+    .padding()
 }
 
 #Preview("Manual Dark") {
-    ThemeToggleButton(appTheme: .constant(.dark), resolvedIsDark: true)
-        .padding()
-        .preferredColorScheme(.dark)
+    ThemeToggleButton(
+        appTheme: .constant(.dark),
+        resolvedIsDark: true,
+        palette: OpenSpaceOnboardingPalette.resolve(.dark)
+    )
+    .padding()
+    .preferredColorScheme(.dark)
 }
