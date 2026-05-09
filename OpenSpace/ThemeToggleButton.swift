@@ -3,6 +3,7 @@ import SwiftUI
 struct ThemeToggleButton: View {
     var appTheme: Binding<AppTheme>
     var resolvedIsDark: Bool
+    let palette: OpenSpaceOnboardingPalette
 
     @State private var pulsePhase = false
     @State private var tapped = false
@@ -60,7 +61,7 @@ struct ThemeToggleButton: View {
 
             // Sliding thumb with glow
             HStack {
-                if resolvedIsDark && !isSystemMode {
+                if resolvedIsDark, !isSystemMode {
                     Spacer()
                 }
 
@@ -73,7 +74,7 @@ struct ThemeToggleButton: View {
                         .opacity(pulsePhase ? 0.55 : 0.25)
                         .animation(
                             .easeInOut(duration: 1.8)
-                            .repeatForever(autoreverses: true),
+                                .repeatForever(autoreverses: true),
                             value: pulsePhase
                         )
 
@@ -110,7 +111,7 @@ struct ThemeToggleButton: View {
                 .scaleEffect(tapped ? 0.88 : 1.0)
                 .rotationEffect(.degrees(tapped ? -8 : 0))
 
-                if !resolvedIsDark && !isSystemMode {
+                if !resolvedIsDark, !isSystemMode {
                     Spacer()
                 }
             }
