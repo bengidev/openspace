@@ -140,6 +140,8 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 
 > Factory.ai badges are understated. The text is muted, not bright.
 
+> **Ported from**: shadcn/ui Badge (outline variant) + Dot Matrix opacity hierarchy for the orange status dot.
+
 ### FactoryCardChrome
 
 - **Shape**: `RoundedRectangle(cornerRadius: 6, style: .continuous)`
@@ -150,6 +152,8 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 
 > Factory.ai cards use `rounded-md` (6px), not large radii. The effect is sharp and industrial.
 
+> **Ported from**: shadcn/ui Card + Watermelon UI dark documentation shell card chrome.
+
 ### FactoryPrimaryButtonStyle
 
 - **Shape**: `RoundedRectangle(cornerRadius: 4, style: .continuous)`
@@ -158,8 +162,11 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **Text**: `primaryActionText`, 13–16pt medium sans-serif, uppercase or title case, tracking normal
 - **Pressed**: Scale 0.985, fill opacity 90%
 - **Animation**: Spring (response 0.22, damping 0.72)
+- **Focus ring**: 2pt offset ring using `accent` at 40% opacity (shadcn/ui focus pattern)
 
 > Factory.ai CTAs use `rounded-sm` (4px) and solid fills. No ghost/outline primary buttons.
+
+> **Ported from**: shadcn/ui Button (default variant) + Factory.ai solid fill discipline.
 
 ### FactorySecondaryButtonStyle
 
@@ -169,6 +176,9 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **Text**: `textPrimary`, 13pt medium sans-serif
 - **Stroke**: `border`, 1pt
 - **Pressed**: Scale 0.985
+- **Focus ring**: 2pt offset ring using `accent` at 40% opacity
+
+> **Ported from**: shadcn/ui Button (outline variant).
 
 ### Skip button
 
@@ -176,6 +186,7 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **Fill**: Transparent
 - **Text**: "SKIP", 11pt medium sans-serif, `textSecondary`
 - **No border, no background** — Factory.ai skip/ghost buttons are pure text.
+- **Tap area**: Minimum 44pt frame padding for accessibility.
 
 ### Pagination dots
 
@@ -184,6 +195,9 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **Inactive**: Width 6pt, height 6pt, fill `border`
 - **Animation**: Spring (response 0.34, damping 0.76)
 - **Placement**: Above the CTA button, inside `VStack(spacing: 24)`.
+- **Tap area**: Each dot wrapped in invisible `Button` with 44pt min tap target.
+
+> **Ported from**: Watermelon UI tab/pill indicator pattern + Factory.ai signal accent.
 
 ### Feature highlight row (mini card)
 
@@ -195,12 +209,28 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **Text**: Title 10pt semibold monospace uppercase; detail 10pt regular monospace
 - **Stagger**: 0.05s delay between first and second card on entrance.
 
+> **Ported from**: Watermelon UI component card header pattern.
+
 ### Terminal header (inside hero card)
 
 - **Shape**: `RoundedRectangle(cornerRadius: 4, style: .continuous)`
 - **Fill**: `surface` at 50%
 - **Stroke**: `border`, 1pt
 - **Contents**: Three status dots (accent, muted, muted) + metric label (10pt bold monospace uppercase) + stack tags (8.5pt semibold monospace)
+- **Dot status indicator**: Uses Dot Matrix opacity hierarchy — active dot at 95% white, mid at 45%, inactive at 12%.
+
+> **Ported from**: Factory.ai terminal widget + Dot Matrix dot opacity system.
+
+### Command pill (install / copy pattern)
+
+- **Shape**: `RoundedRectangle(cornerRadius: 8, style: .continuous)`
+- **Fill**: `surface` at 25%
+- **Stroke**: `border` at 50% opacity, 1pt
+- **Text**: Monospace, 13–14pt, `textMuted`
+- **Copy button**: 40pt square, `RoundedRectangle(cornerRadius: 8)`, same fill/stroke as pill, SF Symbol `doc.on.doc` at 13pt
+- **Interaction**: Copy button scales to 0.96 on press, spring (0.18, 0.78)
+
+> **Ported from**: Componentry command pill + Watermelon UI search bar stroke pattern.
 
 ---
 
