@@ -3,7 +3,7 @@ import SwiftUI
 struct ThemeToggleButton: View {
     var appTheme: Binding<AppTheme>
     var resolvedIsDark: Bool
-    let palette: OpenSpaceOnboardingPalette
+    let palette: OpenSpacePalette
 
     @State private var tapped = false
 
@@ -86,7 +86,7 @@ struct ThemeToggleButton: View {
     ThemeToggleButton(
         appTheme: .constant(.system),
         resolvedIsDark: false,
-        palette: OpenSpaceOnboardingPalette.resolve(.light)
+        palette: OpenSpacePalette.resolve(.light)
     )
     .padding()
 }
@@ -95,7 +95,7 @@ struct ThemeToggleButton: View {
     ThemeToggleButton(
         appTheme: .constant(.system),
         resolvedIsDark: true,
-        palette: OpenSpaceOnboardingPalette.resolve(.dark)
+        palette: OpenSpacePalette.resolve(.dark)
     )
     .padding()
     .preferredColorScheme(.dark)
@@ -105,7 +105,7 @@ struct ThemeToggleButton: View {
     ThemeToggleButton(
         appTheme: .constant(.light),
         resolvedIsDark: false,
-        palette: OpenSpaceOnboardingPalette.resolve(.light)
+        palette: OpenSpacePalette.resolve(.light)
     )
     .padding()
 }
@@ -114,7 +114,7 @@ struct ThemeToggleButton: View {
     ThemeToggleButton(
         appTheme: .constant(.dark),
         resolvedIsDark: true,
-        palette: OpenSpaceOnboardingPalette.resolve(.dark)
+        palette: OpenSpacePalette.resolve(.dark)
     )
     .padding()
     .preferredColorScheme(.dark)

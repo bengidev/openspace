@@ -13,7 +13,7 @@ struct OpenSpaceApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
-            OnboardingProgress.self,
+            OnboardingProgressEntity.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,7 +26,7 @@ struct OpenSpaceApp: App {
 
     var body: some Scene {
         WindowGroup {
-            OnboardingContainerView()
+            OnboardingContainerView(modelContainer: sharedModelContainer)
         }
         .modelContainer(sharedModelContainer)
     }

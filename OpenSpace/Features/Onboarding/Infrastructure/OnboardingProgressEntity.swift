@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class OnboardingProgress {
+final class OnboardingProgressEntity {
     var id: UUID
     var createdAt: Date
     var completedAt: Date?

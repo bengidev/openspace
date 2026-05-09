@@ -12,7 +12,7 @@ struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        let palette = OpenSpaceOnboardingPalette.resolve(colorScheme)
+        let palette = OpenSpacePalette.resolve(colorScheme)
 
         ZStack {
             palette.background
