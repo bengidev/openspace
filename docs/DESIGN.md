@@ -330,6 +330,25 @@ These effects are permitted **only** within the `FactoryCardChrome` clip boundar
 - Parameters: `progress` (0 → 1 on entrance), `intensity` (page-specific, 0.55–0.82).
 - **Usage**: Subtle chromatic / signal-distortion effect on the card surface. Only visible on supported devices; degrades gracefully to no effect where Metal shaders are unavailable.
 
+### DitherGradient (hero card overlay)
+
+- **Usage**: Applied as an overlay on reasoning dial and gradient blobs inside the hero card.
+- **Pattern**: Ordered dot matrix, 3pt spacing, 1.2pt dot size, opacity 0.15–0.35 based on gradient brightness.
+- **Rendering**: `Canvas` with `blendMode(.overlay)`.
+- **Color**: `textPrimary` at variable opacity.
+
+> **Ported from**: Componentry dither gradient effect. Only visible inside card clip boundary.
+
+### MagnetLines (interactive hero only)
+
+- **Usage**: Inside the encrypted pairing hero card, vertical line segments react to touch drag.
+- **Layout**: 8–12 columns of 2pt-wide vertical segments, 4pt gap.
+- **Color**: `textMuted` at 25% opacity.
+- **Interaction**: Segment height and opacity increase based on distance to touch point, spring (0.38, 0.8).
+- **Rendering**: `Canvas` with `DragGesture` state.
+
+> **Ported from**: Componentry magnet lines. Only active during user interaction; settles to default state on release.
+
 ---
 
 ## 8. Screen / Flow Pattern
