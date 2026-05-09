@@ -77,6 +77,7 @@ struct OnboardingPage: Equatable, Identifiable {
         case ideaStudio
         case promptQueue
         case reasoningControl
+        case workspaceReady
     }
 
     let id: String
@@ -149,6 +150,24 @@ struct OnboardingPage: Equatable, Identifiable {
             highlights: [
                 FeatureHighlight(title: "Model controls", detail: "Adjust thinking", symbol: "slider.horizontal.3"),
                 FeatureHighlight(title: "Human steering", detail: "User-set compute", symbol: "person.crop.circle.badge.checkmark"),
+            ]
+        ),
+        OnboardingPage(
+            id: "workspace-ready",
+            model: .workspaceReady,
+            indexLabel: "RDY-05",
+            eyebrow: "Workspace ready",
+            headline: "OpenSpace",
+            body: "Your AI-native command center. Deploy specialized agents to handle code, review, test, and ship — all within your existing workflow without context switching.",
+            metric: "WORKSPACE",
+            command: "openspace enter --mode production",
+            shaderIntensity: 0.45,
+            highlights: [
+                FeatureHighlight(title: "Agents", detail: "Specialized runners", symbol: "cpu"),
+                FeatureHighlight(title: "Prompts", detail: "Structured input", symbol: "text.bubble"),
+                FeatureHighlight(title: "Models", detail: "Adaptive compute", symbol: "cube"),
+                FeatureHighlight(title: "Review", detail: "Iterative feedback", symbol: "checkmark.shield"),
+                FeatureHighlight(title: "Ship", detail: "Deploy ready", symbol: "paperplane.fill"),
             ]
         ),
     ]
