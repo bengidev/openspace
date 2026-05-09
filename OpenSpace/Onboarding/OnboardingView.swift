@@ -192,143 +192,151 @@ private struct FeaturePageView: View {
     @State private var appeared = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 13) {
-            HStack(spacing: 10) {
-                FactoryBadge(title: page.eyebrow, systemImage: badgeSymbol, palette: palette)
-                Spacer(minLength: 8)
-                Text(page.indexLabel)
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                    .tracking(-0.24)
-                    .foregroundStyle(palette.accent)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 7)
-                    .background(
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(palette.accent.opacity(palette.isDark ? 0.12 : 0.10))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(palette.accent.opacity(0.28), lineWidth: 1)
-                    )
-            }
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 8)
-
-            Text(page.headline)
-                .font(.system(size: titleSize, weight: .regular))
-                .tracking(-1.2)
-                .foregroundStyle(palette.textPrimary)
-                .lineLimit(2)
-                .minimumScaleFactor(0.78)
-                .fixedSize(horizontal: false, vertical: true)
-                .opacity(appeared ? 1 : 0)
-                .offset(y: appeared ? 0 : 10)
-
-            Text(page.body)
-                .font(.system(size: 13.5, weight: .regular))
-                .foregroundStyle(palette.textSecondary)
-                .lineSpacing(3)
-                .lineLimit(3)
-                .minimumScaleFactor(0.82)
+        if page.model == .workspaceReady {
+            WorkspaceReadyVisual(page: page, palette: palette, appeared: appeared)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .task(id: page.id) {
+                    await runEntrance()
+                }
+        } else {
+            VStack(alignment: .leading, spacing: 13) {
+                HStack(spacing: 10) {
+                    FactoryBadge(title: page.eyebrow, systemImage: badgeSymbol, palette: palette)
+                    Spacer(minLength: 8)
+                    Text(page.indexLabel)
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .tracking(-0.24)
+                        .foregroundStyle(palette.accent)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 7)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(palette.accent.opacity(palette.isDark ? 0.12 : 0.10))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .stroke(palette.accent.opacity(0.28), lineWidth: 1)
+                        )
+                }
                 .opacity(appeared ? 1 : 0)
                 .offset(y: appeared ? 0 : 8)
 
-            FactoryCardChrome(palette: palette, cornerRadius: 6) {
-                ZStack {
-                    palette.backgroundSecondary
+                Text(page.headline)
+                    .font(.system(size: titleSize, weight: .regular))
+                    .tracking(-1.2)
+                    .foregroundStyle(palette.textPrimary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.78)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
 
-                    PixelGridBackground(
-                        palette: palette,
-                        spacing: 15,
-                        dotSize: 1.0,
-                        opacity: palette.isDark ? 0.06 : 0.04
-                    )
+                Text(page.body)
+                    .font(.system(size: 13.5, weight: .regular))
+                    .foregroundStyle(palette.textSecondary)
+                    .lineSpacing(3)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.82)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 8)
 
-                    DiagonalHatchPattern(
-                        palette: palette,
-                        spacing: 10,
-                        opacity: palette.isDark ? 0.10 : 0.04
-                    )
+                FactoryCardChrome(palette: palette, cornerRadius: 6) {
+                    ZStack {
+                        palette.backgroundSecondary
 
-                    if page.model == .promptQueue {
-                        VStack(spacing: 0) {
-                            terminalHeader
-                                .padding(.horizontal, 14)
-                                .padding(.top, 14)
-                                .padding(.bottom, 8)
+                        PixelGridBackground(
+                            palette: palette,
+                            spacing: 15,
+                            dotSize: 1.0,
+                            opacity: palette.isDark ? 0.06 : 0.04
+                        )
 
-                            GeometryReader { bodyProxy in
-                                ScrollViewReader { scrollProxy in
-                                    ScrollView(.vertical, showsIndicators: false) {
-                                        visualBody
-                                            .frame(minHeight: bodyProxy.size.height, alignment: .center)
-                                    }
-                                    .scrollIndicators(.hidden)
-                                    .contentMargins(.vertical, 0, for: .scrollContent)
-                                    .scrollBounceBehavior(.basedOnSize)
+                        DiagonalHatchPattern(
+                            palette: palette,
+                            spacing: 10,
+                            opacity: palette.isDark ? 0.10 : 0.04
+                        )
+
+                        if page.model == .promptQueue {
+                            VStack(spacing: 0) {
+                                terminalHeader
                                     .padding(.horizontal, 14)
-                                    .onChange(of: queuedPromptCount) { _, newValue in
-                                        if newValue > 0 {
-                                            withAnimation(.easeOut(duration: 0.32)) {
-                                                scrollProxy.scrollTo("queueLast", anchor: .bottom)
+                                    .padding(.top, 14)
+                                    .padding(.bottom, 8)
+
+                                GeometryReader { bodyProxy in
+                                    ScrollViewReader { scrollProxy in
+                                        ScrollView(.vertical, showsIndicators: false) {
+                                            visualBody
+                                                .frame(minHeight: bodyProxy.size.height, alignment: .center)
+                                        }
+                                        .scrollIndicators(.hidden)
+                                        .contentMargins(.vertical, 0, for: .scrollContent)
+                                        .scrollBounceBehavior(.basedOnSize)
+                                        .padding(.horizontal, 14)
+                                        .onChange(of: queuedPromptCount) { _, newValue in
+                                            if newValue > 0 {
+                                                withAnimation(.easeOut(duration: 0.32)) {
+                                                    scrollProxy.scrollTo("queueLast", anchor: .bottom)
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            Button(action: onAddQueuedPrompt) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: "plus")
-                                    Text(queuedPromptCount >= PromptQueueItem.samples.count ? "RESET QUEUE" : "ADD FOLLOW-UP")
-                                    Spacer()
-                                    Text("⌘↩")
-                                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                                        .tracking(-0.24)
-                                        .foregroundStyle(palette.textMuted)
+                                Button(action: onAddQueuedPrompt) {
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "plus")
+                                        Text(queuedPromptCount >= PromptQueueItem.samples.count ? "RESET QUEUE" : "ADD FOLLOW-UP")
+                                        Spacer()
+                                        Text("⌘↩")
+                                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                            .tracking(-0.24)
+                                            .foregroundStyle(palette.textMuted)
+                                    }
+                                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+                                    .tracking(-0.24)
+                                    .foregroundStyle(palette.accent)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                            .fill(palette.accent.opacity(0.11))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                            .stroke(palette.accent.opacity(0.28), lineWidth: 1)
+                                    )
                                 }
-                                .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                                .tracking(-0.24)
-                                .foregroundStyle(palette.accent)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                        .fill(palette.accent.opacity(0.11))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                        .stroke(palette.accent.opacity(0.28), lineWidth: 1)
-                                )
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("Add follow-up prompt")
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
-
-                            highlightFooter
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Add follow-up prompt")
                                 .padding(.horizontal, 14)
-                                .padding(.bottom, 14)
+                                .padding(.vertical, 10)
+
+                                highlightFooter
+                                    .padding(.horizontal, 14)
+                                    .padding(.bottom, 14)
+                            }
+                        } else {
+                            VStack(spacing: 12) {
+                                terminalHeader
+                                visualBody
+                                highlightFooter
+                            }
+                            .padding(14)
                         }
-                    } else {
-                        VStack(spacing: 12) {
-                            terminalHeader
-                            visualBody
-                            highlightFooter
-                        }
-                        .padding(14)
                     }
+                    .frame(height: visualHeight)
                 }
-                .frame(height: visualHeight)
+                .factorySignalGlitch(progress: appeared ? 1 : 0, intensity: page.shaderIntensity)
+                .opacity(appeared ? 1 : 0)
+                .scaleEffect(appeared ? 1 : 0.985)
+                .offset(y: appeared ? 0 : 14)
             }
-            .factorySignalGlitch(progress: appeared ? 1 : 0, intensity: page.shaderIntensity)
-            .opacity(appeared ? 1 : 0)
-            .scaleEffect(appeared ? 1 : 0.985)
-            .offset(y: appeared ? 0 : 14)
-        }
-        .animation(.spring(response: 0.48, dampingFraction: 0.82), value: appeared)
-        .task(id: page.id) {
-            await runEntrance()
+            .animation(.spring(response: 0.48, dampingFraction: 0.82), value: appeared)
+            .task(id: page.id) {
+                await runEntrance()
+            }
         }
     }
 
@@ -342,6 +350,7 @@ private struct FeaturePageView: View {
         case .ideaStudio: "sparkles"
         case .promptQueue: "text.line.first.and.arrowtriangle.forward"
         case .reasoningControl: "slider.horizontal.3"
+        case .workspaceReady: "sparkle"
         }
     }
 
@@ -423,6 +432,13 @@ private struct FeaturePageView: View {
             ReasoningControlVisual(
                 palette: palette,
                 reasoningLevel: $reasoningLevel,
+                appeared: appeared
+            )
+
+        case .workspaceReady:
+            WorkspaceReadyVisual(
+                page: page,
+                palette: palette,
                 appeared: appeared
             )
         }
@@ -897,10 +913,103 @@ private struct ReasoningPresetButton: View {
     }
 }
 
+private struct WorkspaceReadyVisual: View {
+    let page: OnboardingPage
+    let palette: OpenSpaceOnboardingPalette
+    let appeared: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            VStack(spacing: 28) {
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(palette.accent)
+                        .frame(width: 7, height: 7)
+                        .shadow(color: palette.accent.opacity(0.45), radius: 8)
+
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(palette.textMuted)
+
+                    Text("WORKSPACE READY")
+                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .tracking(-0.24)
+                        .foregroundStyle(palette.textMuted)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(palette.surface.opacity(0.5))
+                )
+                .overlay(
+                    Capsule(style: .continuous)
+                        .stroke(palette.border, lineWidth: 1)
+                )
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 10)
+                .animation(.spring(response: 0.48, dampingFraction: 0.82).delay(0.05), value: appeared)
+
+                Text(page.headline)
+                    .font(.system(size: 56, weight: .regular))
+                    .tracking(-1.6)
+                    .foregroundStyle(palette.textPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 14)
+                    .animation(.spring(response: 0.52, dampingFraction: 0.8).delay(0.12), value: appeared)
+
+                Text(page.body)
+                    .font(.system(size: 19, weight: .regular))
+                    .foregroundStyle(palette.textSecondary)
+                    .lineSpacing(4)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(4)
+                    .minimumScaleFactor(0.82)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
+                    .animation(.spring(response: 0.52, dampingFraction: 0.8).delay(0.20), value: appeared)
+
+                HStack(spacing: 6) {
+                    ForEach(Array(page.highlights.enumerated()), id: \.element.id) { index, highlight in
+                        Text(highlight.title.uppercased())
+                            .font(.system(size: 12, weight: .medium, design: .monospaced))
+                            .tracking(-0.24)
+                            .foregroundStyle(palette.textSecondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.65)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 7)
+                            .background(
+                                Capsule(style: .continuous)
+                                    .fill(palette.surface.opacity(0.3))
+                            )
+                            .overlay(
+                                Capsule(style: .continuous)
+                                    .stroke(palette.border, lineWidth: 1)
+                            )
+                            .opacity(appeared ? 1 : 0)
+                            .offset(y: appeared ? 0 : 8)
+                            .animation(.spring(response: 0.46, dampingFraction: 0.8).delay(0.28 + Double(index) * 0.05), value: appeared)
+                    }
+                }
+            }
+            .padding(.horizontal, 24)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 #Preview("Onboarding") {
     OnboardingView(
         store: Store(initialState: OnboardingFeature.State()) {
             OnboardingFeature()
-        }
+        },
+        appTheme: .constant(.system)
     )
 }
