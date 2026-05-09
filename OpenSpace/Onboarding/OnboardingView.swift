@@ -85,7 +85,7 @@ struct OnboardingView: View {
     private func topBar(palette: OpenSpaceOnboardingPalette) -> some View {
         HStack(spacing: 12) {
             HStack(spacing: 9) {
-                ThemeToggleButton(appTheme: appTheme, resolvedIsDark: resolvedIsDark)
+                ThemeToggleButton(appTheme: appTheme, resolvedIsDark: resolvedIsDark, palette: palette)
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text("OPENSPACE")
