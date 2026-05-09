@@ -29,6 +29,7 @@ The OpenSpace onboarding is a **technical workspace introduction**, not a market
 ## 2. Color Palette
 
 ### Philosophy
+
 Colors exist in two modes derived from a single token set. Never hardcode hex colors in view code — always route through `OpenSpaceOnboardingPalette`.
 
 ### Token table
@@ -124,6 +125,312 @@ Colors exist in two modes derived from a single token set. Never hardcode hex co
 - **No scroll** — Every page must fit entirely within the viewport. Use `compactHeight` flag (`height < 760`) to reduce spacing and font sizes on smaller devices.
 - **Visual card height** is computed dynamically: `max(compact ? 270 : 326, min(height * 0.43, 390))`.
 - **Bottom section is persistent** — Pagination dots and CTA are pinned near the safe-area bottom. Content above them is sized to never push them off-screen.
+
+---
+
+## 4a. Responsive Scaling Guide
+
+### Base design canvas
+
+All measurements in this document are authored against a **base design canvas of 375 × 667 pt** (iPhone 6 / iPhone SE 1st gen logical resolution). This is the smallest portrait viewport the onboarding must support perfectly. Every dimension — font, spacing, card height, button height — is defined at this base and scaled up for larger devices using a single proportional multiplier.
+
+> **Why 375 × 667?** It is the most constrained portrait canvas in the modern iPhone lineup. If the layout fits here without scroll, it will fit everywhere.
+
+### Scaling formula
+
+Use `GeometryReader` to compute a single `scale` multiplier per screen:
+
+```swift
+struct OnboardingContainer: View {
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(\.verticalSizeClass) private var vSizeClass
+
+    /// Base design canvas in points
+    private let baseSize = CGSize(width: 375, height: 667)
+
+    var body: some View {
+        GeometryReader { proxy in
+            let current = proxy.size
+            let ratioX = current.width / baseSize.width
+            let ratioY = current.height / baseSize.height
+            let scale = min(ratioX, ratioY)
+            let isCompactHeight = current.height < 760
+
+            ContentView(scale: scale, isCompactHeight: isCompactHeight)
+                .frame(width: current.width, height: current.height)
+        }
+        .ignoresSafeArea()
+    }
+}
+```
+
+| Variable | Meaning |
+|---|---|
+| `ratioX` | Horizontal scale relative to 375 pt |
+| `ratioY` | Vertical scale relative to 667 pt |
+| `scale` | `min(ratioX, ratioY)` — preserves aspect ratio, prevents overflow |
+| `isCompactHeight` | `true` when screen height < 760 pt (iPhone SE 3, mini, compact split-view) |
+
+> **Always use `min()`, never `max()`**. Using `max()` would cause content to overflow on one axis.
+
+### Device breakpoint reference
+
+| Device | Logical size | ratioX | ratioY | `scale` | `isCompactHeight` |
+|---|---|---|---|---|---|
+| iPhone SE (1st) | 375 × 667 | 1.000 | 1.000 | **1.000** | true |
+| iPhone SE (3rd) | 375 × 667 | 1.000 | 1.000 | **1.000** | true |
+| iPhone mini | 375 × 812 | 1.000 | 1.217 | **1.000** | false |
+| iPhone 14 / 15 | 390 × 844 | 1.040 | 1.265 | **1.040** | false |
+| iPhone 16 Pro | 402 × 874 | 1.072 | 1.310 | **1.072** | false |
+| iPhone 16 Pro Max | 440 × 956 | 1.173 | 1.433 | **1.173** | false |
+| iPad (portrait) | 768 × 1024 | 2.048 | 1.535 | **1.535** | false |
+| iPad (landscape) | 1024 × 768 | 2.731 | 1.151 | **1.151** | false |
+| iPad Pro 12.9" (landscape) | 1366 × 1024 | 3.643 | 1.535 | **1.535** | false |
+
+> On iPad landscape, `ratioY` becomes the limiting factor, so `scale` drops. Content remains proportional but uses less of the available width. Center the content with a `maxWidth` container.
+
+### Scaled dimension helpers
+
+Apply `scale` using these helpers. Never hardcode scaled values.
+
+```swift
+extension CGFloat {
+    func scaled(by scale: CGFloat) -> CGFloat { self * scale }
+}
+
+// Usage inside views that receive `scale`:
+// .font(.system(size: 28.scaled(by: scale), weight: .regular))
+// .padding(.horizontal, 20.scaled(by: scale))
+// .frame(height: 48.scaled(by: scale))
+```
+
+For **font sizes**, use a **capped scale** to prevent oversized text on iPad:
+
+```swift
+func fontScale(_ base: CGFloat, screenScale: CGFloat) -> CGFloat {
+    let capped = min(screenScale, 1.35) // cap at +35%
+    return base * capped
+}
+```
+
+| Element | Base size (375×667) | Scale mode | Cap |
+|---|---|---|---|
+| Headline | 28 pt | `fontScale` | 1.35× |
+| Body | 14 pt | `fontScale` | 1.30× |
+| Button label | 14 pt | `fontScale` | 1.30× |
+| Badge title | 10 pt | `fontScale` | 1.30× |
+| Metric label | 10 pt | `fontScale` | 1.30× |
+| Page counter | 11 pt | `fontScale` | 1.30× |
+| Brand label | 12 pt | `fontScale` | 1.25× |
+| Stack tag | 8.5 pt | `fontScale` | 1.25× |
+
+> Monospace labels at ≤10pt scale conservatively because they are already small and must remain crisp.
+
+### Layout element scaling
+
+| Element | Base value | Scale mode | Notes |
+|---|---|---|---|
+| Horizontal padding | 20 pt | direct `scale` | Max 36 pt after scaling |
+| Top safe-area padding | 20 pt | direct `scale` | Add `proxy.safeAreaInsets.top` |
+| Bottom safe-area padding | 16 pt | direct `scale` | Add `proxy.safeAreaInsets.bottom` |
+| Top bar height | 44 pt | direct `scale` | Fixed proportion |
+| Headline top spacing | 16 pt | direct `scale` | Reduced to 10 pt when `isCompactHeight` |
+| Body top spacing | 12 pt | direct `scale` | Reduced to 8 pt when `isCompactHeight` |
+| Card top spacing | 20 pt | direct `scale` | Reduced to 12 pt when `isCompactHeight` |
+| Card internal padding | 14 pt | direct `scale` | |
+| Feature card gap | 12 pt | direct `scale` | |
+| Pagination-to-CTA spacing | 24 pt | direct `scale` | |
+| Button height | 48 pt | direct `scale` | Min 44 pt (HIG), max 56 pt |
+| Button horizontal padding | 20 pt | direct `scale` | |
+| Pagination dot height | 6 pt | direct `scale` | |
+| Active dot width | 28 pt | direct `scale` | |
+| Skip button tap area | 44 pt | fixed | Accessibility minimum, not scaled |
+
+### Card height scaling
+
+The hero card is the most critical responsive element. Compute its height dynamically:
+
+```swift
+func cardHeight(screenHeight: CGFloat, scale: CGFloat, isCompact: Bool) -> CGFloat {
+    let baseHeight: CGFloat = isCompact ? 270 : 326
+    let scaledBase = baseHeight * scale
+    let proportional = screenHeight * 0.43
+    let maxHeight: CGFloat = 390 * scale
+    return max(scaledBase, min(proportional, maxHeight))
+}
+```
+
+| Condition | Calculation |
+|---|---|
+| Compact height (< 760 pt) | `max(270 * scale, min(height * 0.43, 390 * scale))` |
+| Regular height (≥ 760 pt) | `max(326 * scale, min(height * 0.43, 390 * scale))` |
+| iPad (max width enforced) | Same formula, but card `maxWidth` = 680 pt |
+
+> The card must never exceed 43% of screen height. On iPhone SE this yields ~286 pt (43% of 667). On iPhone 16 Pro Max it yields ~410 pt, but capped at `390 * 1.173 = 457 pt` — however the `min(height * 0.43)` clause will keep it at ~410 pt.
+
+### iPad adaptations
+
+On iPad, the single-column layout becomes visually stretched if full-width. Apply these constraints:
+
+```swift
+struct iPadContentWidth: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: 680)
+            .frame(maxWidth: .infinity) // centers horizontally
+    }
+}
+```
+
+| Adaptation | Rule |
+|---|---|
+| Max content width | 680 pt, centered |
+| Card max width | 680 pt |
+| Button max width | 680 pt |
+| Horizontal padding | `min(max(width * 0.055, 20), 36)` — on iPad this hits 36 pt, but content is centered inside 680 pt container |
+| Font scale cap | 1.35× to prevent oversized typography |
+| Feature cards layout | Side-by-side `HStack` instead of `VStack` when width > 500 pt |
+
+### Compact height overrides
+
+When `isCompactHeight == true` (iPhone SE, split-view), reduce spacing aggressively:
+
+| Token | Regular | Compact |
+|---|---|---|
+| Headline top spacing | 16 × scale | 10 × scale |
+| Body top spacing | 12 × scale | 8 × scale |
+| Card top spacing | 20 × scale | 12 × scale |
+| Card height base | 326 × scale | 270 × scale |
+| Bottom nav top spacing | 24 × scale | 16 × scale |
+| Feature card internal padding | 12 × scale | 8 × scale |
+
+### Dynamic Type support
+
+The onboarding must respect the user's content size preference without breaking the "no scroll" rule.
+
+```swift
+@Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+var typeScaleMultiplier: CGFloat {
+    switch dynamicTypeSize {
+    case .xSmall, .small, .medium: return 1.0
+    case .large: return 1.05
+    case .xLarge: return 1.10
+    case .xxLarge: return 1.15
+    case .xxxLarge: return 1.20
+    case .accessibility1: return 1.25
+    case .accessibility2: return 1.30
+    case .accessibility3: return 1.35
+    case .accessibility4: return 1.40
+    case .accessibility5: return 1.45
+    @unknown default: return 1.0
+    }
+}
+```
+
+Apply `typeScaleMultiplier` to font sizes **after** screen-scale. Use `minimumScaleFactor` as a fallback:
+
+```swift
+Text("Headline text")
+    .font(.system(size: 28.scaled(by: scale) * typeScaleMultiplier, weight: .regular))
+    .minimumScaleFactor(0.75)
+```
+
+> When Dynamic Type exceeds `.xxxLarge`, consider reducing headline to 2 lines max and truncating body at 2 lines to preserve the no-scroll guarantee.
+
+### Complete scaling implementation template
+
+```swift
+struct ScaledOnboardingView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private let baseSize = CGSize(width: 375, height: 667)
+
+    var body: some View {
+        GeometryReader { proxy in
+            let current = proxy.size
+            let safeTop = proxy.safeAreaInsets.top
+            let safeBottom = proxy.safeAreaInsets.bottom
+
+            let ratioX = current.width / baseSize.width
+            let ratioY = current.height / baseSize.height
+            let scale = min(ratioX, ratioY)
+            let isCompactHeight = current.height < 760
+
+            let palette = OpenSpaceOnboardingPalette.resolve(colorScheme)
+
+            VStack(spacing: 0) {
+                TopBar(scale: scale, palette: palette)
+                    .frame(height: 44.scaled(by: scale))
+                    .padding(.top, safeTop)
+
+                ScrollViewDisabledContainer {
+                    VStack(spacing: 0) {
+                        EyebrowBadge(scale: scale, palette: palette)
+                            .padding(.top, (isCompactHeight ? 10 : 16).scaled(by: scale))
+
+                        HeadlineText(scale: scale, typeScale: typeScaleMultiplier)
+                            .padding(.top, (isCompactHeight ? 8 : 12).scaled(by: scale))
+
+                        BodyText(scale: scale, typeScale: typeScaleMultiplier)
+                            .padding(.top, (isCompactHeight ? 8 : 12).scaled(by: scale))
+
+                        HeroCard(
+                            scale: scale,
+                            isCompact: isCompactHeight,
+                            cardHeight: cardHeight(
+                                screenHeight: current.height,
+                                scale: scale,
+                                isCompact: isCompactHeight
+                            ),
+                            palette: palette
+                        )
+                        .padding(.top, (isCompactHeight ? 12 : 20).scaled(by: scale))
+
+                        Spacer(minLength: 0)
+
+                        PaginationDots(scale: scale, palette: palette)
+                            .padding(.bottom, 24.scaled(by: scale))
+
+                        BottomNavigation(scale: scale, palette: palette)
+                            .frame(height: 48.scaled(by: scale))
+                            .padding(.bottom, safeBottom + 8.scaled(by: scale))
+                    }
+                    .padding(.horizontal, min(max(current.width * 0.055, 20), 36))
+                }
+            }
+            .frame(width: current.width, height: current.height)
+            .background(palette.background)
+        }
+    }
+
+    private func cardHeight(screenHeight: CGFloat, scale: CGFloat, isCompact: Bool) -> CGFloat {
+        let base: CGFloat = isCompact ? 270 : 326
+        let scaledBase = base * scale
+        let proportional = screenHeight * 0.43
+        let maxH = 390 * scale
+        return max(scaledBase, min(proportional, maxH))
+    }
+}
+```
+
+### Scaling checklist
+
+- [ ] Base canvas is 375 × 667 pt; all dimensions authored against this.
+- [ ] `scale = min(ratioX, ratioY)` is used globally, never `max()`.
+- [ ] Font sizes use `fontScale` with a 1.35× cap on iPad.
+- [ ] Layout spacing uses direct `scale` multiplication.
+- [ ] `isCompactHeight` reduces top/card/bottom spacing when height < 760 pt.
+- [ ] Card height is computed with `max(base * scale, min(height * 0.43, 390 * scale))`.
+- [ ] iPad enforces max content width of 680 pt and centers horizontally.
+- [ ] Dynamic Type multiplier is applied after screen-scale.
+- [ ] `minimumScaleFactor` is set on all text to prevent truncation.
+- [ ] Safe area insets (`safeTop`, `safeBottom`) are added to frame calculations, not multiplied by `scale`.
+- [ ] Button tap targets remain ≥ 44 pt regardless of scale.
+- [ ] Feature cards use `HStack` side-by-side on iPad when width > 500 pt.
+- [ ] "No scroll" is verified on: iPhone SE (375×667), iPhone mini (375×812), iPhone 16 Pro Max (440×956), iPad portrait (768×1024), iPad landscape (1024×768).
 
 ---
 
@@ -248,6 +555,7 @@ When a new page appears:
 2. After 70ms delay, `appeared` becomes `true` with spring animation (response 0.48, damping 0.82).
 3. Hero card scales from 0.985 to 1 and fades in.
 4. Feature highlight rows stagger in with 0.05s delay.
+5. Terminal header dots animate opacity from 0 → 1 with 0.08s stagger (Dot Matrix pattern).
 
 ### Page transition
 
@@ -313,6 +621,8 @@ These effects are permitted **only** within the `FactoryCardChrome` clip boundar
 - **Hit testing**: Disabled
 
 > Factory.ai does not have a visible dot grid. If this effect competes with content, reduce opacity further or remove it.
+
+> **Ported from**: Factory.ai subtle texture + Dot Matrix dot rendering discipline.
 
 ### DiagonalHatchPattern
 
@@ -431,6 +741,7 @@ Every new component or screen must be visually checked in both dark and light mo
 
 - `@Environment(\.accessibilityReduceMotion)` is checked before running any entrance animation or typewriter effect.
 - When reduced motion is enabled, all state changes are instant.
+- Hero card Canvas effects (magnet lines, dither, pixel grid) disable entirely when reduced motion is on.
 
 ### Touch targets
 
@@ -438,12 +749,14 @@ Every new component or screen must be visually checked in both dark and light mo
 - Skip button: Pure text tap area (ensure frame padding ≥ 44pt).
 - Pagination dots: 6pt height, but wrapped in a `Button` with invisible padding to enlarge the tap area.
 - Slider (reasoning): Native `Slider` with `.tint(accent)`.
+- Chip buttons: Minimum 44pt height, 80pt width.
 
 ### Labels
 
 - Every interactive element has an `accessibilityLabel`.
 - The logo block combines its children into a single label: "OpenSpace AI assistance".
 - The reasoning slider reports its current percentage value via `accessibilityValue`.
+- Terminal header dots report status: "E2E channel active, two of three connections secure."
 
 ---
 
@@ -459,7 +772,7 @@ Every new component or screen must be visually checked in both dark and light mo
 
 - No raster illustrations are used. All visuals are composed from SwiftUI primitives:
   - `RoundedRectangle`, `Circle`, `Capsule`
-  - `Canvas` for grid and hatch patterns
+  - `Canvas` for grid, hatch, dither, and magnet line patterns
   - `LinearGradient` for response-line shimmer
   - `ShaderLibrary` for glitch effect
 
@@ -470,7 +783,28 @@ Every new component or screen must be visually checked in both dark and light mo
 
 ---
 
-## 12. Implementation Checklist
+## 12. Reference Component Mapping
+
+This table maps shadcn/ui primitives to SwiftUI implementations for this design system.
+
+| shadcn/ui Primitive | SwiftUI Implementation | Notes |
+|---|---|---|
+| Button (default) | `FactoryPrimaryButtonStyle` | Solid fill, 4px radius, spring press |
+| Button (outline) | `FactorySecondaryButtonStyle` | Transparent fill, 1pt border, spring press |
+| Button (ghost) | Skip button | Pure text, no chrome |
+| Card | `FactoryCardChrome` | 6px radius, `#101010` fill, warm border |
+| Badge (outline) | `FactoryBadge` | Capsule, muted text, orange dot |
+| Tabs | Pagination dots + page transitions | Capsule indicators, spring width |
+| Slider | Native `Slider` | `.tint(accent)`, custom track height optional |
+| Switch | Custom toggle with shield icon | Factory.ai industrial toggle |
+| Chip / Toggle Group | Prompt mode chips | Instant fill swap, no animation |
+| Command / KBD | Terminal header + command pill | Monospace, dark fill, copy button |
+| Separator | `Divider` with `border` color | 1pt, warm gray |
+| Skeleton | Dot Matrix opacity wave | For queue loading states |
+
+---
+
+## 13. Implementation Checklist
 
 Before merging any onboarding change or new screen:
 
@@ -490,4 +824,15 @@ Before merging any onboarding change or new screen:
 - [ ] Feature highlight cards use `FactoryCardChrome` with 6px corner radius.
 - [ ] Background texture layers are nearly invisible. If visible in screenshots, reduce opacity.
 - [ ] `minimumScaleFactor` is set on every small label to prevent truncation.
+- [ ] Hero card Canvas effects (magnet lines, dither, pixel grid) are clipped to card boundary.
+- [ ] No infinite ambient loops exist outside hero card clip boundary.
+- [ ] Base canvas is 375 × 667 pt; all dimensions authored against this.
+- [ ] `scale = min(ratioX, ratioY)` is used globally, never `max()`.
+- [ ] Font sizes use `fontScale` with a 1.35× cap on iPad.
+- [ ] `isCompactHeight` reduces spacing when height < 760 pt.
+- [ ] Card height uses `max(base * scale, min(height * 0.43, 390 * scale))`.
+- [ ] iPad enforces max content width of 680 pt and centers horizontally.
+- [ ] Dynamic Type multiplier is applied after screen-scale.
+- [ ] Safe area insets are added, not multiplied by `scale`.
+- [ ] "No scroll" verified on iPhone SE, iPhone 16 Pro Max, iPad portrait, iPad landscape.
 - [ ] Build passes with zero SwiftFormat errors.
