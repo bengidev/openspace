@@ -67,7 +67,7 @@ struct ThemeToggleButton: View {
                 ZStack {
                     // Pulsing glow
                     RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                        .fill(Color(red: 0.95, green: 0.42, blue: 0.11))
+                        .fill(thumbColor)
                         .frame(width: 10, height: 20)
                         .blur(radius: 5)
                         .opacity(pulsePhase ? 0.55 : 0.25)
@@ -79,17 +79,31 @@ struct ThemeToggleButton: View {
 
                     // Main thumb
                     RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                        .fill(Color(red: 0.95, green: 0.42, blue: 0.11))
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    thumbColor.opacity(0.95),
+                                    thumbColor.opacity(0.80),
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
                         .frame(width: 10, height: 20)
                         .shadow(
-                            color: Color(red: 0.95, green: 0.42, blue: 0.11).opacity(0.50),
-                            radius: 4,
+                            color: thumbColor.opacity(isSystemMode ? 0.30 : 0.50),
+                            radius: isSystemMode ? 2 : 4,
                             x: 0,
                             y: 2
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                                .stroke(Color.white.opacity(0.18), lineWidth: 0.5)
+                                .stroke(
+                                    isSystemMode
+                                        ? Color.white.opacity(0.08)
+                                        : Color.white.opacity(0.18),
+                                    lineWidth: 0.5
+                                )
                         )
                 }
                 .padding(.horizontal, isSystemMode ? 10 : 3)
@@ -120,14 +134,31 @@ struct ThemeToggleButton: View {
             pulsePhase = true
         }
     }
+
+    private var thumbColor: Color {
+        resolvedIsDark
+            ? Color(red: 0.98, green: 0.55, blue: 0.20)
+            : Color(red: 0.95, green: 0.42, blue: 0.11)
+    }
 }
 
-#Preview("Light") {
+#Preview("System Light") {
+    ThemeToggleButton(appTheme: .constant(.system), resolvedIsDark: false)
+        .padding()
+}
+
+#Preview("System Dark") {
+    ThemeToggleButton(appTheme: .constant(.system), resolvedIsDark: true)
+        .padding()
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Manual Light") {
     ThemeToggleButton(appTheme: .constant(.light), resolvedIsDark: false)
         .padding()
 }
 
-#Preview("Dark") {
+#Preview("Manual Dark") {
     ThemeToggleButton(appTheme: .constant(.dark), resolvedIsDark: true)
         .padding()
         .preferredColorScheme(.dark)
