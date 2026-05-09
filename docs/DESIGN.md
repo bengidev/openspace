@@ -1,6 +1,6 @@
 # OpenSpace Onboarding — Visual Design System
 
-Designer-to-developer handoff for the OpenSpace onboarding flow, aligned with the **Factory.ai** visual language: industrial-modern, monochrome-first, signal-accented, and grid-precise.
+Designer-to-developer handoff for the OpenSpace onboarding flow. Primary visual language derives from **Factory.ai** (industrial-modern, monochrome-first, signal-accented, grid-precise). Supporting component patterns, effects, and interaction models are ported from **shadcn/ui**, **Componentry**, **Dot Matrix**, and **Watermelon UI**.
 
 ---
 
@@ -19,6 +19,10 @@ The OpenSpace onboarding is a **technical workspace introduction**, not a market
 ### Visual reference
 
 - **Factory.ai** — near-black `#020202` canvas, warm-gray `#3d3a39` borders, `Geist` sans-serif display type, `Geist Mono` for technical labels, `#ef6f2e` signal accent, 4px/6px/10px radius scale.
+- **shadcn/ui** — Component primitives (Button, Card, Badge, Tabs, Slider, Switch) as reference for interaction states, focus rings, and accessible form patterns.
+- **Componentry** — Canvas-driven effects (magnet lines, dither gradients, scroll velocity) for hero card micro-interactions. Pointer-reactive animations are allowed **only** inside interactive hero areas, never as ambient background loops.
+- **Dot Matrix** — Dot-grid typography and opacity-wave loader patterns for terminal headers and status indicators.
+- **Watermelon UI** — Dark documentation shell patterns: sidebar navigation, component card chrome, pill toolbar buttons, preview surface gradients.
 
 ---
 
