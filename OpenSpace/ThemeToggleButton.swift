@@ -43,22 +43,6 @@ struct ThemeToggleButton: View {
                         )
                 )
 
-            // Ambient side dots
-            HStack {
-                Circle()
-                    .fill(Color.white.opacity(0.04))
-                    .frame(width: 2, height: 2)
-                    .padding(.leading, 5)
-
-                Spacer()
-
-                Circle()
-                    .fill(Color.white.opacity(0.04))
-                    .frame(width: 2, height: 2)
-                    .padding(.trailing, 5)
-            }
-            .frame(width: 30, height: 26)
-
             // Sliding thumb with glow
             HStack {
                 if resolvedIsDark, !isSystemMode {
