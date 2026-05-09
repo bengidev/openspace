@@ -110,7 +110,6 @@ struct OnboardingView: View {
 
             Button {
                 _ = store.send(.skipTapped)
-                onFinish()
             } label: {
                 Text("SKIP")
                     .font(.system(size: 11, weight: .medium))
