@@ -47,8 +47,12 @@ struct OnboardingFeature: Reducer {
                 state.currentPage = min(max(index, 0), state.totalPages - 1)
                 return .none
 
-            case .finishTapped, .skipTapped:
+            case .finishTapped:
                 state.isFinished = true
+                return .none
+
+            case .skipTapped:
+                state.currentPage = state.totalPages - 1
                 return .none
 
             case let .promptChipTapped(index):
