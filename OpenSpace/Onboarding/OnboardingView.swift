@@ -113,17 +113,16 @@ struct OnboardingView: View {
                 onFinish()
             } label: {
                 Text("SKIP")
-                    .font(.system(size: 10, weight: .semibold))
-                    .tracking(0.4)
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(palette.textSecondary)
-                    .padding(.horizontal, 12)
+                    .padding(.horizontal, 10)
                     .padding(.vertical, 6)
                     .background(
-                        Capsule(style: .continuous)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
                             .fill(palette.surface.opacity(0.4))
                     )
                     .overlay(
-                        Capsule(style: .continuous)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
                             .stroke(palette.border, lineWidth: 1)
                     )
             }
