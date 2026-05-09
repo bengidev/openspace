@@ -390,12 +390,12 @@ There are exactly **4 pages**, each following the same layout skeleton but with 
 
 ### Per-page interactive visuals
 
-| Page | Model | Visual |
-|---|---|---|
-| 1 | `.encryptedPairing` | Device pairing diagram (iPhone ↔ lock shield ↔ MacBook) with toggle button |
-| 2 | `.ideaStudio` | Prompt mode chips (ASK/WRITE/EXPLORE) + typewriter prompt + response lines |
-| 3 | `.promptQueue` | Queue list (RUNNING/NEXT/QUEUED/READY) + ADD FOLLOW-UP button |
-| 4 | `.reasoningControl` | Circular dial + slider + FAST/BALANCED/DEEP presets + bar chart |
+| Page | Model | Visual | Effect sources |
+|---|---|---|---|
+| 1 | `.encryptedPairing` | Device pairing diagram (iPhone ↔ lock shield ↔ MacBook) with toggle button | Factory.ai terminal aesthetic + Componentry magnet lines |
+| 2 | `.ideaStudio` | Prompt mode chips (ASK/WRITE/EXPLORE) + typewriter prompt + response lines | Factory.ai signal accents + shadcn/ui chip/toggle group |
+| 3 | `.promptQueue` | Queue list (RUNNING/NEXT/QUEUED/READY) + ADD FOLLOW-UP button | Watermelon UI card list + Dot Matrix opacity wave |
+| 4 | `.reasoningControl` | Circular dial + slider + FAST/BALANCED/DEEP presets + bar chart | Factory.ai industrial controls + Componentry dither gradient + shadcn/ui Slider |
 
 ---
 
