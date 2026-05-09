@@ -5,7 +5,6 @@ struct ThemeToggleButton: View {
     var resolvedIsDark: Bool
     let palette: OpenSpaceOnboardingPalette
 
-    @State private var pulsePhase = false
     @State private var tapped = false
 
     private var isSystemMode: Bool {
@@ -43,57 +42,33 @@ struct ThemeToggleButton: View {
                         )
                 )
 
-            // Sliding thumb with glow
+            // Sliding thumb
             HStack {
                 if resolvedIsDark, !isSystemMode {
                     Spacer()
                 }
 
-                ZStack {
-                    // Pulsing glow
-                    RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                        .fill(thumbColor)
-                        .frame(width: 10, height: 20)
-                        .blur(radius: 5)
-                        .opacity(pulsePhase ? 0.55 : 0.25)
-                        .animation(
-                            .easeInOut(duration: 1.8)
-                                .repeatForever(autoreverses: true),
-                            value: pulsePhase
-                        )
-
-                    // Main thumb
-                    RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    thumbColor.opacity(0.95),
-                                    thumbColor.opacity(0.80),
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
+                RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                    .fill(thumbColor)
+                    .frame(width: 10, height: 20)
+                    .shadow(
+                        color: thumbColor.opacity(isSystemMode ? 0.30 : 0.50),
+                        radius: isSystemMode ? 2 : 4,
+                        x: 0,
+                        y: 2
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                            .stroke(
+                                isSystemMode
+                                    ? Color.white.opacity(0.08)
+                                    : Color.white.opacity(0.18),
+                                lineWidth: 0.5
                             )
-                        )
-                        .frame(width: 10, height: 20)
-                        .shadow(
-                            color: thumbColor.opacity(isSystemMode ? 0.30 : 0.50),
-                            radius: isSystemMode ? 2 : 4,
-                            x: 0,
-                            y: 2
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                                .stroke(
-                                    isSystemMode
-                                        ? Color.white.opacity(0.08)
-                                        : Color.white.opacity(0.18),
-                                    lineWidth: 0.5
-                                )
-                        )
-                }
-                .padding(.horizontal, isSystemMode ? 10 : 3)
-                .scaleEffect(tapped ? 0.88 : 1.0)
-                .rotationEffect(.degrees(tapped ? -8 : 0))
+                    )
+                    .padding(.horizontal, isSystemMode ? 10 : 3)
+                    .scaleEffect(tapped ? 0.88 : 1.0)
+                    .rotationEffect(.degrees(tapped ? -8 : 0))
 
                 if !resolvedIsDark, !isSystemMode {
                     Spacer()
@@ -114,9 +89,6 @@ struct ThemeToggleButton: View {
                     appTheme.wrappedValue = appTheme.wrappedValue.next
                 }
             }
-        }
-        .onAppear {
-            pulsePhase = true
         }
     }
 
