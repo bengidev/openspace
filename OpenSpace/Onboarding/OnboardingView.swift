@@ -4,9 +4,21 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Bindable var store: StoreOf<OnboardingFeature>
+    var appTheme: Binding<AppTheme>
     var onFinish: () -> Void = {}
 
     @Environment(\.colorScheme) private var colorScheme
+
+    private var resolvedIsDark: Bool {
+        switch appTheme.wrappedValue {
+        case .system:
+            return colorScheme == .dark
+        case .light:
+            return false
+        case .dark:
+            return true
+        }
+    }
 
     var body: some View {
         GeometryReader { proxy in
