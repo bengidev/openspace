@@ -269,12 +269,26 @@ When a new page appears:
 | Reasoning dial | Slider drag | Circular trim spring (0.42, 0.74) |
 | Reasoning bars | Page appear | Scale Y from bottom, spring (0.42, 0.8), stagger 0.035s |
 | Reasoning preset | Tap | Fill + stroke swap, spring (0.36, 0.76) |
+| Terminal dots | State change | Opacity wave, 0.08s stagger |
+| Copy button | Press | Scale 0.96, spring (0.18, 0.78) |
+
+### Hero card ambient effects (allowed only inside card boundaries)
+
+These effects are permitted **only** within the `FactoryCardChrome` clip boundary. They must never bleed into the page background.
+
+| Effect | Source | Implementation |
+|---|---|---|
+| Pixel grid background | Factory.ai + Dot Matrix | `Canvas` ellipse fills, 20–22pt spacing, 1.0–1.2pt dot size, opacity 0.06 dark / 0.04 light |
+| Diagonal hatch pattern | Factory.ai | `Canvas` stroked diagonal lines, 10–12pt spacing, opacity 0.025 dark / 0.04 light |
+| Magnet lines | Componentry | `Canvas` vertical line segments, pointer-reactive displacement (iOS: `DragGesture`), muted gray |
+| Dither gradient overlay | Componentry | `Canvas` ordered dot pattern overlay on gradient fills, 3pt spacing, 1.2pt dot size |
+| Signal glitch shader | Factory.ai | `ShaderLibrary.default.factorySignalGlitch`, `progress` 0→1, `intensity` 0.55–0.82. Degrades gracefully. |
 
 ### Motion restrictions
 
-- **No infinite ambient loops** — No pulsing glow rings, orbiting particles, or continuous breathing effects.
+- **No infinite ambient loops** — No pulsing glow rings, orbiting particles, or continuous breathing effects outside the hero card clip boundary.
 - **One-shot only** — All motion is entrance or interaction driven, then settles.
-- **Reduce Motion** — When enabled, all entrance animations become instant (`appeared = true` immediately), and typing reveals instantly.
+- **Reduce Motion** — When enabled, all entrance animations become instant (`appeared = true` immediately), and typing reveals instantly. Hero card effects disable entirely.
 
 ---
 
