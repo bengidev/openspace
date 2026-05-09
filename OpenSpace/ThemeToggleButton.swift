@@ -5,6 +5,7 @@ struct ThemeToggleButton: View {
     var resolvedIsDark: Bool
 
     @State private var pulsePhase = false
+    @State private var tapped = false
 
     private var isSystemMode: Bool {
         appTheme.wrappedValue == .system
@@ -92,6 +93,8 @@ struct ThemeToggleButton: View {
                         )
                 }
                 .padding(.horizontal, isSystemMode ? 10 : 3)
+                .scaleEffect(tapped ? 0.88 : 1.0)
+                .rotationEffect(.degrees(tapped ? -8 : 0))
 
                 if !resolvedIsDark && !isSystemMode {
                     Spacer()
@@ -100,9 +103,17 @@ struct ThemeToggleButton: View {
             .frame(width: 30, height: 26)
         }
         .frame(width: 30, height: 26)
+        .scaleEffect(tapped ? 0.94 : 1.0)
         .onTapGesture {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
-                appTheme.wrappedValue = appTheme.wrappedValue.next
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.65)) {
+                tapped = true
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.70)) {
+                    tapped = false
+                    appTheme.wrappedValue = appTheme.wrappedValue.next
+                }
             }
         }
         .onAppear {
