@@ -113,9 +113,19 @@ struct OnboardingView: View {
                 onFinish()
             } label: {
                 Text("SKIP")
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.4)
                     .foregroundStyle(palette.textSecondary)
-                    .frame(minWidth: 44, minHeight: 44)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule(style: .continuous)
+                            .fill(palette.surface.opacity(0.4))
+                    )
+                    .overlay(
+                        Capsule(style: .continuous)
+                            .stroke(palette.border, lineWidth: 1)
+                    )
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Skip onboarding")
