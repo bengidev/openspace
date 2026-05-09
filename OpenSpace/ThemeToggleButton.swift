@@ -41,17 +41,59 @@ struct ThemeToggleButton: View {
                         )
                 )
 
+            // Ambient side dots
             HStack {
-                if resolvedIsDark {
+                Circle()
+                    .fill(Color.white.opacity(0.04))
+                    .frame(width: 2, height: 2)
+                    .padding(.leading, 5)
+
+                Spacer()
+
+                Circle()
+                    .fill(Color.white.opacity(0.04))
+                    .frame(width: 2, height: 2)
+                    .padding(.trailing, 5)
+            }
+            .frame(width: 30, height: 26)
+
+            // Sliding thumb with glow
+            HStack {
+                if resolvedIsDark && !isSystemMode {
                     Spacer()
                 }
 
-                RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                    .fill(Color(red: 0.95, green: 0.42, blue: 0.11))
-                    .frame(width: 10, height: 20)
-                    .padding(.horizontal, 3)
+                ZStack {
+                    // Pulsing glow
+                    RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                        .fill(Color(red: 0.95, green: 0.42, blue: 0.11))
+                        .frame(width: 10, height: 20)
+                        .blur(radius: 5)
+                        .opacity(pulsePhase ? 0.55 : 0.25)
+                        .animation(
+                            .easeInOut(duration: 1.8)
+                            .repeatForever(autoreverses: true),
+                            value: pulsePhase
+                        )
 
-                if !resolvedIsDark {
+                    // Main thumb
+                    RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                        .fill(Color(red: 0.95, green: 0.42, blue: 0.11))
+                        .frame(width: 10, height: 20)
+                        .shadow(
+                            color: Color(red: 0.95, green: 0.42, blue: 0.11).opacity(0.50),
+                            radius: 4,
+                            x: 0,
+                            y: 2
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                                .stroke(Color.white.opacity(0.18), lineWidth: 0.5)
+                        )
+                }
+                .padding(.horizontal, isSystemMode ? 10 : 3)
+
+                if !resolvedIsDark && !isSystemMode {
                     Spacer()
                 }
             }
@@ -62,6 +104,9 @@ struct ThemeToggleButton: View {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
                 appTheme.wrappedValue = appTheme.wrappedValue.next
             }
+        }
+        .onAppear {
+            pulsePhase = true
         }
     }
 }
