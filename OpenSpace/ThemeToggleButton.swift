@@ -13,31 +13,20 @@ struct ThemeToggleButton: View {
 
     var body: some View {
         ZStack {
-            // Track background with gradient and shadow
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.08, green: 0.08, blue: 0.08),
-                            Color(red: 0.03, green: 0.03, blue: 0.03),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
+            // Track
+            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                .fill(palette.surface.opacity(0.5))
                 .frame(width: 30, height: 26)
                 .shadow(
-                    color: .black.opacity(0.32),
+                    color: palette.textPrimary.opacity(0.1),
                     radius: 2,
                     x: 0,
                     y: 2
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
                         .stroke(
-                            isSystemMode
-                                ? Color.white.opacity(0.12)
-                                : Color.white.opacity(0.05),
+                            isSystemMode ? palette.strongBorder : palette.border,
                             lineWidth: isSystemMode ? 0.8 : 0.5
                         )
                 )
