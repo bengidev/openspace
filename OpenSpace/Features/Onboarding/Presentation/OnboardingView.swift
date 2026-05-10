@@ -62,9 +62,9 @@ struct OnboardingView: View {
                         selectedPromptIndex: store.selectedPromptIndex,
                         queuedPromptCount: store.queuedPromptCount,
                         reasoningLevel: $store.reasoningLevel.sending(\.reasoningLevelChanged),
-                        onPairingToggle: { _ = store.send(.pairingToggleTapped) },
-                        onPromptSelected: { _ = store.send(.promptChipTapped($0)) },
-                        onAddQueuedPrompt: { _ = store.send(.addQueuedPromptTapped) }
+                        onPairingToggle: { store.send(.pairingToggleTapped) },
+                        onPromptSelected: { store.send(.promptChipTapped($0)) },
+                        onAddQueuedPrompt: { store.send(.addQueuedPromptTapped) }
                     )
                     .id(store.currentPageData.id)
                     .transition(
