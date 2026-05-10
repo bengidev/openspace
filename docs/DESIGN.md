@@ -244,7 +244,7 @@ func fontScale(_ base: CGFloat, screenScale: CGFloat) -> CGFloat {
 | Button horizontal padding | 20 pt | direct `scale` | |
 | Pagination dot height | 6 pt | direct `scale` | |
 | Active dot width | 28 pt | direct `scale` | |
-| Skip button tap area | 44 pt | fixed | Accessibility minimum, not scaled |
+| Ghost button tap area | 44 pt | fixed | Accessibility minimum, not scaled |
 
 ### Card height scaling
 
@@ -487,13 +487,15 @@ struct ScaledOnboardingView: View {
 
 > **Ported from**: shadcn/ui Button (outline variant).
 
-### Skip button
+### FactoryGhostButtonStyle
 
 - **Shape**: `RoundedRectangle(cornerRadius: 4, style: .continuous)`
 - **Fill**: Transparent
-- **Text**: "SKIP", 11pt medium sans-serif, `textSecondary`
-- **No border, no background** — Factory.ai skip/ghost buttons are pure text.
+- **Text**: `textSecondary`, 11pt medium sans-serif
+- **No border, no background** — Factory.ai ghost/tertiary buttons are pure text.
 - **Tap area**: Minimum 44pt frame padding for accessibility.
+
+> Use for low-priority actions (e.g. Skip, Dismiss, Later) that must not compete with the primary CTA.
 
 ### Pagination dots
 
@@ -670,7 +672,7 @@ There are exactly **4 pages**, each following the same layout skeleton but with 
 ```
 ┌─────────────────────────────────────┐
 │ [Logo]  OpenSpace / AI Assistance     │  ← topBar, height 44pt
-│                    PG.01 / 04   SKIP│
+│                    PG.01 / 04  [GHOST]│
 ├─────────────────────────────────────┤
 │ ◊ Encrypted Pairing          SEC-01 │  ← eyebrow badge + system code
 │                                     │
@@ -746,7 +748,7 @@ Every new component or screen must be visually checked in both dark and light mo
 ### Touch targets
 
 - Primary/secondary buttons: 48–52pt height, full-width within padding.
-- Skip button: Pure text tap area (ensure frame padding ≥ 44pt).
+- Ghost/tertiary button: Pure text tap area (ensure frame padding ≥ 44pt).
 - Pagination dots: 6pt height, but wrapped in a `Button` with invisible padding to enlarge the tap area.
 - Slider (reasoning): Native `Slider` with `.tint(accent)`.
 - Chip buttons: Minimum 44pt height, 80pt width.
@@ -791,7 +793,7 @@ This table maps shadcn/ui primitives to SwiftUI implementations for this design 
 |---|---|---|
 | Button (default) | `FactoryPrimaryButtonStyle` | Solid fill, 4px radius, spring press |
 | Button (outline) | `FactorySecondaryButtonStyle` | Transparent fill, 1pt border, spring press |
-| Button (ghost) | Skip button | Pure text, no chrome |
+| Button (ghost) | `FactoryGhostButtonStyle` | Pure text, no chrome |
 | Card | `FactoryCardChrome` | 6px radius, `#101010` fill, warm border |
 | Badge (outline) | `FactoryBadge` | Capsule, muted text, orange dot |
 | Tabs | Pagination dots + page transitions | Capsule indicators, spring width |
