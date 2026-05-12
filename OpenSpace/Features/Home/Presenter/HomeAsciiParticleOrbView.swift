@@ -254,6 +254,68 @@ final class ParticleOrbUIKitView: UIView {
             layer.add(scale, forKey: "scale")
         }
 
+        for (layer, descriptor) in zip(sparkLayers, pack.sparks) {
+            layer.removeAllAnimations()
+            layer.position = descriptor.position(progress: 0)
+            layer.opacity = shouldAnimate ? descriptor.restOpacity : 0
+            layer.transform = CATransform3DMakeScale(descriptor.restScale, descriptor.restScale, 1)
+
+            guard shouldAnimate else { continue }
+
+            let now = CACurrentMediaTime()
+
+            let position = CAKeyframeAnimation(keyPath: "position")
+            position.values = descriptor.orbitPoints().map(NSValue.init(cgPoint:))
+            position.duration = descriptor.orbitDuration
+            position.repeatCount = .infinity
+            position.beginTime = now - descriptor.phaseOffset
+            position.calculationMode = .paced
+            position.isRemovedOnCompletion = false
+            layer.add(position, forKey: "position")
+
+            let opacity = CAKeyframeAnimation(keyPath: "opacity")
+            let lowOpacity = max(0.03, descriptor.restOpacity * 0.58)
+            let highOpacity = min(0.42, descriptor.restOpacity * 1.18)
+            opacity.values = [descriptor.restOpacity, highOpacity, descriptor.restOpacity * 0.82, lowOpacity, descriptor.restOpacity]
+            opacity.keyTimes = [0, 0.24, 0.52, 0.78, 1]
+            opacity.duration = descriptor.opacityDuration
+            opacity.repeatCount = .infinity
+            opacity.beginTime = now - descriptor.phaseOffset * 0.7
+            opacity.timingFunctions = [
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut)
+            ]
+            opacity.isRemovedOnCompletion = false
+            layer.add(opacity, forKey: "opacity")
+
+            let scale = CAKeyframeAnimation(keyPath: "transform.scale")
+            let lowScale = max(0.01, descriptor.restScale - descriptor.scaleRange * 0.24)
+            let highScale = descriptor.restScale + descriptor.scaleRange * 0.46
+            scale.values = [
+                descriptor.restScale,
+                highScale,
+                descriptor.restScale,
+                lowScale,
+                descriptor.restScale
+            ]
+            scale.keyTimes = [0, 0.27, 0.54, 0.78, 1]
+            scale.duration = descriptor.scaleDuration
+            scale.repeatCount = .infinity
+            scale.beginTime = now - descriptor.phaseOffset
+            scale.timingFunctions = [
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut),
+                CAMediaTimingFunction(name: .easeInEaseOut)
+            ]
+            scale.isRemovedOnCompletion = false
+            layer.add(scale, forKey: "scale")
+        }
+    }
+}
+
 private enum ParticleOrbTheme {
     case light
     case dark
