@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct FactoryCardChrome<Content: View>: View {
-    let palette: OpenSpacePalette
     var cornerRadius: CGFloat = 6
     @ViewBuilder let content: Content
+
+    @Environment(\.palette) private var palette
 
     var body: some View {
         content

@@ -3,7 +3,8 @@ import SwiftUI
 struct FactoryBadge: View {
     let title: String
     var systemImage: String? = nil
-    let palette: OpenSpacePalette
+
+    @Environment(\.palette) private var palette
 
     var body: some View {
         HStack(spacing: 7) {

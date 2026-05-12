@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct PixelGridBackground: View {
-    let palette: OpenSpacePalette
     var spacing: CGFloat = 20
     var dotSize: CGFloat = 1.0
     var opacity = 0.06
+
+    @Environment(\.palette) private var palette
 
     var body: some View {
         Canvas { context, size in

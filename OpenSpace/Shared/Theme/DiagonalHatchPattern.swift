@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct DiagonalHatchPattern: View {
-    let palette: OpenSpacePalette
     var spacing: CGFloat = 10
     var opacity = 0.025
+
+    @Environment(\.palette) private var palette
 
     var body: some View {
         Canvas { context, size in
