@@ -12,25 +12,29 @@ struct HomeView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
+                Spacer(minLength: 72)
+
                 HomeAsciiParticleOrbView()
                     .frame(maxWidth: .infinity)
-                    .frame(height: 210)
-                    .padding(.bottom, 32)
+                    .frame(height: 260)
+                    .padding(.bottom, 28)
 
                 Text("Hi! How can I help you?")
-                    .font(.system(size: 24, weight: .bold, design: .monospaced))
+                    .font(.system(size: 28, weight: .semibold, design: .monospaced))
                     .foregroundStyle(palette.textSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.68)
 
                 Text("Chats are end-to-end encrypted.")
-                    .font(.system(size: 10, weight: .regular))
+                    .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(palette.textSecondary)
-                    .padding(.top, 10)
+                    .padding(.top, 12)
 
                 Text("Your data is safe.")
-                    .font(.system(size: 10, weight: .regular))
+                    .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(palette.textSecondary)
+
+                Spacer()
             }
             .padding(28)
         }
