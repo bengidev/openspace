@@ -26,7 +26,7 @@ struct OpenSpaceApp: App {
     }()
 
     init() {
-        _ = ChatCoreDataStack.shared
+        // ChatCoreDataStack initializes lazily on first container access
     }
 
     var body: some Scene {

@@ -1,17 +1,48 @@
 import CoreData
 import Foundation
 
-final class ChatCoreDataStack {
+final class ChatCoreDataStack: @unchecked Sendable {
     static let shared = ChatCoreDataStack()
 
-    let container: NSPersistentContainer
+    private let model: NSManagedObjectModel
+    private var loadedContainer: NSPersistentContainer?
+    private var loadTask: Task<NSPersistentContainer, Error>?
+    private let lock = NSLock()
 
     private init() {
-        let model = ChatCoreDataStack.createModel()
+        self.model = ChatCoreDataStack.createModel()
+    }
+
+    func container() async throws -> NSPersistentContainer {
+        lock.lock()
+        if let container = loadedContainer {
+            lock.unlock()
+            return container
+        }
+        if let task = loadTask {
+            lock.unlock()
+            return try await task.value
+        }
+        let task = Task {
+            try await loadStores()
+        }
+        loadTask = task
+        lock.unlock()
+
+        let container = try await task.value
+
+        lock.lock()
+        loadedContainer = container
+        lock.unlock()
+
+        return container
+    }
+
+    private func loadStores() async throws -> NSPersistentContainer {
         let cloudContainer = NSPersistentCloudKitContainer(name: "ChatModel", managedObjectModel: model)
 
         guard let description = cloudContainer.persistentStoreDescriptions.first else {
-            fatalError("No persistent store description found")
+            throw PersistenceError.missingStoreDescription
         }
 
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
@@ -20,36 +51,37 @@ final class ChatCoreDataStack {
         let cloudKitID = "iCloud.io.github.bengidev.OpenSpace"
         description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: cloudKitID)
 
-        let semaphore = DispatchSemaphore(value: 0)
-        var cloudKitError: Error?
-        cloudContainer.loadPersistentStores { _, error in
-            cloudKitError = error
-            semaphore.signal()
-        }
-        semaphore.wait()
-
-        if cloudKitError != nil {
+        do {
+            let container: NSPersistentContainer = try await withCheckedThrowingContinuation { continuation in
+                cloudContainer.loadPersistentStores { _, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(returning: cloudContainer)
+                    }
+                }
+            }
+            container.viewContext.automaticallyMergesChangesFromParent = true
+            container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return container
+        } catch {
             let localContainer = NSPersistentContainer(name: "ChatModel", managedObjectModel: model)
             if let localDescription = localContainer.persistentStoreDescriptions.first {
                 localDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
             }
-            let localSemaphore = DispatchSemaphore(value: 0)
-            var localError: Error?
-            localContainer.loadPersistentStores { _, error in
-                localError = error
-                localSemaphore.signal()
+            let container: NSPersistentContainer = try await withCheckedThrowingContinuation { continuation in
+                localContainer.loadPersistentStores { _, error in
+                    if let error = error {
+                        continuation.resume(throwing: PersistenceError.localStoreLoadFailed(error))
+                    } else {
+                        continuation.resume(returning: localContainer)
+                    }
+                }
             }
-            localSemaphore.wait()
-            if let error = localError as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-            container = localContainer
-        } else {
-            container = cloudContainer
+            container.viewContext.automaticallyMergesChangesFromParent = true
+            container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return container
         }
-
-        container.viewContext.automaticallyMergesChangesFromParent = true
-        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 
     static func createTestModel() -> NSManagedObjectModel {
@@ -158,12 +190,14 @@ final class ChatCoreDataStack {
         return model
     }
 
-    var viewContext: NSManagedObjectContext {
-        container.viewContext
+    func viewContext() async throws -> NSManagedObjectContext {
+        let container = try await container()
+        return container.viewContext
     }
 
-    func newBackgroundContext() -> NSManagedObjectContext {
-        container.newBackgroundContext()
+    func newBackgroundContext() async throws -> NSManagedObjectContext {
+        let container = try await container()
+        return container.newBackgroundContext()
     }
 }
 
