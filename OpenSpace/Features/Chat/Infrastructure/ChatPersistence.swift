@@ -2,6 +2,13 @@ import ComposableArchitecture
 import CoreData
 import Foundation
 
+enum PersistenceError: Error {
+    case missingStoreDescription
+    case localStoreLoadFailed(Error)
+    case unknownMessageType(String)
+    case missingPayload
+}
+
 struct ChatPersistenceClient {
     var fetchConversations: @Sendable () async throws -> [Conversation]
     var createConversation: @Sendable (Conversation) async throws -> Conversation
@@ -12,11 +19,26 @@ struct ChatPersistenceClient {
     var deleteMessages: @Sendable (UUID) async throws -> Void
 }
 
+extension NSManagedObjectContext {
+    func performAsync<T: Sendable>(_ operation: @escaping () throws -> T) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            self.perform {
+                do {
+                    let result = try operation()
+                    continuation.resume(returning: result)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+}
+
 extension ChatPersistenceClient: DependencyKey {
     static let liveValue = ChatPersistenceClient(
         fetchConversations: {
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            return try await context.performAsync {
                 let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
                 request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
                 let entities = try context.fetch(request)
@@ -24,8 +46,8 @@ extension ChatPersistenceClient: DependencyKey {
             }
         },
         createConversation: { conversation in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            try await context.performAsync {
                 let entity = ConversationEntity(context: context)
                 entity.conversationId = conversation.id
                 entity.title = conversation.title
@@ -34,12 +56,12 @@ extension ChatPersistenceClient: DependencyKey {
                 entity.modelID = conversation.modelID
                 entity.providerID = conversation.providerID
                 try context.save()
-                return conversation
             }
+            return conversation
         },
         deleteConversation: { id in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            try await context.performAsync {
                 let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
                 request.predicate = NSPredicate(format: "conversationId == %@", id as CVarArg)
                 let entities = try context.fetch(request)
@@ -58,8 +80,8 @@ extension ChatPersistenceClient: DependencyKey {
             }
         },
         searchConversations: { query in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            return try await context.performAsync {
                 let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
                 request.predicate = NSPredicate(
                     format: "title CONTAINS[cd] %@",
@@ -71,8 +93,8 @@ extension ChatPersistenceClient: DependencyKey {
             }
         },
         saveMessage: { message, conversationId in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            try await context.performAsync {
                 let entity = MessageEntity(context: context)
                 entity.messageId = message.id
                 entity.conversationId = conversationId
@@ -80,25 +102,23 @@ extension ChatPersistenceClient: DependencyKey {
                 entity.role = message.role.rawValue
                 entity.messageType = message.messageTypeString
                 entity.status = MessageStatus.complete.rawValue
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .iso8601
-                entity.payloadJSON = try encoder.encode(message.payload)
+                entity.payloadJSON = try message.encodePayload()
                 try context.save()
             }
         },
         fetchMessages: { conversationId in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            return try await context.performAsync {
                 let request = NSFetchRequest<MessageEntity>(entityName: "MessageEntity")
                 request.predicate = NSPredicate(format: "conversationId == %@", conversationId as CVarArg)
                 request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
                 let entities = try context.fetch(request)
-                return try entities.compactMap { try $0.toDomain() }
+                return try entities.map { try $0.toDomain() }
             }
         },
         deleteMessages: { conversationId in
-            try await MainActor.run {
-                let context = ChatCoreDataStack.shared.viewContext
+            let context = try await ChatCoreDataStack.shared.newBackgroundContext()
+            try await context.performAsync {
                 let request = NSFetchRequest<MessageEntity>(entityName: "MessageEntity")
                 request.predicate = NSPredicate(format: "conversationId == %@", conversationId as CVarArg)
                 let entities = try context.fetch(request)
@@ -142,12 +162,12 @@ extension ConversationEntity {
 }
 
 extension MessageEntity {
-    func toDomain() throws -> Message? {
+    func toDomain() throws -> Message {
         guard let type = MessageType(rawValue: messageType) else {
-            return nil
+            throw PersistenceError.unknownMessageType(messageType)
         }
         guard let payloadJSON = payloadJSON else {
-            return nil
+            throw PersistenceError.missingPayload
         }
 
         let decoder = JSONDecoder()
@@ -202,15 +222,17 @@ private extension Message {
         }
     }
 
-    var payload: Codable {
+    func encodePayload() throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
         switch self {
-        case let .text(m): return m
-        case let .thinking(m): return m
-        case let .toolCall(m): return m
-        case let .toolResult(m): return m
-        case let .subagentLink(m): return m
-        case let .attachment(m): return m
-        case let .system(m): return m
+        case let .text(m): return try encoder.encode(m)
+        case let .thinking(m): return try encoder.encode(m)
+        case let .toolCall(m): return try encoder.encode(m)
+        case let .toolResult(m): return try encoder.encode(m)
+        case let .subagentLink(m): return try encoder.encode(m)
+        case let .attachment(m): return try encoder.encode(m)
+        case let .system(m): return try encoder.encode(m)
         }
     }
 }
