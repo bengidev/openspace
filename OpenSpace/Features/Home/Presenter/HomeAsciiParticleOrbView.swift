@@ -1,6 +1,51 @@
 import SwiftUI
 import UIKit
 
+final class ParticleOrbUIKitView: UIView {
+    private let containerLayer = CALayer()
+    private var activeTheme: ParticleOrbTheme?
+    private var activePack: ParticleOrbAssetPack?
+    private var orbLayers: [CALayer] = []
+    private var outerOrbitDotLayers: [CALayer] = []
+    private var sparkLayers: [CALayer] = []
+    private var isAnimating = false
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isOpaque = false
+        backgroundColor = .clear
+
+        containerLayer.bounds = CGRect(origin: .zero, size: ParticleOrbMetrics.canvasSize)
+        layer.addSublayer(containerLayer)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        containerLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
+
+        let xScale = bounds.width / ParticleOrbMetrics.canvasSize.width
+        let yScale = bounds.height / ParticleOrbMetrics.canvasSize.height
+        let scale = min(xScale, yScale)
+        containerLayer.transform = CATransform3DMakeScale(scale, scale, 1)
+        CATransaction.commit()
+    }
+
+    fileprivate func apply(theme: ParticleOrbTheme, shouldAnimate: Bool) {
+        if activeTheme != theme {
+            activeTheme = theme
+            installAssetPack(ParticleOrbAssetStore.pack(for: theme))
+        }
+
+        updateAnimationState(shouldAnimate)
+    }
 private enum ParticleOrbTheme {
     case light
     case dark
