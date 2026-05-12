@@ -1,6 +1,17 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct OnboardingContainerView: View {
+    @Bindable var store: StoreOf<OnboardingContainer>
+    
+    var body: some View {
+        OnboardingView(
+            store: store.scope(state: \.flow, action: \.flow),
+            onThemeToggle: { store.send(.themeToggleTapped) }
+        )
+    }
+}
+
 @Reducer
 struct OnboardingContainer {
     @ObservableState
@@ -8,7 +19,7 @@ struct OnboardingContainer {
         var isFinished = false
         var flow = OnboardingFlowState()
     }
-
+    
     @CasePathable
     enum Action: Equatable {
         case onAppear
@@ -17,12 +28,12 @@ struct OnboardingContainer {
         case themeToggleTapped
         case flow(OnboardingFlowAction)
     }
-
+    
     var body: some Reducer<State, Action> {
         Scope(state: \.flow, action: \.flow) {
             OnboardingFlow()
         }
-
+        
         Reduce { state, action in
             switch action {
             case .onAppear:
@@ -45,17 +56,6 @@ struct OnboardingContainer {
                 return .none
             }
         }
-    }
-}
-
-struct OnboardingContainerView: View {
-    @Bindable var store: StoreOf<OnboardingContainer>
-
-    var body: some View {
-        OnboardingView(
-            store: store.scope(state: \.flow, action: \.flow),
-            onThemeToggle: { store.send(.themeToggleTapped) }
-        )
     }
 }
 
