@@ -1,6 +1,20 @@
 import SwiftUI
 import UIKit
 
+private enum ParticleOrbTheme {
+    case light
+    case dark
+
+    var tint: UIColor {
+        switch self {
+        case .light:
+            return UIColor(red: 31 / 255, green: 29 / 255, blue: 27 / 255, alpha: 1)
+        case .dark:
+            return UIColor(red: 238 / 255, green: 238 / 255, blue: 238 / 255, alpha: 1)
+        }
+    }
+}
+
 private enum ParticleOrbMetrics {
     static let canvasSize = CGSize(width: 360, height: 240)
     static let center = CGPoint(x: canvasSize.width * 0.5, y: canvasSize.height * 0.5)
@@ -9,6 +23,105 @@ private enum ParticleOrbMetrics {
     static let renderScale = max(UIScreen.main.scale, 2)
     static let snapGrid: CGFloat = 3
     static let glyphRamp = Array("░▒▓█").map(String.init)
+}
+
+private struct ParticleOrbAssetPack {
+    let layers: [ParticleOrbLayerDescriptor]
+    let outerOrbitDots: [ParticleOrbOrbitDotDescriptor]
+    let sparks: [ParticleOrbSparkDescriptor]
+}
+
+private struct ParticleOrbLayerDescriptor {
+    let image: CGImage
+    let restOpacity: Float
+    let opacityRange: Float
+    let opacityDuration: CFTimeInterval
+    let restScale: CGFloat
+    let scaleRange: CGFloat
+    let scaleDuration: CFTimeInterval
+    let rotationRange: CGFloat
+    let rotationDuration: CFTimeInterval
+    let phaseOffset: CFTimeInterval
+    let crispEdges: Bool
+    var driftRadius: CGFloat = 0
+    var driftVerticalScale: CGFloat = 0.72
+    var driftDuration: CFTimeInterval = 1
+
+    func driftPoints() -> [CGPoint] {
+        let stepCount = 36
+        return (0...stepCount).map { step in
+            let progress = CGFloat(step) / CGFloat(stepCount)
+            let angle = progress * .pi * 2 + CGFloat(phaseOffset)
+            return CGPoint(
+                x: ParticleOrbMetrics.center.x + cos(angle) * driftRadius,
+                y: ParticleOrbMetrics.center.y + sin(angle) * driftRadius * driftVerticalScale
+            )
+        }
+    }
+}
+
+private struct ParticleOrbOrbitDotDescriptor {
+    let image: CGImage
+    let imageSize: CGSize
+    let orbitRadius: CGFloat
+    let verticalScale: CGFloat
+    let angleOffset: CGFloat
+    let radialPulse: CGFloat
+    let orbitDuration: CFTimeInterval
+    let opacityDuration: CFTimeInterval
+    let scaleDuration: CFTimeInterval
+    let phaseOffset: CFTimeInterval
+    let restOpacity: Float
+    let restScale: CGFloat
+    let scaleRange: CGFloat
+
+    func orbitPoints() -> [CGPoint] {
+        let stepCount = 72
+        return (0...stepCount).map { step in
+            position(progress: CGFloat(step) / CGFloat(stepCount))
+        }
+    }
+
+    func position(progress: CGFloat) -> CGPoint {
+        let angle = angleOffset + progress * .pi * 2
+        let radius = orbitRadius + sin(progress * .pi * 2 + angleOffset) * radialPulse
+        return CGPoint(
+            x: ParticleOrbMetrics.center.x + cos(angle) * radius,
+            y: ParticleOrbMetrics.center.y + sin(angle) * radius * verticalScale
+        )
+    }
+}
+
+private struct ParticleOrbSparkDescriptor {
+    let image: CGImage
+    let imageSize: CGSize
+    let orbitRadius: CGFloat
+    let verticalScale: CGFloat
+    let angleOffset: CGFloat
+    let radialPulse: CGFloat
+    let orbitDuration: CFTimeInterval
+    let opacityDuration: CFTimeInterval
+    let scaleDuration: CFTimeInterval
+    let phaseOffset: CFTimeInterval
+    let restOpacity: Float
+    let restScale: CGFloat
+    let scaleRange: CGFloat
+
+    func orbitPoints() -> [CGPoint] {
+        let stepCount = 48
+        return (0...stepCount).map { step in
+            position(progress: CGFloat(step) / CGFloat(stepCount))
+        }
+    }
+
+    func position(progress: CGFloat) -> CGPoint {
+        let angle = angleOffset + progress * .pi * 2
+        let radius = orbitRadius + sin(progress * .pi * 2 + angleOffset * 0.6) * radialPulse
+        return CGPoint(
+            x: ParticleOrbMetrics.center.x + cos(angle) * radius,
+            y: ParticleOrbMetrics.center.y + sin(angle) * radius * verticalScale
+        )
+    }
 }
 
     static func renderDots(tint: UIColor, dots: [ParticleDot]) -> CGImage {
