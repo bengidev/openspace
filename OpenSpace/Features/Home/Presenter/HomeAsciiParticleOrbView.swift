@@ -45,6 +45,79 @@ private enum ParticleOrbMetrics {
         }
     }
 
+    static func renderSpark(tint: UIColor, glyph: String, pointSize: CGFloat) -> CGImage {
+        let renderer = UIGraphicsImageRenderer(
+            size: CGSize(width: 18, height: 18),
+            format: rendererFormat()
+        )
+        let image = renderer.image { _ in
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.monospacedSystemFont(ofSize: pointSize, weight: .regular),
+                .foregroundColor: tint
+            ]
+            let string = NSAttributedString(string: glyph, attributes: attributes)
+            let size = string.size()
+            string.draw(
+                at: CGPoint(
+                    x: (18 - size.width) * 0.5,
+                    y: (18 - size.height) * 0.5
+                )
+            )
+        }
+
+        guard let cgImage = image.cgImage else {
+            preconditionFailure("Expected raster spark image")
+        }
+
+        return cgImage
+    }
+
+    static func renderOrbitDot(tint: UIColor) -> CGImage {
+        let renderer = UIGraphicsImageRenderer(
+            size: CGSize(width: 10, height: 10),
+            format: rendererFormat()
+        )
+        let image = renderer.image { renderContext in
+            let context = renderContext.cgContext
+            context.setFillColor(tint.withAlphaComponent(0.82).cgColor)
+            context.fillEllipse(in: CGRect(x: 2, y: 2, width: 6, height: 6))
+            context.setFillColor(tint.withAlphaComponent(0.18).cgColor)
+            context.fillEllipse(in: CGRect(x: 0.6, y: 0.6, width: 8.8, height: 8.8))
+        }
+
+        guard let cgImage = image.cgImage else {
+            preconditionFailure("Expected raster outer dot image")
+        }
+
+        return cgImage
+    }
+
+    static func renderImage(_ draw: (CGContext) -> Void) -> CGImage {
+        let renderer = UIGraphicsImageRenderer(
+            size: ParticleOrbMetrics.canvasSize,
+            format: rendererFormat()
+        )
+        let image = renderer.image { renderContext in
+            let context = renderContext.cgContext
+            context.interpolationQuality = .high
+            draw(context)
+        }
+
+        guard let cgImage = image.cgImage else {
+            preconditionFailure("Expected raster orb image")
+        }
+
+        return cgImage
+    }
+
+    static func rendererFormat() -> UIGraphicsImageRendererFormat {
+        let format = UIGraphicsImageRendererFormat.preferred()
+        format.opaque = false
+        format.scale = ParticleOrbMetrics.renderScale
+        return format
+    }
+}
+
 private enum ParticleOrbLayoutFactory {
     static func makeOuterDots(seedOffset: Int, count: Int, radiusBias: Double) -> [ParticleDot] {
         var dots: [ParticleDot] = []
