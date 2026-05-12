@@ -45,7 +45,8 @@ struct InputComposerView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(palette.textMuted)
 
-                    Text("GPT-4o")
+                    let modelName = store.conversationList.selectedConversation?.modelID ?? "Default Model"
+                    Text(modelName)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(palette.textSecondary)
                 }
