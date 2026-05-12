@@ -11,6 +11,40 @@ private enum ParticleOrbMetrics {
     static let glyphRamp = Array("░▒▓█").map(String.init)
 }
 
+    static func renderDots(tint: UIColor, dots: [ParticleDot]) -> CGImage {
+        renderImage { context in
+            for dot in dots {
+                context.setFillColor(tint.withAlphaComponent(dot.opacity).cgColor)
+                let rect = CGRect(
+                    x: dot.point.x - dot.size * 0.5,
+                    y: dot.point.y - dot.size * 0.5,
+                    width: dot.size,
+                    height: dot.size
+                )
+                context.fillEllipse(in: rect)
+            }
+        }
+    }
+
+    static func renderBlocks(tint: UIColor, blocks: [ParticleBlock]) -> CGImage {
+        renderImage { context in
+            for block in blocks {
+                let attributes: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.monospacedSystemFont(ofSize: block.size, weight: .regular),
+                    .foregroundColor: tint.withAlphaComponent(block.opacity)
+                ]
+                let string = NSAttributedString(string: block.glyph, attributes: attributes)
+                let stringSize = string.size()
+                string.draw(
+                    at: CGPoint(
+                        x: block.point.x - stringSize.width * 0.5,
+                        y: block.point.y - stringSize.height * 0.5
+                    )
+                )
+            }
+        }
+    }
+
 private enum ParticleOrbLayoutFactory {
     static func makeOuterDots(seedOffset: Int, count: Int, radiusBias: Double) -> [ParticleDot] {
         var dots: [ParticleDot] = []
