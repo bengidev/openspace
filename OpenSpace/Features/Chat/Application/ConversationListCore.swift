@@ -1,34 +1,34 @@
 import ComposableArchitecture
 import Foundation
 
-@ObservableState
-struct ConversationListState: Equatable {
-    var conversations: [Conversation] = []
-    var searchQuery: String = ""
-    var isLoading: Bool = false
-    var selectedConversation: Conversation?
-    var errorMessage: String?
-}
-
-@CasePathable
-enum ConversationListAction: Equatable {
-    case onAppear
-    case conversationsLoaded([Conversation])
-    case createConversationTapped
-    case conversationCreated(Conversation)
-    case deleteConversationTapped(UUID)
-    case conversationDeleted(UUID)
-    case searchQueryChanged(String)
-    case searchResultsLoaded([Conversation])
-    case conversationSelected(Conversation)
-    case deselectConversation
-    case clearError
-}
-
 struct ConversationList: Reducer {
+    @ObservableState
+    struct State: Equatable {
+        var conversations: [Conversation] = []
+        var searchQuery: String = ""
+        var isLoading: Bool = false
+        var selectedConversation: Conversation?
+        var errorMessage: String?
+    }
+
+    @CasePathable
+    enum Action: Equatable {
+        case onAppear
+        case conversationsLoaded([Conversation])
+        case createConversationTapped
+        case conversationCreated(Conversation)
+        case deleteConversationTapped(UUID)
+        case conversationDeleted(UUID)
+        case searchQueryChanged(String)
+        case searchResultsLoaded([Conversation])
+        case conversationSelected(Conversation)
+        case deselectConversation
+        case clearError
+    }
+
     @Dependency(\.chatPersistence) var chatPersistence
 
-    var body: some Reducer<ConversationListState, ConversationListAction> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .onAppear:
@@ -70,6 +70,13 @@ struct ConversationList: Reducer {
 
             case .searchQueryChanged(let query):
                 state.searchQuery = query
+                guard !query.isEmpty else {
+                    state.isLoading = true
+                    return .run { send in
+                        let conversations = try await chatPersistence.fetchConversations()
+                        await send(.conversationsLoaded(conversations))
+                    }
+                }
                 state.isLoading = true
                 return .run { send in
                     let results = try await chatPersistence.searchConversations(query)

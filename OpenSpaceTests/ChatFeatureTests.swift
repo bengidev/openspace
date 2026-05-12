@@ -10,7 +10,7 @@ struct ConversationListTests {
     @Test
     func loadConversationsOnAppear() async throws {
         let conversation = Conversation(title: "Test Chat")
-        let store = TestStore(initialState: ConversationListState()) {
+        let store = TestStore(initialState: ConversationList.State()) {
             ConversationList()
         } withDependencies: {
             $0.chatPersistence.fetchConversations = { [conversation] }
@@ -28,7 +28,7 @@ struct ConversationListTests {
     @Test
     func createConversation() async throws {
         let newConversation = Conversation(title: "New Conversation")
-        let store = TestStore(initialState: ConversationListState()) {
+        let store = TestStore(initialState: ConversationList.State()) {
             ConversationList()
         } withDependencies: {
             $0.chatPersistence.createConversation = { _ in newConversation }
@@ -44,7 +44,7 @@ struct ConversationListTests {
     @Test
     func deleteConversation() async throws {
         let conversation = Conversation(title: "To Delete")
-        let store = TestStore(initialState: ConversationListState(conversations: [conversation])) {
+        let store = TestStore(initialState: ConversationList.State(conversations: [conversation])) {
             ConversationList()
         } withDependencies: {
             $0.chatPersistence.deleteConversation = { _ in }
@@ -59,7 +59,7 @@ struct ConversationListTests {
     @Test
     func searchConversations() async throws {
         let result = Conversation(title: "Search Result")
-        let store = TestStore(initialState: ConversationListState()) {
+        let store = TestStore(initialState: ConversationList.State()) {
             ConversationList()
         } withDependencies: {
             $0.chatPersistence.searchConversations = { _ in [result] }
@@ -78,7 +78,7 @@ struct ConversationListTests {
     @Test
     func selectAndDeselectConversation() async throws {
         let conversation = Conversation(title: "Selected")
-        let store = TestStore(initialState: ConversationListState()) {
+        let store = TestStore(initialState: ConversationList.State()) {
             ConversationList()
         }
 
