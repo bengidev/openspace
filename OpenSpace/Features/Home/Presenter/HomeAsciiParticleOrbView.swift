@@ -124,6 +124,202 @@ private struct ParticleOrbSparkDescriptor {
     }
 }
 
+private enum ParticleOrbAssetStore {
+    static let light = ParticleOrbAssetFactory.makePack(theme: .light)
+    static let dark = ParticleOrbAssetFactory.makePack(theme: .dark)
+
+    static func pack(for theme: ParticleOrbTheme) -> ParticleOrbAssetPack {
+        switch theme {
+        case .light:
+            light
+        case .dark:
+            dark
+        }
+    }
+}
+
+private enum ParticleOrbAssetFactory {
+    static func makePack(theme: ParticleOrbTheme) -> ParticleOrbAssetPack {
+        let tint = theme.tint
+
+        let sparkSeeds = ParticleOrbLayoutFactory.makeSparkSeeds(seedOffset: 11200, count: 28)
+        let outerOrbitDotImage = ParticleOrbRenderer.renderOrbitDot(tint: tint)
+        let outerOrbitDotSeeds = ParticleOrbLayoutFactory.makeOuterOrbitDotSeeds(seedOffset: 12800, count: 42)
+
+        return ParticleOrbAssetPack(
+            layers: [
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderDots(
+                        tint: tint,
+                        dots: ParticleOrbLayoutFactory.makeOuterDots(seedOffset: 0, count: 138, radiusBias: 0.72)
+                    ),
+                    restOpacity: 0.36,
+                    opacityRange: 0.05,
+                    opacityDuration: 6.8,
+                    restScale: 1,
+                    scaleRange: 0.018,
+                    scaleDuration: 8.4,
+                    rotationRange: 0.09,
+                    rotationDuration: 21,
+                    phaseOffset: 0,
+                    crispEdges: false,
+                    driftRadius: 5,
+                    driftVerticalScale: 0.72,
+                    driftDuration: 16
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderDots(
+                        tint: tint,
+                        dots: ParticleOrbLayoutFactory.makeOuterDots(seedOffset: 1200, count: 126, radiusBias: 0.66)
+                    ),
+                    restOpacity: 0.28,
+                    opacityRange: 0.05,
+                    opacityDuration: 7.6,
+                    restScale: 0.98,
+                    scaleRange: 0.022,
+                    scaleDuration: 9.2,
+                    rotationRange: 0.07,
+                    rotationDuration: 17.5,
+                    phaseOffset: 1.9,
+                    crispEdges: false,
+                    driftRadius: 7,
+                    driftVerticalScale: 0.56,
+                    driftDuration: 19
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderDots(
+                        tint: tint,
+                        dots: ParticleOrbLayoutFactory.makePulseDots(seedOffset: 1800, count: 86)
+                    ),
+                    restOpacity: 0.20,
+                    opacityRange: 0.10,
+                    opacityDuration: 5.2,
+                    restScale: 0.78,
+                    scaleRange: 0.12,
+                    scaleDuration: 5.8,
+                    rotationRange: 0.04,
+                    rotationDuration: 13,
+                    phaseOffset: 0.4,
+                    crispEdges: false,
+                    driftRadius: 2,
+                    driftVerticalScale: 0.7,
+                    driftDuration: 11
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderBlocks(
+                        tint: tint,
+                        blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 2400, count: 236, prominence: 0.96)
+                    ),
+                    restOpacity: 0.78,
+                    opacityRange: 0.10,
+                    opacityDuration: 5.8,
+                    restScale: 1,
+                    scaleRange: 0.028,
+                    scaleDuration: 6.6,
+                    rotationRange: 0.10,
+                    rotationDuration: 12,
+                    phaseOffset: 0.8,
+                    crispEdges: true,
+                    driftRadius: 4,
+                    driftVerticalScale: 0.74,
+                    driftDuration: 8.5
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderBlocks(
+                        tint: tint,
+                        blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 4800, count: 220, prominence: 0.78)
+                    ),
+                    restOpacity: 0.52,
+                    opacityRange: 0.09,
+                    opacityDuration: 6.4,
+                    restScale: 1.02,
+                    scaleRange: 0.024,
+                    scaleDuration: 6.1,
+                    rotationRange: 0.14,
+                    rotationDuration: 9.8,
+                    phaseOffset: 2.2,
+                    crispEdges: true,
+                    driftRadius: 5,
+                    driftVerticalScale: 0.68,
+                    driftDuration: 7.8
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderBlocks(
+                        tint: tint,
+                        blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 7200, count: 158, prominence: 0.58)
+                    ),
+                    restOpacity: 0.30,
+                    opacityRange: 0.06,
+                    opacityDuration: 6.4,
+                    restScale: 1.04,
+                    scaleRange: 0.018,
+                    scaleDuration: 6.1,
+                    rotationRange: 0.18,
+                    rotationDuration: 7.4,
+                    phaseOffset: 3.1,
+                    crispEdges: true,
+                    driftRadius: 6,
+                    driftVerticalScale: 0.64,
+                    driftDuration: 6.9
+                ),
+                ParticleOrbLayerDescriptor(
+                    image: ParticleOrbRenderer.renderDots(
+                        tint: tint,
+                        dots: ParticleOrbLayoutFactory.makeOrbDust(seedOffset: 9600, count: 132)
+                    ),
+                    restOpacity: 0.30,
+                    opacityRange: 0.08,
+                    opacityDuration: 4.4,
+                    restScale: 1.01,
+                    scaleRange: 0.032,
+                    scaleDuration: 5.6,
+                    rotationRange: 0.12,
+                    rotationDuration: 10.6,
+                    phaseOffset: 1.5,
+                    crispEdges: false,
+                    driftRadius: 8,
+                    driftVerticalScale: 0.62,
+                    driftDuration: 12.4
+                )
+            ],
+            outerOrbitDots: outerOrbitDotSeeds.map { seed in
+                ParticleOrbOrbitDotDescriptor(
+                    image: outerOrbitDotImage,
+                    imageSize: CGSize(width: 10, height: 10),
+                    orbitRadius: seed.orbitRadius,
+                    verticalScale: seed.verticalScale,
+                    angleOffset: seed.angleOffset,
+                    radialPulse: seed.radialPulse,
+                    orbitDuration: seed.orbitDuration,
+                    opacityDuration: seed.opacityDuration,
+                    scaleDuration: seed.scaleDuration,
+                    phaseOffset: seed.phaseOffset,
+                    restOpacity: seed.restOpacity,
+                    restScale: seed.restScale,
+                    scaleRange: seed.scaleRange
+                )
+            },
+            sparks: sparkSeeds.map { seed in
+                ParticleOrbSparkDescriptor(
+                    image: ParticleOrbRenderer.renderSpark(tint: tint, glyph: seed.glyph, pointSize: seed.pointSize),
+                    imageSize: CGSize(width: 18, height: 18),
+                    orbitRadius: seed.orbitRadius,
+                    verticalScale: seed.verticalScale,
+                    angleOffset: seed.angleOffset,
+                    radialPulse: seed.radialPulse,
+                    orbitDuration: seed.orbitDuration,
+                    opacityDuration: seed.opacityDuration,
+                    scaleDuration: seed.scaleDuration,
+                    phaseOffset: seed.phaseOffset,
+                    restOpacity: seed.restOpacity,
+                    restScale: seed.restScale,
+                    scaleRange: seed.scaleRange
+                )
+            }
+        )
+    }
+}
+
     static func renderDots(tint: UIColor, dots: [ParticleDot]) -> CGImage {
         renderImage { context in
             for dot in dots {
