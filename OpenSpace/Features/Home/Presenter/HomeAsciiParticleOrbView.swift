@@ -1,6 +1,25 @@
 import SwiftUI
 import UIKit
 
+struct HomeAsciiParticleOrbView: UIViewRepresentable {
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+
+    func makeUIView(context: Context) -> ParticleOrbUIKitView {
+        let view = ParticleOrbUIKitView()
+        view.isUserInteractionEnabled = false
+        return view
+    }
+
+    func updateUIView(_ uiView: ParticleOrbUIKitView, context: Context) {
+        uiView.apply(
+            theme: palette.isDark ? .dark : .light,
+            shouldAnimate: reduceMotion == false && scenePhase == .active
+        )
+    }
+}
+
 final class ParticleOrbUIKitView: UIView {
     private let containerLayer = CALayer()
     private var activeTheme: ParticleOrbTheme?
@@ -635,6 +654,7 @@ private enum ParticleOrbAssetFactory {
     }
 }
 
+private enum ParticleOrbRenderer {
     static func renderDots(tint: UIColor, dots: [ParticleDot]) -> CGImage {
         renderImage { context in
             for dot in dots {
@@ -1013,3 +1033,12 @@ private enum ParticleOrbMath {
     }
 }
 
+#Preview {
+    ZStack {
+        OpenSpacePalette.resolve(.light).background.ignoresSafeArea()
+        HomeAsciiParticleOrbView()
+            .frame(height: 240)
+            .padding(.horizontal, 28)
+            .environment(\.palette, OpenSpacePalette.resolve(.light))
+    }
+}
