@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSpace — Onboarding Feature Architecture Flow</title>
+<style>
+  :root {
+    --bg: #0b0c10;
+    --bg-elevated: #111217;
+    --bg-card: #16171d;
+    --border: #252730;
+    --border-accent: #2e303a;
+    --accent: #5b8def;
+    --accent-soft: #5b8def20;
+    --text: #c9cdd7;
+    --text-muted: #7a7f8a;
+    --text-bright: #e8eaf0;
+    --green: #4cc38a;
+    --green-soft: #4cc38a20;
+    --amber: #f0a84a;
+    --amber-soft: #f0a84a20;
+    --red: #e05d5d;
+    --red-soft: #e05d5d20;
+    --purple: #a78bfa;
+    --purple-soft: #a78bfa20;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    padding: 40px 24px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .layer {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-elevated);
+    padding: 18px 20px;
+    position: relative;
+  }
+  .layer-label {
+    position: absolute;
+    top: -11px;
+    left: 18px;
+    background: var(--bg);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+  .box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    flex: 1 1 0;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .box:hover { border-color: var(--border-accent); box-shadow: 0 0 0 3px rgba(91,141,239,.08); }
+  .box-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-bright);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .box-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    padding: 2px 7px;
+    border-radius: 5px;
+    text-transform: uppercase;
+  }
+  .badge-view { background: var(--green-soft); color: var(--green); }
+  .badge-reducer { background: var(--amber-soft); color: var(--amber); }
+  .badge-domain { background: var(--purple-soft); color: var(--purple); }
+  .badge-infra { background: var(--red-soft); color: var(--red); }
+  .box-body { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .arrow-down {
+    display: flex; justify-content: center; align-items: center;
+    height: 22px; color: var(--text-muted); font-size: 18px; opacity: .7;
+  }
+  .connector {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 1px; height: 18px; background: var(--border);
+  }
+  .page-flow {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .page-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+  }
+  .page-index {
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .scope-box {
+    border: 1px dashed var(--amber);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: rgba(240,168,74,.06);
+    margin-top: 10px;
+  }
+  .scope-title { font-size: 11px; font-weight: 600; color: var(--amber); margin-bottom: 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .data-flow {
+    display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); margin-top: 8px;
+  }
+  .data-flow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .data-flow .line { flex: 1; height: 1px; background: var(--border); }
+  .note {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    max-width: 1100px;
+    margin-left: auto; margin-right: auto;
+  }
+  .note code {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--text-bright);
+  }
+</style>
+</head>
+<body>
+
+<h1>OpenSpace — Onboarding Feature Architecture</h1>
+<p class="subtitle">TCA-based layered flow: View → Reducer → Domain → Infrastructure</p>
+
+<div class="diagram">
+
+  <!-- ENTRY -->
+  <div class="layer">
+    <div class="layer-label">App Entry</div>
+    <div class="row">
+      <div class="box" style="flex: 2;">
+        <div class="box-title">
+          <span class="box-badge badge-view">View</span>
+          OnboardingContainerView
+        </div>
+        <div class="box-body">
+          Root container. Creates <code>StoreOf&lt;OnboardingFlowFeature&gt;</code> with injected <code>SwiftDataOnboardingRepository</code>. Switches to <code>HomeView</code> when <code>isFinished</code> becomes true. Holds <code>@AppStorage("appTheme")</code> and resolves color palette.
+        </div>
+      </div>
+      <div class="box" style="flex: 1;">
+        <div class="box-title">
+          <span class="box-badge badge-domain">Model</span>
+          OnboardingProgressEntity
+        </div>
+        <div class="box-body">
+          SwiftData <code>@Model</code>. Fields: <code>isCompleted</code>, <code>completedAt</code>, <code>lastPageIndex</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- REDUCER LAYER -->
+  <div class="layer">
+    <div class="layer-label">TCA Business Logic</div>
+    <div class="row">
+      <div class="box" style="flex: 2;">
+        <div class="box-title">
+          <span class="box-badge badge-reducer">Parent Reducer</span>
+          OnboardingFlowFeature
+        </div>
+        <div class="box-body">
+          <strong>State:</strong> <code>currentPage</code>, <code>isFinished</code>, <code>pageDemo</code><br>
+          <strong>Actions:</strong> <code>onAppear</code>, <code>nextTapped</code>, <code>previousTapped</code>, <code>pageSelected</code>, <code>finishTapped</code>, <code>skipTapped</code><br>
+          <strong>Effect:</strong> On appear → checks <code>onboardingRepository.isOnboardingCompleted()</code>. On finish → writes completion to repository.
+        </div>
+        <div class="scope-box">
+          <div class="scope-title">↳ Child Scope — OnboardingPageDemoFeature</div>
+          <div class="box-body">
+            <strong>State:</strong> <code>selectedPromptIndex</code>, <code>queuedPromptCount</code>, <code>reasoningLevel</code>, <code>pairingConfirmed</code><br>
+            <strong>Actions:</strong> <code>promptChipTapped</code>, <code>addQueuedPromptTapped</code>, <code>reasoningLevelChanged</code>, <code>pairingToggleTapped</code><br>
+            Scoped via <code>Scope(state: \.pageDemo, action: \.pageDemo)</code>
+          </div>
+        </div>
+      </div>
+      <div class="box" style="flex: 1;">
+        <div class="box-title">
+          <span class="box-badge badge-domain">Dependency</span>
+          onboardingRepository
+        </div>
+        <div class="box-body">
+          Protocol <code>OnboardingRepository</code> with two methods. Injected into TCA dependency bag. Live = <code>SwiftDataOnboardingRepository</code>, Test/Preview = <code>MockOnboardingRepository</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- VIEW LAYER -->
+  <div class="layer">
+    <div class="layer-label">Presentation Layer</div>
+    <div class="row">
+      <div class="box" style="flex: 2;">
+        <div class="box-title">
+          <span class="box-badge badge-view">View</span>
+          OnboardingView
+        </div>
+        <div class="box-body">
+          Main layout. <code>GeometryReader</code> for responsive sizing. Background = <code>palette.background</code> + <code>PixelGridBackground</code> + <code>DiagonalHatchPattern</code>. Embeds top bar, feature page, and bottom navigation. Applies <code>.sensoryFeedback(.selection, trigger: store.currentPage)</code>.
+        </div>
+      </div>
+      <div class="box" style="flex: 1;">
+        <div class="box-title">
+          <span class="box-badge badge-view">View</span>
+          OnboardingTopBar
+        </div>
+        <div class="box-body">
+          Shows skip/close actions and theme toggle via <code>appTheme</code> binding.
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+      <div class="box" style="flex: 3;">
+        <div class="box-title">
+          <span class="box-badge badge-view">View</span>
+          OnboardingFeaturePageView
+        </div>
+        <div class="box-body">
+          Renders text content (eyebrow badge, headline, body) + terminal chrome card containing the interactive visual. Triggers entrance animation via <code>runEntrance()</code> per page change. Footer shows staggered <code>OnboardingFeatureHighlight</code> chips.
+        </div>
+      </div>
+      <div class="box" style="flex: 1;">
+        <div class="box-title">
+          <span class="box-badge badge-view">View</span>
+          OnboardingBottomNavigation
+        </div>
+        <div class="box-body">
+          Pagination dots + Back / Continue or Enter OpenSpace button. Dots animate width on active page change.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- VISUAL FACTORY -->
+  <div class="layer">
+    <div class="layer-label">Visual Factory (PageVisualFactory)</div>
+    <div class="box-body" style="margin-bottom: 10px; font-size: 12px; color: var(--text-muted);">
+      Maps <code>OnboardingPageModel</code> → specific interactive visual View. Each visual receives demo state from <code>OnboardingPageDemoFeature</code> and sends actions back to the scoped child store.
+    </div>
+    <div class="page-flow">
+      <div class="page-chip">
+        <span class="page-index">SEC-01</span>
+        <span><strong>encryptedPairing</strong></span>
+        <span style="color:var(--text-muted)">→ EncryptedPairingVisual</span>
+      </div>
+      <div class="page-chip">
+        <span class="page-index">AI-02</span>
+        <span><strong>ideaStudio</strong></span>
+        <span style="color:var(--text-muted)">→ IdeaStudioVisual</span>
+      </div>
+      <div class="page-chip">
+        <span class="page-index">RUN-03</span>
+        <span><strong>promptQueue</strong></span>
+        <span style="color:var(--text-muted)">→ PromptQueueVisual</span>
+      </div>
+      <div class="page-chip">
+        <span class="page-index">THK-04</span>
+        <span><strong>reasoningControl</strong></span>
+        <span style="color:var(--text-muted)">→ ReasoningControlVisual</span>
+      </div>
+      <div class="page-chip">
+        <span class="page-index">RDY-05</span>
+        <span><strong>workspaceReady</strong></span>
+        <span style="color:var(--text-muted)">→ WorkspaceReadyVisual</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- DOMAIN -->
+  <div class="layer">
+    <div class="layer-label">Domain Models</div>
+    <div class="row">
+      <div class="box">
+        <div class="box-title">
+          <span class="box-badge badge-domain">Model</span>
+          OnboardingPage
+        </div>
+        <div class="box-body">
+          <code>id, model, indexLabel, eyebrow, headline, body, metric, command, shaderIntensity, highlights</code>. Static array <code>OnboardingPage.all</code> defines 5 canonical pages.
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">
+          <span class="box-badge badge-domain">Enum</span>
+          OnboardingPageModel
+        </div>
+        <div class="box-body">
+          <code>encryptedPairing | ideaStudio | promptQueue | reasoningControl | workspaceReady</code>. Drives PageVisualFactory switch.
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title">
+          <span class="box-badge badge-domain">Model</span>
+          OnboardingFeatureHighlight
+        </div>
+        <div class="box-body">
+          <code>title, detail, symbol</code>. Rendered as footer chips per page with staggered entrance animation.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- INFRASTRUCTURE -->
+  <div class="layer">
+    <div class="layer-label">Infrastructure</div>
+    <div class="row">
+      <div class="box" style="flex: 2;">
+        <div class="box-title">
+          <span class="box-badge badge-infra">Repository</span>
+          SwiftDataOnboardingRepository
+        </div>
+        <div class="box-body">
+          SwiftData-backed actor implementing <code>OnboardingRepository</code>. Reads/writes <code>OnboardingProgressEntity</code> via <code>ModelContext</code>. Methods: <code>isOnboardingCompleted()</code> → fetch first record; <code>completeOnboarding()</code> → upsert and set <code>isCompleted = true</code>.
+        </div>
+      </div>
+      <div class="box" style="flex: 1;">
+        <div class="box-title">
+          <span class="box-badge badge-infra">DependencyKey</span>
+          OnboardingRepositoryKey
+        </div>
+        <div class="box-body">
+          Registers repository in TCA <code>DependencyValues</code>. liveValue = unimplemented (fatalError), testValue/previewValue = mock.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down" style="color: var(--green);">↓</div>
+
+  <!-- COMPLETION -->
+  <div class="layer" style="border-color: var(--green); background: var(--green-soft);">
+    <div class="layer-label" style="color: var(--green); border-color: var(--green); background: var(--bg);">Completion</div>
+    <div class="row">
+      <div class="box" style="border-color: var(--green); background: rgba(76,195,138,.08);">
+        <div class="box-title" style="color: var(--green);">
+          <span class="box-badge badge-view">View</span>
+          HomeView
+        </div>
+        <div class="box-body" style="color: var(--text);">
+          OnboardingContainerView switches to <code>HomeView</code> when <code>store.isFinished</code> becomes true. Onboarding state is persisted in SwiftData so the flow never repeats.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <strong>Key architectural patterns used:</strong><br><br>
+  • <strong>Parent-Child scoping:</strong> <code>OnboardingFlowFeature</code> (navigation + lifecycle) scopes <code>OnboardingPageDemoFeature</code> (page interactions) via <code>Scope(state:action:)</code>.<br>
+  • <strong>Dependency injection:</strong> Repository is injected at store creation time via <code>withDependencies</code> in <code>OnboardingContainerView.init</code>.<br>
+  • <strong>Factory pattern:</strong> <code>PageVisualFactory.make</code> maps domain enum → concrete SwiftUI view, keeping <code>OnboardingFeaturePageView</code> generic.<br>
+  • <strong>Unidirectional data flow:</strong> View reads <code>store.state</code> → user action → Reducer processes → state updates → SwiftUI re-renders. No two-way binding outside of TCA.
+</div>
+
+</body>
+</html>
