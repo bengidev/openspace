@@ -1,6 +1,14 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct HomeContainerView: View {
+    @Bindable var store: StoreOf<HomeContainer>
+    
+    var body: some View {
+        HomeView(store: store)
+    }
+}
+
 @Reducer
 struct HomeContainer {
     @ObservableState
@@ -10,7 +18,7 @@ struct HomeContainer {
         var chat = ChatTabState()
         var settings = SettingsTabState()
     }
-
+    
     @CasePathable
     enum Action: Equatable {
         case tabSelected(HomeTab)
@@ -18,20 +26,20 @@ struct HomeContainer {
         case chat(ChatTabAction)
         case settings(SettingsTabAction)
     }
-
+    
     var body: some Reducer<State, Action> {
         Scope(state: \.spacerPet, action: \.spacerPet) {
             SpacerPetContainer()
         }
-
+        
         Scope(state: \.chat, action: \.chat) {
             ChatTab()
         }
-
+        
         Scope(state: \.settings, action: \.settings) {
             SettingsTab()
         }
-
+        
         Reduce { state, action in
             switch action {
             case let .tabSelected(tab):
@@ -41,14 +49,6 @@ struct HomeContainer {
                 return .none
             }
         }
-    }
-}
-
-struct HomeContainerView: View {
-    @Bindable var store: StoreOf<HomeContainer>
-
-    var body: some View {
-        HomeView(store: store)
     }
 }
 
