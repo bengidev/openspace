@@ -46,6 +46,77 @@ final class ParticleOrbUIKitView: UIView {
 
         updateAnimationState(shouldAnimate)
     }
+
+    private func installAssetPack(_ pack: ParticleOrbAssetPack) {
+        activePack = pack
+
+        for layer in orbLayers {
+            layer.removeAllAnimations()
+            layer.removeFromSuperlayer()
+        }
+        orbLayers.removeAll(keepingCapacity: true)
+
+        for layer in outerOrbitDotLayers {
+            layer.removeAllAnimations()
+            layer.removeFromSuperlayer()
+        }
+        outerOrbitDotLayers.removeAll(keepingCapacity: true)
+
+        for layer in sparkLayers {
+            layer.removeAllAnimations()
+            layer.removeFromSuperlayer()
+        }
+        sparkLayers.removeAll(keepingCapacity: true)
+
+        for descriptor in pack.layers {
+            let layer = CALayer()
+            layer.bounds = CGRect(origin: .zero, size: ParticleOrbMetrics.canvasSize)
+            layer.position = ParticleOrbMetrics.center
+            layer.contents = descriptor.image
+            layer.contentsGravity = .resize
+            layer.magnificationFilter = descriptor.crispEdges ? .nearest : .linear
+            layer.minificationFilter = descriptor.crispEdges ? .nearest : .trilinear
+            layer.opacity = descriptor.restOpacity
+            layer.transform = CATransform3DMakeScale(descriptor.restScale, descriptor.restScale, 1)
+            layer.shouldRasterize = false
+
+            containerLayer.addSublayer(layer)
+            orbLayers.append(layer)
+        }
+
+        for descriptor in pack.outerOrbitDots {
+            let layer = CALayer()
+            layer.bounds = CGRect(origin: .zero, size: descriptor.imageSize)
+            layer.position = descriptor.position(progress: 0)
+            layer.contents = descriptor.image
+            layer.contentsGravity = .resizeAspect
+            layer.magnificationFilter = .linear
+            layer.minificationFilter = .trilinear
+            layer.opacity = descriptor.restOpacity
+            layer.transform = CATransform3DMakeScale(descriptor.restScale, descriptor.restScale, 1)
+
+            containerLayer.addSublayer(layer)
+            outerOrbitDotLayers.append(layer)
+        }
+
+        for descriptor in pack.sparks {
+            let layer = CALayer()
+            layer.bounds = CGRect(origin: .zero, size: descriptor.imageSize)
+            layer.position = descriptor.position(progress: 0)
+            layer.contents = descriptor.image
+            layer.contentsGravity = .resizeAspect
+            layer.magnificationFilter = .linear
+            layer.minificationFilter = .trilinear
+            layer.opacity = 0
+            layer.transform = CATransform3DMakeScale(descriptor.restScale, descriptor.restScale, 1)
+
+            containerLayer.addSublayer(layer)
+            sparkLayers.append(layer)
+        }
+
+        updateAnimationState(isAnimating, force: true)
+    }
+
 private enum ParticleOrbTheme {
     case light
     case dark
