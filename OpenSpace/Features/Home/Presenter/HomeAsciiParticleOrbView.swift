@@ -117,6 +117,85 @@ final class ParticleOrbUIKitView: UIView {
         updateAnimationState(isAnimating, force: true)
     }
 
+    private func updateAnimationState(_ shouldAnimate: Bool, force: Bool = false) {
+        guard let pack = activePack else { return }
+        guard force || shouldAnimate != isAnimating else { return }
+
+        isAnimating = shouldAnimate
+
+        for (layer, descriptor) in zip(orbLayers, pack.layers) {
+            layer.removeAllAnimations()
+            layer.opacity = descriptor.restOpacity
+            layer.position = ParticleOrbMetrics.center
+            layer.transform = CATransform3DMakeScale(descriptor.restScale, descriptor.restScale, 1)
+
+            guard shouldAnimate else { continue }
+
+            let now = CACurrentMediaTime()
+
+            if descriptor.driftRadius > 0 {
+                let position = CAKeyframeAnimation(keyPath: "position")
+                position.values = descriptor.driftPoints().map(NSValue.init(cgPoint:))
+                position.duration = descriptor.driftDuration
+                position.repeatCount = .infinity
+                position.beginTime = now - descriptor.phaseOffset
+                position.calculationMode = .paced
+                position.isRemovedOnCompletion = false
+                layer.add(position, forKey: "position")
+            }
+
+            if descriptor.rotationRange > 0 {
+                let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
+                rotation.fromValue = -descriptor.rotationRange
+                rotation.toValue = descriptor.rotationRange
+                rotation.duration = descriptor.rotationDuration
+                rotation.autoreverses = true
+                rotation.repeatCount = .infinity
+                rotation.beginTime = now - descriptor.phaseOffset
+                rotation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                rotation.isRemovedOnCompletion = false
+                layer.add(rotation, forKey: "rotation")
+            }
+
+            if descriptor.scaleRange > 0 {
+                let minScale = max(0.01, descriptor.restScale - descriptor.scaleRange)
+                let maxScale = descriptor.restScale + descriptor.scaleRange
+                let scale = CAKeyframeAnimation(keyPath: "transform.scale")
+                scale.values = [descriptor.restScale, maxScale, descriptor.restScale, minScale, descriptor.restScale]
+                scale.keyTimes = [0, 0.28, 0.55, 0.78, 1]
+                scale.duration = descriptor.scaleDuration
+                scale.repeatCount = .infinity
+                scale.beginTime = now - descriptor.phaseOffset * 0.9
+                scale.timingFunctions = [
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut)
+                ]
+                scale.isRemovedOnCompletion = false
+                layer.add(scale, forKey: "scale")
+            }
+
+            if descriptor.opacityRange > 0 {
+                let minOpacity = max(0.02, descriptor.restOpacity - descriptor.opacityRange)
+                let maxOpacity = min(1, descriptor.restOpacity + descriptor.opacityRange)
+                let opacity = CAKeyframeAnimation(keyPath: "opacity")
+                opacity.values = [descriptor.restOpacity, maxOpacity, descriptor.restOpacity, minOpacity, descriptor.restOpacity]
+                opacity.keyTimes = [0, 0.26, 0.56, 0.80, 1]
+                opacity.duration = descriptor.opacityDuration
+                opacity.repeatCount = .infinity
+                opacity.beginTime = now - descriptor.phaseOffset * 1.1
+                opacity.timingFunctions = [
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut)
+                ]
+                opacity.isRemovedOnCompletion = false
+                layer.add(opacity, forKey: "opacity")
+            }
+        }
+
 private enum ParticleOrbTheme {
     case light
     case dark
