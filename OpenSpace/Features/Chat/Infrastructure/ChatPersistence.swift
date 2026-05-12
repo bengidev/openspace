@@ -1,0 +1,216 @@
+import ComposableArchitecture
+import CoreData
+import Foundation
+
+struct ChatPersistenceClient {
+    var fetchConversations: @Sendable () async throws -> [Conversation]
+    var createConversation: @Sendable (Conversation) async throws -> Conversation
+    var deleteConversation: @Sendable (UUID) async throws -> Void
+    var searchConversations: @Sendable (String) async throws -> [Conversation]
+    var saveMessage: @Sendable (Message, UUID) async throws -> Void
+    var fetchMessages: @Sendable (UUID) async throws -> [Message]
+    var deleteMessages: @Sendable (UUID) async throws -> Void
+}
+
+extension ChatPersistenceClient: DependencyKey {
+    static let liveValue = ChatPersistenceClient(
+        fetchConversations: {
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
+                request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
+                let entities = try context.fetch(request)
+                return entities.map { $0.toDomain() }
+            }
+        },
+        createConversation: { conversation in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let entity = ConversationEntity(context: context)
+                entity.conversationId = conversation.id
+                entity.title = conversation.title
+                entity.createdAt = conversation.createdAt
+                entity.updatedAt = conversation.updatedAt
+                entity.modelID = conversation.modelID
+                entity.providerID = conversation.providerID
+                try context.save()
+                return conversation
+            }
+        },
+        deleteConversation: { id in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
+                request.predicate = NSPredicate(format: "conversationId == %@", id as CVarArg)
+                let entities = try context.fetch(request)
+                for entity in entities {
+                    context.delete(entity)
+                }
+
+                let msgRequest = NSFetchRequest<MessageEntity>(entityName: "MessageEntity")
+                msgRequest.predicate = NSPredicate(format: "conversationId == %@", id as CVarArg)
+                let messages = try context.fetch(msgRequest)
+                for message in messages {
+                    context.delete(message)
+                }
+
+                try context.save()
+            }
+        },
+        searchConversations: { query in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let request = NSFetchRequest<ConversationEntity>(entityName: "ConversationEntity")
+                request.predicate = NSPredicate(
+                    format: "title CONTAINS[cd] %@",
+                    query
+                )
+                request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
+                let entities = try context.fetch(request)
+                return entities.map { $0.toDomain() }
+            }
+        },
+        saveMessage: { message, conversationId in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let entity = MessageEntity(context: context)
+                entity.messageId = message.id
+                entity.conversationId = conversationId
+                entity.timestamp = message.timestamp
+                entity.role = message.role.rawValue
+                entity.messageType = message.messageTypeString
+                entity.status = MessageStatus.complete.rawValue
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                entity.payloadJSON = try encoder.encode(message.payload)
+                try context.save()
+            }
+        },
+        fetchMessages: { conversationId in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let request = NSFetchRequest<MessageEntity>(entityName: "MessageEntity")
+                request.predicate = NSPredicate(format: "conversationId == %@", conversationId as CVarArg)
+                request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+                let entities = try context.fetch(request)
+                return try entities.compactMap { try $0.toDomain() }
+            }
+        },
+        deleteMessages: { conversationId in
+            try await MainActor.run {
+                let context = ChatCoreDataStack.shared.viewContext
+                let request = NSFetchRequest<MessageEntity>(entityName: "MessageEntity")
+                request.predicate = NSPredicate(format: "conversationId == %@", conversationId as CVarArg)
+                let entities = try context.fetch(request)
+                for entity in entities {
+                    context.delete(entity)
+                }
+                try context.save()
+            }
+        }
+    )
+
+    static let testValue = ChatPersistenceClient(
+        fetchConversations: { [] },
+        createConversation: { $0 },
+        deleteConversation: { _ in },
+        searchConversations: { _ in [] },
+        saveMessage: { _, _ in },
+        fetchMessages: { _ in [] },
+        deleteMessages: { _ in }
+    )
+}
+
+extension DependencyValues {
+    var chatPersistence: ChatPersistenceClient {
+        get { self[ChatPersistenceClient.self] }
+        set { self[ChatPersistenceClient.self] = newValue }
+    }
+}
+
+extension ConversationEntity {
+    func toDomain() -> Conversation {
+        Conversation(
+            id: conversationId,
+            title: title,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            modelID: modelID,
+            providerID: providerID
+        )
+    }
+}
+
+extension MessageEntity {
+    func toDomain() throws -> Message? {
+        guard let type = MessageType(rawValue: messageType) else {
+            return nil
+        }
+        guard let payloadJSON = payloadJSON else {
+            return nil
+        }
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        switch type {
+        case .text:
+            let payload = try decoder.decode(TextMessage.self, from: payloadJSON)
+            return .text(payload)
+        case .thinking:
+            let payload = try decoder.decode(ThinkingMessage.self, from: payloadJSON)
+            return .thinking(payload)
+        case .toolCall:
+            let payload = try decoder.decode(ToolCallMessage.self, from: payloadJSON)
+            return .toolCall(payload)
+        case .toolResult:
+            let payload = try decoder.decode(ToolResultMessage.self, from: payloadJSON)
+            return .toolResult(payload)
+        case .subagentLink:
+            let payload = try decoder.decode(SubagentLinkMessage.self, from: payloadJSON)
+            return .subagentLink(payload)
+        case .attachment:
+            let payload = try decoder.decode(AttachmentMessage.self, from: payloadJSON)
+            return .attachment(payload)
+        case .system:
+            let payload = try decoder.decode(SystemMessage.self, from: payloadJSON)
+            return .system(payload)
+        }
+    }
+}
+
+private enum MessageType: String {
+    case text
+    case thinking
+    case toolCall
+    case toolResult
+    case subagentLink
+    case attachment
+    case system
+}
+
+private extension Message {
+    var messageTypeString: String {
+        switch self {
+        case .text: return "text"
+        case .thinking: return "thinking"
+        case .toolCall: return "toolCall"
+        case .toolResult: return "toolResult"
+        case .subagentLink: return "subagentLink"
+        case .attachment: return "attachment"
+        case .system: return "system"
+        }
+    }
+
+    var payload: Codable {
+        switch self {
+        case let .text(m): return m
+        case let .thinking(m): return m
+        case let .toolCall(m): return m
+        case let .toolResult(m): return m
+        case let .subagentLink(m): return m
+        case let .attachment(m): return m
+        case let .system(m): return m
+        }
+    }
+}
