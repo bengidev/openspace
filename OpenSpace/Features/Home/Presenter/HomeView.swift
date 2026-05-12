@@ -11,35 +11,30 @@ struct HomeView: View {
             palette.background
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                Spacer(minLength: 72)
+            ChatTabView(
+                store: store.scope(state: \.chat, action: \.chat)
+            )
+        }
+    }
+}
 
-                HomeAsciiParticleOrbView()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 260)
-                    .padding(.bottom, 28)
+struct SettingsTabView: View {
+    @Environment(\.palette) private var palette
 
-                Text("Hi! How can I help you?")
-                    .font(.system(size: 28, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(palette.textSecondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.68)
+    var body: some View {
+        ZStack {
+            palette.background
+                .ignoresSafeArea()
 
-                Text("Chats are end-to-end encrypted.")
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundStyle(palette.textSecondary)
-                    .padding(.top, 12)
-
-                Text("Your data is safe.")
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundStyle(palette.textSecondary)
+            VStack {
+                Text("Settings")
+                    .font(.system(size: 28, weight: .regular))
+                    .foregroundStyle(palette.textPrimary)
+                    .tracking(-1.2)
 
                 Spacer()
             }
-            .padding(28)
-        }
-        .onAppear {
-            store.send(.spacerPet(.feature(.onAppear)))
+            .padding(.top, 60)
         }
     }
 }

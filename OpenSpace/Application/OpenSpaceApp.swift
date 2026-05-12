@@ -25,6 +25,10 @@ struct OpenSpaceApp: App {
         }
     }()
 
+    init() {
+        _ = ChatCoreDataStack.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             AppView(
