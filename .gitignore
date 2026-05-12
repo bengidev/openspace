@@ -74,3 +74,6 @@ build.log
 .vscode/DerivedData-iPadAir13M4/
 .vscode/DerivedData-check/
 .vscode/*.pid
+
+# Development trackers
+progress.txt
