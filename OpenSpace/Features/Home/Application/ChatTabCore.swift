@@ -5,7 +5,7 @@ import SwiftUI
 struct ChatTab {
     @ObservableState
     struct State: Equatable {
-        var conversationList = ConversationListState()
+        var conversationList = ConversationList.State()
         var isSidebarVisible = false
         var messages: [Message] = []
         var draftMessage = ""
@@ -15,12 +15,13 @@ struct ChatTab {
 
     @CasePathable
     enum Action: Equatable {
-        case conversationList(ConversationListAction)
+        case conversationList(ConversationList.Action)
         case sidebarToggleTapped
         case sidebarDismissed
         case draftMessageChanged(String)
         case sendMessageTapped
         case messageSent(Message)
+        case sendFailed(String)
         case newConversationTapped
         case settingsTapped
         case dismissSettings
@@ -59,23 +60,35 @@ struct ChatTab {
                 if let conversation = state.conversationList.selectedConversation {
                     let conversationId = conversation.id
                     return .run { send in
-                        try await chatPersistence.saveMessage(message, conversationId)
-                        await send(.messageSent(message))
+                        do {
+                            try await chatPersistence.saveMessage(message, conversationId)
+                            await send(.messageSent(message))
+                        } catch {
+                            await send(.sendFailed(error.localizedDescription))
+                        }
                     }
                 } else {
                     let title = content.count > 30 ? String(content.prefix(30)) + "..." : content
                     let newConversation = Conversation(title: title)
                     return .run { send in
-                        let saved = try await chatPersistence.createConversation(newConversation)
-                        try await chatPersistence.saveMessage(message, saved.id)
-                        await send(.conversationList(.conversationCreated(saved)))
-                        await send(.messageSent(message))
+                        do {
+                            let saved = try await chatPersistence.createConversation(newConversation)
+                            try await chatPersistence.saveMessage(message, saved.id)
+                            await send(.conversationList(.conversationCreated(saved)))
+                            await send(.messageSent(message))
+                        } catch {
+                            await send(.sendFailed(error.localizedDescription))
+                        }
                     }
                 }
 
             case .messageSent(let message):
                 state.isSending = false
                 state.messages.append(message)
+                return .none
+
+            case .sendFailed:
+                state.isSending = false
                 return .none
 
             case .newConversationTapped:
