@@ -28,11 +28,6 @@ struct HomeView: View {
                     .foregroundStyle(palette.textSecondary)
             }
             .padding(28)
-
-            SpacerPetContainerView(
-                store: store.scope(state: \.spacerPet, action: \.spacerPet)
-            )
-            .ignoresSafeArea(.keyboard)
         }
         .onAppear {
             store.send(.spacerPet(.feature(.onAppear)))
