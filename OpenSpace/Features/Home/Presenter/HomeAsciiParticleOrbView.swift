@@ -88,6 +88,76 @@ private enum ParticleOrbLayoutFactory {
         return dots
     }
 
+    static func makeSparkSeeds(seedOffset: Int, count: Int) -> [ParticleSparkSeed] {
+        var seeds: [ParticleSparkSeed] = []
+        seeds.reserveCapacity(count)
+
+        for index in 0..<count {
+            let seed = Double(seedOffset + index)
+            let energy = ParticleOrbMath.noise(seed, 7)
+            let glyphIndex = min(
+                ParticleOrbMetrics.glyphRamp.count - 1,
+                max(0, Int((energy * Double(ParticleOrbMetrics.glyphRamp.count)).rounded()) - 1)
+            )
+            let angleOffset = CGFloat(ParticleOrbMath.noise(seed, 13) * .pi * 2)
+            let orbitRadius = CGFloat(34 + ParticleOrbMath.noise(seed, 17) * 76)
+            let pointSize = CGFloat(5.2 + ParticleOrbMath.noise(seed, 23) * 4.8)
+            let opacity = Float(0.08 + ParticleOrbMath.noise(seed, 29) * 0.18)
+
+            seeds.append(
+                ParticleSparkSeed(
+                    glyph: ParticleOrbMetrics.glyphRamp[glyphIndex],
+                    pointSize: pointSize,
+                    orbitRadius: orbitRadius,
+                    verticalScale: CGFloat(0.58 + ParticleOrbMath.noise(seed, 31) * 0.26),
+                    angleOffset: angleOffset,
+                    radialPulse: CGFloat(2 + ParticleOrbMath.noise(seed, 37) * 5),
+                    orbitDuration: CFTimeInterval(8.5 + ParticleOrbMath.noise(seed, 41) * 10.0),
+                    opacityDuration: CFTimeInterval(5.5 + ParticleOrbMath.noise(seed, 43) * 5.0),
+                    scaleDuration: CFTimeInterval(6.0 + ParticleOrbMath.noise(seed, 47) * 5.0),
+                    phaseOffset: CFTimeInterval(ParticleOrbMath.noise(seed, 53) * 9.0),
+                    restOpacity: opacity,
+                    restScale: CGFloat(0.74 + ParticleOrbMath.noise(seed, 59) * 0.34),
+                    scaleRange: CGFloat(0.06 + ParticleOrbMath.noise(seed, 61) * 0.10)
+                )
+            )
+        }
+
+        return seeds
+    }
+
+    static func makeOuterOrbitDotSeeds(seedOffset: Int, count: Int) -> [ParticleOrbitDotSeed] {
+        var seeds: [ParticleOrbitDotSeed] = []
+        seeds.reserveCapacity(count)
+
+        for index in 0..<count {
+            let seed = Double(seedOffset + index)
+            let angleOffset = CGFloat(Double(index) / Double(count) * .pi * 2)
+                + CGFloat((ParticleOrbMath.noise(seed, 13) - 0.5) * 0.18)
+            let ring = ParticleOrbMath.noise(seed, 17)
+            let orbitRadius = CGFloat(94 + ring * 72)
+            let opacity = Float(0.07 + ParticleOrbMath.noise(seed, 29) * 0.15)
+
+            seeds.append(
+                ParticleOrbitDotSeed(
+                    orbitRadius: orbitRadius,
+                    verticalScale: CGFloat(0.56 + ParticleOrbMath.noise(seed, 31) * 0.22),
+                    angleOffset: angleOffset,
+                    radialPulse: CGFloat(1.4 + ParticleOrbMath.noise(seed, 37) * 4.6),
+                    orbitDuration: CFTimeInterval(17.0 + ParticleOrbMath.noise(seed, 41) * 14.0),
+                    opacityDuration: CFTimeInterval(7.5 + ParticleOrbMath.noise(seed, 43) * 7.0),
+                    scaleDuration: CFTimeInterval(8.0 + ParticleOrbMath.noise(seed, 47) * 6.5),
+                    phaseOffset: CFTimeInterval(ParticleOrbMath.noise(seed, 53) * 13.0),
+                    restOpacity: opacity,
+                    restScale: CGFloat(0.34 + ParticleOrbMath.noise(seed, 59) * 0.56),
+                    scaleRange: CGFloat(0.035 + ParticleOrbMath.noise(seed, 61) * 0.07)
+                )
+            )
+        }
+
+        return seeds
+    }
+
 private struct ParticleDot {
     let point: CGPoint
     let size: CGFloat
