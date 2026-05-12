@@ -1,6 +1,16 @@
 import SwiftUI
 import UIKit
 
+private enum ParticleOrbMetrics {
+    static let canvasSize = CGSize(width: 360, height: 240)
+    static let center = CGPoint(x: canvasSize.width * 0.5, y: canvasSize.height * 0.5)
+    static let outerField = CGSize(width: 324, height: 204)
+    static let coreField = CGSize(width: 156, height: 146)
+    static let renderScale = max(UIScreen.main.scale, 2)
+    static let snapGrid: CGFloat = 3
+    static let glyphRamp = Array("░▒▓█").map(String.init)
+}
+
 private struct ParticleDot {
     let point: CGPoint
     let size: CGFloat
