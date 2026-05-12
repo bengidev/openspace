@@ -1,5 +1,11 @@
 import Foundation
 
+protocol MessagePayloadProtocol {
+    var id: UUID { get }
+    var role: MessageRole { get }
+    var timestamp: Date { get }
+}
+
 enum Message: Equatable, Identifiable, Sendable {
     case text(TextMessage)
     case thinking(ThinkingMessage)
@@ -9,41 +15,21 @@ enum Message: Equatable, Identifiable, Sendable {
     case attachment(AttachmentMessage)
     case system(SystemMessage)
 
-    var id: UUID {
+    private var payload: any MessagePayloadProtocol {
         switch self {
-        case let .text(m): return m.id
-        case let .thinking(m): return m.id
-        case let .toolCall(m): return m.id
-        case let .toolResult(m): return m.id
-        case let .subagentLink(m): return m.id
-        case let .attachment(m): return m.id
-        case let .system(m): return m.id
+        case let .text(m): return m
+        case let .thinking(m): return m
+        case let .toolCall(m): return m
+        case let .toolResult(m): return m
+        case let .subagentLink(m): return m
+        case let .attachment(m): return m
+        case let .system(m): return m
         }
     }
 
-    var role: MessageRole {
-        switch self {
-        case let .text(m): return m.role
-        case let .thinking(m): return m.role
-        case let .toolCall(m): return m.role
-        case let .toolResult(m): return m.role
-        case let .subagentLink(m): return m.role
-        case let .attachment(m): return m.role
-        case let .system(m): return m.role
-        }
-    }
-
-    var timestamp: Date {
-        switch self {
-        case let .text(m): return m.timestamp
-        case let .thinking(m): return m.timestamp
-        case let .toolCall(m): return m.timestamp
-        case let .toolResult(m): return m.timestamp
-        case let .subagentLink(m): return m.timestamp
-        case let .attachment(m): return m.timestamp
-        case let .system(m): return m.timestamp
-        }
-    }
+    var id: UUID { payload.id }
+    var role: MessageRole { payload.role }
+    var timestamp: Date { payload.timestamp }
 }
 
 enum MessageRole: String, Equatable, Sendable, Codable {
@@ -59,7 +45,7 @@ enum MessageStatus: String, Equatable, Sendable, Codable {
     case failed
 }
 
-struct TextMessage: Equatable, Identifiable, Sendable, Codable {
+struct TextMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var content: String
@@ -81,7 +67,7 @@ struct TextMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct ThinkingMessage: Equatable, Identifiable, Sendable, Codable {
+struct ThinkingMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var content: String
@@ -103,7 +89,7 @@ struct ThinkingMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct ToolCallMessage: Equatable, Identifiable, Sendable, Codable {
+struct ToolCallMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var calls: [ToolCall]
@@ -125,7 +111,7 @@ struct ToolCallMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct ToolResultMessage: Equatable, Identifiable, Sendable, Codable {
+struct ToolResultMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var callId: String
@@ -150,7 +136,7 @@ struct ToolResultMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct SubagentLinkMessage: Equatable, Identifiable, Sendable, Codable {
+struct SubagentLinkMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var link: ThreadLink
@@ -172,7 +158,7 @@ struct SubagentLinkMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct AttachmentMessage: Equatable, Identifiable, Sendable, Codable {
+struct AttachmentMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var type: AttachmentType
@@ -197,7 +183,7 @@ struct AttachmentMessage: Equatable, Identifiable, Sendable, Codable {
     }
 }
 
-struct SystemMessage: Equatable, Identifiable, Sendable, Codable {
+struct SystemMessage: MessagePayloadProtocol, Equatable, Identifiable, Sendable, Codable {
     let id: UUID
     let role: MessageRole
     var content: String
