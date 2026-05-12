@@ -25,6 +25,10 @@ struct OpenSpaceApp: App {
         }
     }()
 
+    init() {
+        // ChatCoreDataStack initializes lazily on first container access
+    }
+
     var body: some Scene {
         WindowGroup {
             AppView(
