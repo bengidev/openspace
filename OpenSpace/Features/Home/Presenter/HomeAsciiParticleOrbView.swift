@@ -158,6 +158,71 @@ private enum ParticleOrbLayoutFactory {
         return seeds
     }
 
+    static func makeCoreBlocks(seedOffset: Int, count: Int, prominence: Double) -> [ParticleBlock] {
+        var blocks: [ParticleBlock] = []
+        blocks.reserveCapacity(count)
+
+        let maxAttempts = count * 12
+        var attempts = 0
+
+        while blocks.count < count && attempts < maxAttempts {
+            let seed = Double(seedOffset + attempts)
+            let x = ParticleOrbMath.noise(seed, 3) * 2 - 1
+            let y = ParticleOrbMath.noise(seed, 9) * 2 - 1
+            let density = coreDensity(x: x, y: y, seed: seed) * prominence
+
+            if ParticleOrbMath.noise(seed, 15) < density {
+                let snappedX = snap(
+                    ParticleOrbMetrics.center.x + CGFloat(x) * ParticleOrbMetrics.coreField.width * 0.5
+                )
+                let snappedY = snap(
+                    ParticleOrbMetrics.center.y + CGFloat(y) * ParticleOrbMetrics.coreField.height * 0.5
+                )
+                let energy = min(1, max(0, density + ParticleOrbMath.noise(seed, 25) * 0.12))
+                let size = CGFloat(4.1 + energy * 5.8 + ParticleOrbMath.noise(seed, 21) * 1.1)
+                let glyphIndex = min(
+                    ParticleOrbMetrics.glyphRamp.count - 1,
+                    max(0, Int((energy * Double(ParticleOrbMetrics.glyphRamp.count)).rounded()) - 1)
+                )
+                let opacity = CGFloat(min(1, 0.18 + energy * 0.82 + ParticleOrbMath.noise(seed, 33) * 0.08))
+
+                blocks.append(
+                    ParticleBlock(
+                        point: CGPoint(x: snappedX, y: snappedY),
+                        glyph: ParticleOrbMetrics.glyphRamp[glyphIndex],
+                        size: size,
+                        opacity: opacity
+                    )
+                )
+            }
+
+            attempts += 1
+        }
+
+        return blocks
+    }
+
+    static func coreDensity(x: Double, y: Double, seed: Double) -> Double {
+        let radius = sqrt(x * x + y * y)
+        let angle = atan2(y, x)
+        let shell = max(0, 1 - pow(radius / 1.05, 2)) * 0.36
+        let ring = exp(-pow((radius - 0.56) / 0.24, 2)) * 0.34
+        let centerMass = ParticleOrbMath.gaussian2D(x: x + 0.03, y: y + 0.02, sigmaX: 0.34, sigmaY: 0.30) * 0.38
+        let upperLeftMass = ParticleOrbMath.gaussian2D(x: x + 0.24, y: y + 0.15, sigmaX: 0.28, sigmaY: 0.18) * 0.28
+        let lowerRightMass = ParticleOrbMath.gaussian2D(x: x - 0.22, y: y - 0.20, sigmaX: 0.22, sigmaY: 0.20) * 0.24
+        let spiral = (0.5 + 0.5 * sin(angle * 3.2 + radius * 8.4)) * 0.16
+        let centerCut = ParticleOrbMath.gaussian2D(x: x - 0.02, y: y - 0.02, sigmaX: 0.18, sigmaY: 0.16) * 0.20
+        let bite = ParticleOrbMath.gaussian2D(x: x + 0.34, y: y - 0.23, sigmaX: 0.18, sigmaY: 0.14) * 0.18
+        let noise = (ParticleOrbMath.noise(seed, 41) - 0.5) * 0.20
+
+        return min(1, max(0, shell + ring + centerMass + upperLeftMass + lowerRightMass + spiral - centerCut - bite + noise))
+    }
+
+    static func snap(_ value: CGFloat) -> CGFloat {
+        (value / ParticleOrbMetrics.snapGrid).rounded() * ParticleOrbMetrics.snapGrid
+    }
+}
+
 private struct ParticleDot {
     let point: CGPoint
     let size: CGFloat
