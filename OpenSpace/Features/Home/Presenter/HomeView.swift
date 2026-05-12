@@ -12,6 +12,11 @@ struct HomeView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
+                HomeAsciiParticleOrbView()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 210)
+                    .padding(.bottom, 32)
+
                 Text("Hi! How can I help you?")
                     .font(.system(size: 24, weight: .bold, design: .monospaced))
                     .foregroundStyle(palette.textSecondary)
