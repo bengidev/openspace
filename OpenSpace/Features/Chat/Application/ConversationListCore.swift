@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 struct ConversationList: Reducer {
+    @Dependency(\.continuousClock) private var clock
     @ObservableState
     struct State: Equatable {
         var conversations: [Conversation] = []
@@ -20,7 +21,7 @@ struct ConversationList: Reducer {
         case deleteConversationTapped(UUID)
         case conversationDeleted(UUID)
         case searchQueryChanged(String)
-        case searchResultsLoaded([Conversation])
+        case searchResultsLoaded(query: String, [Conversation])
         case conversationSelected(Conversation)
         case deselectConversation
         case clearError
@@ -39,6 +40,9 @@ struct ConversationList: Reducer {
                 }
 
             case .conversationsLoaded(let conversations):
+                guard state.searchQuery.isEmpty else {
+                    return .none
+                }
                 state.isLoading = false
                 state.conversations = conversations
                 return .none
@@ -70,20 +74,22 @@ struct ConversationList: Reducer {
 
             case .searchQueryChanged(let query):
                 state.searchQuery = query
-                guard !query.isEmpty else {
-                    state.isLoading = true
-                    return .run { send in
-                        let conversations = try await chatPersistence.fetchConversations()
-                        await send(.conversationsLoaded(conversations))
+                return .run { [clock] send in
+                    try await clock.sleep(for: .milliseconds(query.isEmpty ? 120 : 220))
+                    let results: [Conversation]
+                    if query.isEmpty {
+                        results = try await chatPersistence.fetchConversations()
+                    } else {
+                        results = try await chatPersistence.searchConversations(query)
                     }
+                    await send(.searchResultsLoaded(query: query, results))
                 }
-                state.isLoading = true
-                return .run { send in
-                    let results = try await chatPersistence.searchConversations(query)
-                    await send(.searchResultsLoaded(results))
-                }
+                .cancellable(id: "conversationList.search", cancelInFlight: true)
 
-            case .searchResultsLoaded(let results):
+            case .searchResultsLoaded(let query, let results):
+                guard query == state.searchQuery else {
+                    return .none
+                }
                 state.isLoading = false
                 state.conversations = results
                 return .none

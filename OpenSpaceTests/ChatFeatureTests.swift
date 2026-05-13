@@ -59,17 +59,19 @@ struct ConversationListTests {
     @Test
     func searchConversations() async throws {
         let result = Conversation(title: "Search Result")
+        let clock = TestClock()
         let store = TestStore(initialState: ConversationList.State()) {
             ConversationList()
         } withDependencies: {
+            $0.continuousClock = clock
             $0.chatPersistence.searchConversations = { _ in [result] }
         }
 
         await store.send(.searchQueryChanged("query")) {
             $0.searchQuery = "query"
-            $0.isLoading = true
         }
-        await store.receive(.searchResultsLoaded([result])) {
+        await clock.advance(by: .milliseconds(220))
+        await store.receive(.searchResultsLoaded(query: "query", [result])) {
             $0.isLoading = false
             $0.conversations = [result]
         }
