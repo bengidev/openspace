@@ -347,6 +347,15 @@ private enum ParticleOrbTheme {
             return UIColor(red: 238 / 255, green: 238 / 255, blue: 238 / 255, alpha: 1)
         }
     }
+
+    var accent: UIColor {
+        switch self {
+        case .light:
+            return UIColor(red: 209 / 255, green: 80 / 255, blue: 16 / 255, alpha: 1)
+        case .dark:
+            return UIColor(red: 239 / 255, green: 111 / 255, blue: 46 / 255, alpha: 1)
+        }
+    }
 }
 
 private enum ParticleOrbMetrics {
@@ -541,7 +550,7 @@ private enum ParticleOrbAssetFactory {
                 ),
                 ParticleOrbLayerDescriptor(
                     image: ParticleOrbRenderer.renderBlocks(
-                        tint: tint,
+                        tint: theme.accent,
                         blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 2400, count: 236, prominence: 0.96)
                     ),
                     restOpacity: 0.78,
@@ -560,7 +569,7 @@ private enum ParticleOrbAssetFactory {
                 ),
                 ParticleOrbLayerDescriptor(
                     image: ParticleOrbRenderer.renderBlocks(
-                        tint: tint,
+                        tint: theme.accent,
                         blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 4800, count: 220, prominence: 0.78)
                     ),
                     restOpacity: 0.52,
@@ -579,7 +588,7 @@ private enum ParticleOrbAssetFactory {
                 ),
                 ParticleOrbLayerDescriptor(
                     image: ParticleOrbRenderer.renderBlocks(
-                        tint: tint,
+                        tint: theme.accent,
                         blocks: ParticleOrbLayoutFactory.makeCoreBlocks(seedOffset: 7200, count: 158, prominence: 0.58)
                     ),
                     restOpacity: 0.30,
