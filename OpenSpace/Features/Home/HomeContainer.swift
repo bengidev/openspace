@@ -5,7 +5,7 @@ struct HomeContainerView: View {
     @Bindable var store: StoreOf<HomeContainer>
 
     var body: some View {
-        HomeView(store: store)
+        HomeRootView(store: store)
     }
 }
 
@@ -14,22 +14,84 @@ struct HomeContainer {
     @ObservableState
     struct State: Equatable {
         var spacerPet = SpacerPetContainer.State()
-        var chat = ChatTab.State()
+        var mainChat = MainChat.State()
+        var sideStory = SideStory.State()
+        var settings = Settings.State()
     }
 
     @CasePathable
     enum Action: Equatable {
         case spacerPet(SpacerPetContainer.Action)
-        case chat(ChatTab.Action)
+        case mainChat(MainChat.Action)
+        case sideStory(SideStory.Action)
+        case settings(Settings.Action)
     }
+
+    @Dependency(\.chatPersistence) var chatPersistence
 
     var body: some Reducer<State, Action> {
         Scope(state: \.spacerPet, action: \.spacerPet) {
             SpacerPetContainer()
         }
 
-        Scope(state: \.chat, action: \.chat) {
-            ChatTab()
+        Scope(state: \.mainChat, action: \.mainChat) {
+            MainChat()
+        }
+
+        Scope(state: \.sideStory, action: \.sideStory) {
+            SideStory()
+        }
+
+        Scope(state: \.settings, action: \.settings) {
+            Settings()
+        }
+
+        Reduce { state, action in
+            switch action {
+            case .mainChat(.sidebarToggleTapped):
+                return .send(.sideStory(.sidebarToggleTapped))
+
+            case .mainChat(.sidebarDismissed):
+                return .send(.sideStory(.sidebarDismissed))
+
+            case .mainChat(.newConversationTapped):
+                state.mainChat.selectedConversation = nil
+                state.mainChat.messages = []
+                return .send(.sideStory(.newConversationTapped))
+
+            case .mainChat(.conversationCreated(let conversation)):
+                return .send(.sideStory(.conversationCreated(conversation)))
+
+            case .mainChat(.conversationSelected(let conversation)):
+                state.sideStory.conversationList.selectedConversation = conversation
+                return .none
+
+            case .sideStory(.settingsTapped):
+                state.settings.isPresented = true
+                return .none
+
+            case .sideStory(.conversationList(.conversationSelected(let conversation))):
+                state.mainChat.selectedConversation = conversation
+                if let model = ComposerModelOption.resolve(modelID: conversation.modelID) {
+                    state.mainChat.selectedModel = model
+                }
+                return .run { send in
+                    let messages = try await chatPersistence.fetchMessages(conversation.id)
+                    await send(.mainChat(.messagesLoaded(messages)))
+                }
+
+            case .sideStory(.newConversationTapped):
+                state.mainChat.selectedConversation = nil
+                state.mainChat.messages = []
+                return .none
+
+            case .settings(.dismiss):
+                state.settings.isPresented = false
+                return .none
+
+            default:
+                return .none
+            }
         }
     }
 }
