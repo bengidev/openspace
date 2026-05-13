@@ -29,6 +29,15 @@ enum ComposerModelOption: String, CaseIterable, Equatable, Identifiable, Sendabl
         }
     }
 
+    var availableSpeedModes: [ComposerSpeedMode] {
+        switch self {
+        case .gpt54, .gpt55:
+            return ComposerSpeedMode.allCases
+        case .local:
+            return []
+        }
+    }
+
     static func resolve(modelID: String?) -> ComposerModelOption? {
         guard let modelID else { return nil }
         return allCases.first { $0.rawValue == modelID || $0.title == modelID }
@@ -51,6 +60,65 @@ enum ComposerReasoningLevel: String, CaseIterable, Equatable, Identifiable, Send
         case .high:
             return "High"
         }
+    }
+}
+
+enum ComposerSpeedMode: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case standard
+    case fast
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .standard:
+            return "Standard"
+        case .fast:
+            return "Fast"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .standard:
+            return "bolt"
+        case .fast:
+            return "bolt.fill"
+        }
+    }
+}
+
+struct ComposerContextUsage: Equatable, Sendable {
+    var usedTokens: Int
+    var tokenLimit: Int
+
+    var usedFraction: Double {
+        guard tokenLimit > 0 else { return 0 }
+        return min(max(Double(usedTokens) / Double(tokenLimit), 0), 1)
+    }
+
+    var usedPercent: Int {
+        Int((usedFraction * 100).rounded())
+    }
+
+    var remainingPercent: Int {
+        max(100 - usedPercent, 0)
+    }
+
+    var usedTokensLabel: String {
+        Self.compactTokenLabel(usedTokens)
+    }
+
+    var tokenLimitLabel: String {
+        Self.compactTokenLabel(tokenLimit)
+    }
+
+    private static func compactTokenLabel(_ tokens: Int) -> String {
+        if tokens >= 1_000 {
+            return "\(tokens / 1_000)k"
+        }
+
+        return "\(tokens)"
     }
 }
 
@@ -114,6 +182,8 @@ struct ChatTab {
         var showSettings = false
         var selectedModel: ComposerModelOption = .gpt54
         var reasoningLevel: ComposerReasoningLevel = .high
+        var speedMode: ComposerSpeedMode = .standard
+        var contextUsage = ComposerContextUsage(usedTokens: 107_000, tokenLimit: 258_000)
         var executionScope: ComposerExecutionScope = .local
         var toolPolicy: ComposerToolPolicy = .review
         var selectedBranch: ComposerBranch = .main
@@ -135,6 +205,7 @@ struct ChatTab {
         case messagesLoaded([Message])
         case composerModelSelected(ComposerModelOption)
         case reasoningLevelSelected(ComposerReasoningLevel)
+        case speedModeSelected(ComposerSpeedMode)
         case executionScopeSelected(ComposerExecutionScope)
         case toolPolicySelected(ComposerToolPolicy)
         case branchSelected(ComposerBranch)
@@ -253,10 +324,20 @@ struct ChatTab {
 
             case .composerModelSelected(let model):
                 state.selectedModel = model
+                if !model.availableSpeedModes.contains(state.speedMode) {
+                    state.speedMode = model.availableSpeedModes.first ?? .standard
+                }
                 return .none
 
             case .reasoningLevelSelected(let level):
                 state.reasoningLevel = level
+                return .none
+
+            case .speedModeSelected(let mode):
+                guard state.selectedModel.availableSpeedModes.contains(mode) else {
+                    return .none
+                }
+                state.speedMode = mode
                 return .none
 
             case .executionScopeSelected(let scope):

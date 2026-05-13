@@ -67,46 +67,6 @@ private struct ComposerPromptPanel: View {
                     }
                 )
 
-                ComposerMenuChip(
-                    title: store.selectedModel.title,
-                    systemImage: "bolt.fill",
-                    minWidth: 104,
-                    dismissKeyboard: dismissKeyboard
-                ) {
-                    ForEach(ComposerModelOption.allCases) { model in
-                        Button {
-                            dismissKeyboard()
-                            store.send(.composerModelSelected(model))
-                        } label: {
-                            Label(
-                                model.title,
-                                systemImage: store.selectedModel == model ? "checkmark" : "circle"
-                            )
-                        }
-                    }
-                }
-                .accessibilityLabel("Model, \(store.selectedModel.title)")
-
-                ComposerMenuChip(
-                    title: store.reasoningLevel.title,
-                    systemImage: "circle.hexagongrid",
-                    minWidth: 86,
-                    dismissKeyboard: dismissKeyboard
-                ) {
-                    ForEach(ComposerReasoningLevel.allCases) { level in
-                        Button {
-                            dismissKeyboard()
-                            store.send(.reasoningLevelSelected(level))
-                        } label: {
-                            Label(
-                                level.title,
-                                systemImage: store.reasoningLevel == level ? "checkmark" : "circle"
-                            )
-                        }
-                    }
-                }
-                .accessibilityLabel("Reasoning, \(store.reasoningLevel.title)")
-
                 Spacer(minLength: 4)
 
                 ComposerIconButton(
@@ -144,83 +104,101 @@ private struct ComposerContextRail: View {
     @Bindable var store: StoreOf<ChatTab>
     let dismissKeyboard: () -> Void
 
+    @State private var isContextUsagePresented = false
+
     var body: some View {
         HStack(spacing: 8) {
-            ComposerMenuChip(
-                title: store.executionScope.title,
-                systemImage: "laptopcomputer",
-                minWidth: 106,
-                dismissKeyboard: dismissKeyboard
-            ) {
-                ForEach(ComposerExecutionScope.allCases) { scope in
-                    Button {
-                        dismissKeyboard()
-                        store.send(.executionScopeSelected(scope))
-                    } label: {
-                        Label(
-                            scope.title,
-                            systemImage: store.executionScope == scope ? "checkmark" : "circle"
-                        )
+            HStack(spacing: 8) {
+                ComposerMenuChip(
+                    title: store.selectedModel.title,
+                    systemImage: "sparkles",
+                    minWidth: 104,
+                    dismissKeyboard: dismissKeyboard
+                ) {
+                    Section("Model") {
+                        ForEach(ComposerModelOption.allCases) { model in
+                            Button {
+                                dismissKeyboard()
+                                store.send(.composerModelSelected(model))
+                            } label: {
+                                Label(
+                                    model.title,
+                                    systemImage: store.selectedModel == model ? "checkmark" : "circle"
+                                )
+                            }
+                        }
                     }
                 }
-            }
-            .accessibilityLabel("Execution scope, \(store.executionScope.title)")
+                .accessibilityLabel("Model, \(store.selectedModel.title)")
 
-            ComposerMenuChip(
-                title: store.toolPolicy.title,
-                systemImage: "shield",
-                displaysTitle: false,
-                isSignal: true,
-                minWidth: 52,
-                dismissKeyboard: dismissKeyboard
-            ) {
-                ForEach(ComposerToolPolicy.allCases) { policy in
-                    Button {
-                        dismissKeyboard()
-                        store.send(.toolPolicySelected(policy))
-                    } label: {
-                        Label(
-                            policy.title,
-                            systemImage: store.toolPolicy == policy ? "checkmark" : "circle"
-                        )
+                ComposerMenuChip(
+                    title: store.reasoningLevel.title,
+                    systemImage: "circle.hexagongrid",
+                    minWidth: 92,
+                    dismissKeyboard: dismissKeyboard
+                ) {
+                    Section("Reasoning") {
+                        ForEach(ComposerReasoningLevel.allCases) { level in
+                            Button {
+                                dismissKeyboard()
+                                store.send(.reasoningLevelSelected(level))
+                            } label: {
+                                Label(
+                                    level.title,
+                                    systemImage: store.reasoningLevel == level ? "checkmark" : "circle"
+                                )
+                            }
+                        }
                     }
                 }
+                .accessibilityLabel("Reasoning, \(store.reasoningLevel.title)")
             }
-            .accessibilityLabel("Tool approval policy, \(store.toolPolicy.title)")
+            .layoutPriority(1)
 
-            Spacer(minLength: 10)
+            Spacer(minLength: 8)
 
-            ComposerMenuChip(
-                title: store.selectedBranch.title,
-                systemImage: "point.3.connected.trianglepath.dotted",
-                minWidth: 92,
-                dismissKeyboard: dismissKeyboard
-            ) {
-                ForEach(ComposerBranch.allCases) { branch in
-                    Button {
-                        dismissKeyboard()
-                        store.send(.branchSelected(branch))
-                    } label: {
-                        Label(
-                            branch.title,
-                            systemImage: store.selectedBranch == branch ? "checkmark" : "circle"
-                        )
+            HStack(spacing: 8) {
+                if !store.selectedModel.availableSpeedModes.isEmpty {
+                    ComposerMenuChip(
+                        title: store.speedMode.title,
+                        systemImage: store.speedMode.systemImage,
+                        displaysTitle: false,
+                        displaysChevron: false,
+                        isSignal: store.speedMode == .fast,
+                        minWidth: 38,
+                        dismissKeyboard: dismissKeyboard
+                    ) {
+                        Section("Speed") {
+                            ForEach(store.selectedModel.availableSpeedModes) { speedMode in
+                                Button {
+                                    dismissKeyboard()
+                                    store.send(.speedModeSelected(speedMode))
+                                } label: {
+                                    Label(speedMode.title, systemImage: speedMode.systemImage)
+                                }
+                            }
+                        }
                     }
+                    .accessibilityLabel("Speed, \(store.speedMode.title)")
                 }
-            }
-            .accessibilityLabel("Workspace branch, \(store.selectedBranch.title)")
 
-            ComposerIconButton(
-                systemImage: "quote.bubble",
-                isChip: true,
-                accessibilityLabel: "Open context notes",
-                action: {
-                    dismissKeyboard()
-                    store.send(.contextNotesTapped)
-                }
-            )
+                ComposerContextUsageButton(
+                    usage: store.contextUsage,
+                    isPresented: $isContextUsagePresented,
+                    dismissKeyboard: dismissKeyboard
+                )
+            }
         }
         .padding(.horizontal, 2)
+        .overlay(alignment: .bottomTrailing) {
+            if isContextUsagePresented {
+                ComposerContextUsagePopover(usage: store.contextUsage)
+                    .offset(x: -2, y: -46)
+                    .transition(.scale(scale: 0.96, anchor: .bottomTrailing).combined(with: .opacity))
+                    .zIndex(2)
+            }
+        }
+        .animation(.easeInOut(duration: 0.16), value: isContextUsagePresented)
     }
 }
 
@@ -228,6 +206,7 @@ private struct ComposerMenuChip<MenuItems: View>: View {
     let title: String
     let systemImage: String?
     let displaysTitle: Bool
+    let displaysChevron: Bool
     let isSignal: Bool
     let minWidth: CGFloat
     let dismissKeyboard: () -> Void
@@ -239,6 +218,7 @@ private struct ComposerMenuChip<MenuItems: View>: View {
         title: String,
         systemImage: String? = nil,
         displaysTitle: Bool = true,
+        displaysChevron: Bool = true,
         isSignal: Bool = false,
         minWidth: CGFloat = 0,
         dismissKeyboard: @escaping () -> Void = {},
@@ -247,6 +227,7 @@ private struct ComposerMenuChip<MenuItems: View>: View {
         self.title = title
         self.systemImage = systemImage
         self.displaysTitle = displaysTitle
+        self.displaysChevron = displaysChevron
         self.isSignal = isSignal
         self.minWidth = minWidth
         self.dismissKeyboard = dismissKeyboard
@@ -271,9 +252,11 @@ private struct ComposerMenuChip<MenuItems: View>: View {
                         .minimumScaleFactor(0.8)
                 }
 
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 9, weight: .semibold))
-                    .accessibilityHidden(true)
+                if displaysChevron {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .semibold))
+                        .accessibilityHidden(true)
+                }
             }
             .foregroundStyle(isSignal ? palette.accent : palette.textSecondary)
             .frame(minWidth: minWidth)
@@ -287,6 +270,120 @@ private struct ComposerMenuChip<MenuItems: View>: View {
                 dismissKeyboard()
             }
         )
+    }
+}
+
+private struct ComposerContextUsageButton: View {
+    let usage: ComposerContextUsage
+    @Binding var isPresented: Bool
+    let dismissKeyboard: () -> Void
+
+    var body: some View {
+        Button {
+            dismissKeyboard()
+            isPresented.toggle()
+        } label: {
+            ComposerContextUsageIndicator(usage: usage)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Context usage")
+        .accessibilityValue("\(usage.usedPercent)% used, \(usage.remainingPercent)% left")
+    }
+}
+
+private struct ComposerContextUsageIndicator: View {
+    let usage: ComposerContextUsage
+
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(palette.surface.opacity(palette.isDark ? 0.42 : 0.72))
+
+            Circle()
+                .stroke(palette.accent.opacity(palette.isDark ? 0.14 : 0.12), lineWidth: 3)
+                .frame(width: 23, height: 23)
+
+            Circle()
+                .trim(from: 0, to: usage.usedFraction)
+                .stroke(
+                    palette.accent.opacity(palette.isDark ? 0.92 : 0.82),
+                    style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+                .frame(width: 23, height: 23)
+
+            Text("\(usage.usedPercent)")
+                .font(.system(size: 8, weight: .semibold, design: .monospaced))
+                .foregroundStyle(palette.accent)
+        }
+        .frame(width: 38, height: 38)
+        .background(.ultraThinMaterial, in: Circle())
+        .overlay {
+            Circle()
+                .stroke(palette.accent.opacity(palette.isDark ? 0.18 : 0.12), lineWidth: 1)
+        }
+        .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 4)
+    }
+}
+
+private struct ComposerContextUsagePopover: View {
+    let usage: ComposerContextUsage
+
+    @Environment(\.palette) private var palette
+
+    private let cornerRadius: CGFloat = 28
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Text("Context window")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(palette.textSecondary)
+
+                Spacer(minLength: 10)
+
+                Text("\(usage.usedPercent)%")
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(palette.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(palette.accent.opacity(palette.isDark ? 0.14 : 0.1), in: Capsule())
+            }
+
+            ProgressView(value: usage.usedFraction)
+                .tint(palette.accent)
+                .scaleEffect(x: 1, y: 0.72, anchor: .center)
+
+            HStack(spacing: 10) {
+                Text("\(usage.usedPercent)% used")
+                    .foregroundStyle(palette.textPrimary)
+
+                Spacer(minLength: 8)
+
+                Text("\(usage.remainingPercent)% left")
+                    .foregroundStyle(palette.textMuted)
+            }
+            .font(.system(size: 11, weight: .medium, design: .monospaced))
+
+            Text("\(usage.usedTokensLabel) / \(usage.tokenLimitLabel) tokens")
+                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                .foregroundStyle(palette.textSecondary)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
+        .frame(width: 202)
+        .background {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(palette.isDark ? palette.elevatedSurface.opacity(0.78) : palette.surface.opacity(0.82))
+        }
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .stroke(palette.inverseSurface.opacity(palette.isDark ? 0.12 : 0.08), lineWidth: 1)
+        }
+        .shadow(color: Color.black.opacity(0.12), radius: 14, x: 0, y: 8)
     }
 }
 
