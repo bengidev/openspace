@@ -88,7 +88,6 @@ struct ChatTabView: View {
             .contentShape(Rectangle())
             .simultaneousGesture(sidebarSwipeGesture(in: proxy.size))
         }
-        .animation(.spring(response: 0.26, dampingFraction: 0.84), value: store.isSidebarVisible)
         .onAppear {
             store.send(.conversationList(.onAppear))
         }
@@ -140,20 +139,22 @@ private struct ChatSidebarOverlay: View {
     let isVisible: Bool
 
     @Environment(\.palette) private var palette
+    private let hiddenShadowPadding: CGFloat = 28
 
     var body: some View {
         HStack(spacing: 0) {
             ChatSidebarView(store: store, safeAreaInsets: keyWindowSafeAreaInsets)
-                .frame(width: isVisible ? width : 0)
+                .frame(width: width)
                 .frame(maxHeight: .infinity)
                 .clipped()
                 .compositingGroup()
                 .shadow(
-                    color: .black.opacity(palette.isDark ? 0.18 : 0.08),
+                    color: .black.opacity(sidebarShadowOpacity),
                     radius: 10,
                     x: 5,
                     y: 0
                 )
+                .offset(x: isVisible ? 0 : -(width + hiddenShadowPadding))
 
             Color.clear
                 .contentShape(Rectangle())
@@ -164,8 +165,14 @@ private struct ChatSidebarOverlay: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .clipped()
+        .animation(.spring(response: 0.26, dampingFraction: 0.84), value: isVisible)
         .allowsHitTesting(isVisible)
         .accessibilityHidden(!isVisible)
+    }
+
+    private var sidebarShadowOpacity: Double {
+        guard isVisible else { return 0 }
+        return palette.isDark ? 0.18 : 0.08
     }
 
     private var keyWindowSafeAreaInsets: EdgeInsets {
