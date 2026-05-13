@@ -286,9 +286,6 @@ private struct SidebarSearchField: View {
                 .fill(searchFill)
         )
         .clipped()
-        .transaction { transaction in
-            transaction.animation = nil
-        }
     }
 
     private var searchFill: Color {
