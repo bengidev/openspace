@@ -5,6 +5,7 @@ struct ChatTabView: View {
     @Bindable var store: StoreOf<ChatTab>
 
     @Environment(\.palette) private var palette
+    @FocusState private var isComposerFocused: Bool
 
     var body: some View {
         ZStack {
@@ -42,14 +43,29 @@ struct ChatTabView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-
-                if store.conversationList.selectedConversation == nil && store.messages.isEmpty {
-                    WelcomeView(store: store)
-                } else {
-                    ChatThreadView(store: store)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    dismissComposerKeyboard()
                 }
 
-                InputComposerView(store: store)
+                if store.conversationList.selectedConversation == nil && store.messages.isEmpty {
+                    KeyboardAwareWelcomeContent(
+                        store: store,
+                        isComposerFocused: $isComposerFocused,
+                        dismissKeyboard: dismissComposerKeyboard
+                    )
+                } else {
+                    ChatThreadView(store: store)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            dismissComposerKeyboard()
+                        }
+
+                    InputComposerView(
+                        store: store,
+                        isComposerFocused: $isComposerFocused
+                    )
+                }
             }
 
             if store.isSidebarVisible {
@@ -80,6 +96,63 @@ struct ChatTabView: View {
             )
         ) {
             SettingsTabView()
+        }
+    }
+
+    private func dismissComposerKeyboard() {
+        isComposerFocused = false
+    }
+}
+
+private enum ChatScrollAnchor: Hashable {
+    case composer
+}
+
+private struct KeyboardAwareWelcomeContent: View {
+    @Bindable var store: StoreOf<ChatTab>
+    let isComposerFocused: FocusState<Bool>.Binding
+    let dismissKeyboard: () -> Void
+
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        WelcomeView(store: store)
+                            .frame(minHeight: welcomeMinHeight(for: proxy.size.height))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                dismissKeyboard()
+                            }
+
+                        InputComposerView(
+                            store: store,
+                            isComposerFocused: isComposerFocused
+                        )
+                        .id(ChatScrollAnchor.composer)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .scrollDismissesKeyboard(.interactively)
+                .scrollDisabled(!isComposerFocused.wrappedValue)
+                .scrollIndicators(isComposerFocused.wrappedValue ? .visible : .hidden)
+                .onChange(of: isComposerFocused.wrappedValue) { _, isFocused in
+                    guard isFocused else { return }
+                    scrollComposerIntoView(with: scrollProxy)
+                }
+            }
+        }
+    }
+
+    private func welcomeMinHeight(for availableHeight: CGFloat) -> CGFloat {
+        max(availableHeight - 170, 420)
+    }
+
+    private func scrollComposerIntoView(with proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            withAnimation(.easeOut(duration: 0.22)) {
+                proxy.scrollTo(ChatScrollAnchor.composer, anchor: .bottom)
+            }
         }
     }
 }

@@ -1,5 +1,106 @@
 import ComposableArchitecture
+import Foundation
 import SwiftUI
+
+enum ComposerModelOption: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case gpt54 = "gpt-5.4"
+    case gpt55 = "gpt-5.5"
+    case local = "local"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .gpt54:
+            return "GPT-5.4"
+        case .gpt55:
+            return "GPT-5.5"
+        case .local:
+            return "Local"
+        }
+    }
+
+    var providerID: String? {
+        switch self {
+        case .gpt54, .gpt55:
+            return "openai"
+        case .local:
+            return "local"
+        }
+    }
+
+    static func resolve(modelID: String?) -> ComposerModelOption? {
+        guard let modelID else { return nil }
+        return allCases.first { $0.rawValue == modelID || $0.title == modelID }
+    }
+}
+
+enum ComposerReasoningLevel: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case low
+    case medium
+    case high
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .low:
+            return "Low"
+        case .medium:
+            return "Medium"
+        case .high:
+            return "High"
+        }
+    }
+}
+
+enum ComposerExecutionScope: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case local
+    case hybrid
+    case cloud
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .local:
+            return "Local"
+        case .hybrid:
+            return "Hybrid"
+        case .cloud:
+            return "Cloud"
+        }
+    }
+}
+
+enum ComposerToolPolicy: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case review
+    case auto
+    case disabled
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .review:
+            return "Review"
+        case .auto:
+            return "Auto"
+        case .disabled:
+            return "Off"
+        }
+    }
+}
+
+enum ComposerBranch: String, CaseIterable, Equatable, Identifiable, Sendable {
+    case main
+    case plan
+    case lab
+
+    var id: String { rawValue }
+
+    var title: String { rawValue }
+}
 
 @Reducer
 struct ChatTab {
@@ -11,6 +112,11 @@ struct ChatTab {
         var draftMessage = ""
         var isSending = false
         var showSettings = false
+        var selectedModel: ComposerModelOption = .gpt54
+        var reasoningLevel: ComposerReasoningLevel = .high
+        var executionScope: ComposerExecutionScope = .local
+        var toolPolicy: ComposerToolPolicy = .review
+        var selectedBranch: ComposerBranch = .main
     }
 
     @CasePathable
@@ -27,6 +133,14 @@ struct ChatTab {
         case dismissSettings
         case loadMessages(UUID)
         case messagesLoaded([Message])
+        case composerModelSelected(ComposerModelOption)
+        case reasoningLevelSelected(ComposerReasoningLevel)
+        case executionScopeSelected(ComposerExecutionScope)
+        case toolPolicySelected(ComposerToolPolicy)
+        case branchSelected(ComposerBranch)
+        case attachmentTapped
+        case microphoneTapped
+        case contextNotesTapped
     }
 
     @Dependency(\.chatPersistence) var chatPersistence
@@ -51,8 +165,11 @@ struct ChatTab {
                 return .none
 
             case .sendMessageTapped:
-                guard !state.draftMessage.isEmpty else { return .none }
-                let content = state.draftMessage
+                let content = state.draftMessage.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !content.isEmpty else {
+                    state.draftMessage = ""
+                    return .none
+                }
                 state.draftMessage = ""
                 state.isSending = true
                 let message = Message.text(TextMessage(role: .user, content: content))
@@ -69,7 +186,12 @@ struct ChatTab {
                     }
                 } else {
                     let title = content.count > 30 ? String(content.prefix(30)) + "..." : content
-                    let newConversation = Conversation(title: title)
+                    let selectedModel = state.selectedModel
+                    let newConversation = Conversation(
+                        title: title,
+                        modelID: selectedModel.rawValue,
+                        providerID: selectedModel.providerID
+                    )
                     return .run { send in
                         do {
                             let saved = try await chatPersistence.createConversation(newConversation)
@@ -118,12 +240,38 @@ struct ChatTab {
 
             case .conversationList(.conversationSelected(let conversation)):
                 state.messages = []
+                if let model = ComposerModelOption.resolve(modelID: conversation.modelID) {
+                    state.selectedModel = model
+                }
                 return .run { send in
                     let messages = try await chatPersistence.fetchMessages(conversation.id)
                     await send(.messagesLoaded(messages))
                 }
 
             case .conversationList:
+                return .none
+
+            case .composerModelSelected(let model):
+                state.selectedModel = model
+                return .none
+
+            case .reasoningLevelSelected(let level):
+                state.reasoningLevel = level
+                return .none
+
+            case .executionScopeSelected(let scope):
+                state.executionScope = scope
+                return .none
+
+            case .toolPolicySelected(let policy):
+                state.toolPolicy = policy
+                return .none
+
+            case .branchSelected(let branch):
+                state.selectedBranch = branch
+                return .none
+
+            case .attachmentTapped, .microphoneTapped, .contextNotesTapped:
                 return .none
             }
         }

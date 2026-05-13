@@ -93,6 +93,73 @@ struct ConversationListTests {
 }
 
 @MainActor
+struct ChatTabComposerTests {
+    @Test
+    func composerSelectionsUpdateState() async {
+        let store = TestStore(initialState: ChatTab.State()) {
+            ChatTab()
+        }
+
+        await store.send(.composerModelSelected(.gpt55)) {
+            $0.selectedModel = .gpt55
+        }
+
+        await store.send(.reasoningLevelSelected(.medium)) {
+            $0.reasoningLevel = .medium
+        }
+
+        await store.send(.executionScopeSelected(.hybrid)) {
+            $0.executionScope = .hybrid
+        }
+
+        await store.send(.toolPolicySelected(.auto)) {
+            $0.toolPolicy = .auto
+        }
+
+        await store.send(.branchSelected(.lab)) {
+            $0.selectedBranch = .lab
+        }
+    }
+
+    @Test
+    func selectedConversationRestoresComposerModel() async {
+        let conversation = Conversation(
+            title: "Existing GPT-5.5 Thread",
+            modelID: ComposerModelOption.gpt55.rawValue,
+            providerID: "openai"
+        )
+        let store = TestStore(initialState: ChatTab.State()) {
+            ChatTab()
+        } withDependencies: {
+            $0.chatPersistence.fetchMessages = { _ in [] }
+        }
+
+        await store.send(.conversationList(.conversationSelected(conversation))) {
+            $0.conversationList.selectedConversation = conversation
+            $0.messages = []
+            $0.selectedModel = .gpt55
+        }
+
+        await store.receive(.messagesLoaded([]))
+    }
+
+    @Test
+    func whitespaceOnlyDraftDoesNotSend() async {
+        let store = TestStore(initialState: ChatTab.State()) {
+            ChatTab()
+        }
+
+        await store.send(.draftMessageChanged("   \n  ")) {
+            $0.draftMessage = "   \n  "
+        }
+
+        await store.send(.sendMessageTapped) {
+            $0.draftMessage = ""
+        }
+    }
+}
+
+@MainActor
 struct CoreDataSerializationTests {
     private func makeInMemoryContext() throws -> NSManagedObjectContext {
         let model = ChatCoreDataStack.createTestModel()
