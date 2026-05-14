@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 import SwiftData
 
-struct OnboardingPersistenceClient {
+struct OnboardingPersistenceClient: Sendable {
     var isCompleted: @Sendable () async throws -> Bool
     var complete: @Sendable () async throws -> Void
 }
@@ -54,7 +54,10 @@ extension OnboardingPersistenceClient: DependencyKey {
         complete: {}
     )
 
-    static let previewValue = testValue
+    static let previewValue = Self(
+        isCompleted: { false },
+        complete: {}
+    )
 }
 
 extension DependencyValues {

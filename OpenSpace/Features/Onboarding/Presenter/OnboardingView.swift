@@ -41,12 +41,7 @@ struct OnboardingView: View {
                         store: store.scope(state: \.pageDemo, action: \.pageDemo)
                     )
                     .id(store.currentPageData.id)
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .leading).combined(with: .opacity)
-                        )
-                    )
+                    .transition(.opacity)
 
                     OnboardingBottomNavigationView(store: store)
                 }

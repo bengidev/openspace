@@ -26,7 +26,7 @@ struct OnboardingTopBarView: View {
 
             Spacer(minLength: 10)
 
-            Text(String(format: "PG.%02d / %02d", store.currentPage + 1, store.totalPages))
+            Text("PG.\(zeroPadded(store.currentPage + 1)) / \(zeroPadded(store.totalPages))")
                 .font(.system(size: 11, weight: .medium, design: .monospaced))
                 .tracking(-0.24)
                 .foregroundStyle(palette.textSecondary)
@@ -54,5 +54,10 @@ struct OnboardingTopBarView: View {
             .accessibilityLabel("Skip onboarding")
         }
         .frame(height: 44)
+    }
+
+    private func zeroPadded(_ value: Int) -> String {
+        let text = String(value)
+        return text.count == 1 ? "0\(text)" : text
     }
 }

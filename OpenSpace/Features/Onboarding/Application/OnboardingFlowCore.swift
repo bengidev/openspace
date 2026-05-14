@@ -29,7 +29,7 @@ enum OnboardingFlowAction: Equatable {
 
 @Reducer
 struct OnboardingFlow {
-    @Dependency(\.onboardingPersistence) var onboardingPersistence
+    @Dependency(OnboardingPersistenceClient.self) var onboardingPersistence
 
     var body: some Reducer<OnboardingFlowState, OnboardingFlowAction> {
         Scope(state: \.pageDemo, action: \.pageDemo) {
