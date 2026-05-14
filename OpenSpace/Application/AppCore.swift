@@ -18,7 +18,7 @@ struct AppCore: Reducer {
         case home(HomeContainer.Action)
     }
 
-    @Dependency(\.appSettings) private var appSettings
+    @Dependency(AppSettingsClient.self) private var appSettings
 
     var body: some Reducer<State, Action> {
         Scope(state: \.onboarding, action: \.onboarding) {
