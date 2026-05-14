@@ -102,7 +102,7 @@ struct SpacerPetOverlay: View {
                     )
                     .frame(width: menuSize.width, height: menuSize.height)
                     .position(menuPoint)
-                    .transition(.scale(scale: 0.92).combined(with: .opacity))
+                    .transition(.opacity)
                     .zIndex(2)
                 }
 

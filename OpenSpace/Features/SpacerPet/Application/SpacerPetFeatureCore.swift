@@ -46,7 +46,7 @@ enum SpacerPetFeatureAction: Equatable {
 @Reducer
 struct SpacerPetFeature {
     @Dependency(\.continuousClock) private var clock
-    @Dependency(\.spacerPetPersistence) private var persistence
+    @Dependency(SpacerPetPersistenceClient.self) private var persistence
 
     private let minCompanionScale = 0.74
     private let maxCompanionScale = 1.42

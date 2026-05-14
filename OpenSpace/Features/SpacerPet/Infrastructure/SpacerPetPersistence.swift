@@ -1,13 +1,13 @@
 import ComposableArchitecture
 import Foundation
 
-struct SpacerPetPreferences: Equatable {
+struct SpacerPetPreferences: Equatable, Sendable {
     var positionX: Double
     var positionY: Double
     var scale: Double
 }
 
-struct SpacerPetPersistenceClient {
+struct SpacerPetPersistenceClient: Sendable {
     var load: @Sendable () -> SpacerPetPreferences
     var save: @Sendable (SpacerPetPreferences) -> Void
 }
