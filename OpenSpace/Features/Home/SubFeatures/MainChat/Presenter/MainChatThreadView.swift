@@ -22,7 +22,7 @@ struct MainChatThreadView: View {
 }
 
 struct MainChatMessageRow: View {
-    let message: Message
+    let message: ChatMessage
 
     @Environment(\.palette) private var palette
 
@@ -34,8 +34,8 @@ struct MainChatMessageRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 switch message {
-                case let .text(textMsg):
-                    Text(textMsg.content)
+                case let .text(textMessage):
+                    Text(textMessage.content)
                         .font(.system(size: 15, weight: .regular))
                         .foregroundStyle(message.role == .user ? palette.primaryActionText : palette.textPrimary)
                 default:

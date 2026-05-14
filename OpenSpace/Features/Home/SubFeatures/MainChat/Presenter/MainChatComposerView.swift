@@ -194,7 +194,7 @@ private struct ComposerContextRail: View {
             if isContextUsagePresented {
                 ComposerContextUsagePopover(usage: store.contextUsage)
                     .offset(x: -2, y: -46)
-                    .transition(.scale(scale: 0.96, anchor: .bottomTrailing).combined(with: .opacity))
+                    .transition(.opacity)
                     .zIndex(2)
             }
         }
