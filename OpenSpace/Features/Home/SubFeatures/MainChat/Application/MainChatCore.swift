@@ -3,10 +3,14 @@ import Foundation
 
 @Reducer
 struct MainChat {
+    @Dependency(ChatPersistenceClient.self) private var chatPersistence
+    @Dependency(\.date.now) private var now
+    @Dependency(\.uuid) private var uuid
+
     @ObservableState
     struct State: Equatable {
-        var selectedConversation: Conversation? = nil
-        var messages: [Message] = []
+        var selectedConversation: ChatConversation?
+        var messages: [ChatMessage] = []
         var draftMessage = ""
         var isSending = false
         var selectedModel: ComposerModelOption = .gpt54
@@ -25,10 +29,10 @@ struct MainChat {
         case newConversationTapped
         case draftMessageChanged(String)
         case sendMessageTapped
-        case messageSent(Message)
+        case messageSent(ChatMessage)
         case sendFailed(String)
         case loadMessages(UUID)
-        case messagesLoaded([Message])
+        case messagesLoaded([ChatMessage])
         case composerModelSelected(ComposerModelOption)
         case reasoningLevelSelected(ComposerReasoningLevel)
         case speedModeSelected(ComposerSpeedMode)
@@ -38,11 +42,9 @@ struct MainChat {
         case attachmentTapped
         case microphoneTapped
         case contextNotesTapped
-        case conversationSelected(Conversation)
-        case conversationCreated(Conversation)
+        case conversationSelected(ChatConversation)
+        case conversationCreated(ChatConversation)
     }
-
-    @Dependency(\.chatPersistence) var chatPersistence
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -60,33 +62,24 @@ struct MainChat {
                     state.draftMessage = ""
                     return .none
                 }
+
                 state.draftMessage = ""
                 state.isSending = true
-                let message = Message.text(TextMessage(role: .user, content: content))
+
+                let timestamp = now
+                let message = ChatMessage.text(
+                    ChatTextMessage(
+                        id: uuid(),
+                        role: .user,
+                        content: content,
+                        timestamp: timestamp
+                    )
+                )
 
                 if let conversation = state.selectedConversation {
-                    let conversationId = conversation.id
                     return .run { send in
                         do {
-                            try await chatPersistence.saveMessage(message, conversationId)
-                            await send(.messageSent(message))
-                        } catch {
-                            await send(.sendFailed(error.localizedDescription))
-                        }
-                    }
-                } else {
-                    let title = content.count > 30 ? String(content.prefix(30)) + "..." : content
-                    let selectedModel = state.selectedModel
-                    let newConversation = Conversation(
-                        title: title,
-                        modelID: selectedModel.rawValue,
-                        providerID: selectedModel.providerID
-                    )
-                    return .run { send in
-                        do {
-                            let saved = try await chatPersistence.createConversation(newConversation)
-                            await send(.conversationCreated(saved))
-                            try await chatPersistence.saveMessage(message, saved.id)
+                            try await chatPersistence.saveMessage(message, conversation.id)
                             await send(.messageSent(message))
                         } catch {
                             await send(.sendFailed(error.localizedDescription))
@@ -94,18 +87,43 @@ struct MainChat {
                     }
                 }
 
+                let selectedModel = state.selectedModel
+                let newConversation = ChatConversation(
+                    id: uuid(),
+                    title: Self.conversationTitle(for: content),
+                    createdAt: timestamp,
+                    updatedAt: timestamp,
+                    modelID: selectedModel.rawValue,
+                    providerID: selectedModel.providerID
+                )
+
+                return .run { send in
+                    do {
+                        let savedConversation = try await chatPersistence.createConversation(newConversation)
+                        await send(.conversationCreated(savedConversation))
+                        try await chatPersistence.saveMessage(message, savedConversation.id)
+                        await send(.messageSent(message))
+                    } catch {
+                        await send(.sendFailed(error.localizedDescription))
+                    }
+                }
+
             case .messageSent(let message):
                 state.isSending = false
                 state.messages.append(message)
+                if var conversation = state.selectedConversation {
+                    conversation.updatedAt = message.timestamp
+                    state.selectedConversation = conversation
+                }
                 return .none
 
             case .sendFailed:
                 state.isSending = false
                 return .none
 
-            case .loadMessages(let conversationId):
+            case .loadMessages(let conversationID):
                 return .run { send in
-                    let messages = try await chatPersistence.fetchMessages(conversationId)
+                    let messages = try await chatPersistence.fetchMessages(conversationID)
                     await send(.messagesLoaded(messages))
                 }
 
@@ -162,5 +180,12 @@ struct MainChat {
                 return .none
             }
         }
+    }
+
+    private static func conversationTitle(for content: String) -> String {
+        if content.count > 30 {
+            return String(content.prefix(30)) + "..."
+        }
+        return content
     }
 }
