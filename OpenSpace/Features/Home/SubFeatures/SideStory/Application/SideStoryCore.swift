@@ -5,23 +5,23 @@ import Foundation
 struct SideStory {
     @ObservableState
     struct State: Equatable {
-        var conversationList = ConversationList.State()
+        var conversationList = ChatConversationList.State()
         var isSidebarVisible = false
     }
 
     @CasePathable
     enum Action: Equatable {
-        case conversationList(ConversationList.Action)
+        case conversationList(ChatConversationList.Action)
         case sidebarToggleTapped
         case sidebarDismissed
         case newConversationTapped
         case settingsTapped
-        case conversationCreated(Conversation)
+        case conversationCreated(ChatConversation)
     }
 
     var body: some Reducer<State, Action> {
         Scope(state: \.conversationList, action: \.conversationList) {
-            ConversationList()
+            ChatConversationList()
         }
 
         Reduce { state, action in
@@ -44,6 +44,7 @@ struct SideStory {
                 return .none
 
             case .conversationCreated(let conversation):
+                state.conversationList.conversations.removeAll { $0.id == conversation.id }
                 state.conversationList.conversations.insert(conversation, at: 0)
                 state.conversationList.selectedConversation = conversation
                 return .none

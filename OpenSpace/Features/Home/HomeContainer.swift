@@ -11,6 +11,8 @@ struct HomeContainerView: View {
 
 @Reducer
 struct HomeContainer {
+    @Dependency(ChatPersistenceClient.self) private var chatPersistence
+
     @ObservableState
     struct State: Equatable {
         var spacerPet = SpacerPetContainer.State()
@@ -26,8 +28,6 @@ struct HomeContainer {
         case sideStory(SideStory.Action)
         case settings(Settings.Action)
     }
-
-    @Dependency(\.chatPersistence) var chatPersistence
 
     var body: some Reducer<State, Action> {
         Scope(state: \.spacerPet, action: \.spacerPet) {
@@ -66,6 +66,20 @@ struct HomeContainer {
                 state.sideStory.conversationList.selectedConversation = conversation
                 return .none
 
+            case .mainChat(.messageSent(let message)):
+                guard let conversation = state.mainChat.selectedConversation else {
+                    return .none
+                }
+
+                let updatedConversation = Self.updatedConversation(conversation, with: message.timestamp)
+                state.mainChat.selectedConversation = updatedConversation
+                state.sideStory.conversationList.selectedConversation = updatedConversation
+                state.sideStory.conversationList.conversations = Self.upsertConversation(
+                    updatedConversation,
+                    in: state.sideStory.conversationList.conversations
+                )
+                return .none
+
             case .sideStory(.settingsTapped):
                 state.settings.isPresented = true
                 return .none
@@ -93,6 +107,22 @@ struct HomeContainer {
                 return .none
             }
         }
+    }
+
+    private static func updatedConversation(_ conversation: ChatConversation, with timestamp: Date) -> ChatConversation {
+        var updatedConversation = conversation
+        updatedConversation.updatedAt = timestamp
+        return updatedConversation
+    }
+
+    private static func upsertConversation(
+        _ conversation: ChatConversation,
+        in conversations: [ChatConversation]
+    ) -> [ChatConversation] {
+        var nextConversations = conversations
+        nextConversations.removeAll { $0.id == conversation.id }
+        nextConversations.insert(conversation, at: 0)
+        return nextConversations
     }
 }
 

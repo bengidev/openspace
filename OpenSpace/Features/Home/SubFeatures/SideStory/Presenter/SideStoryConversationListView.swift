@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct SideStoryConversationListView: View {
-    @Bindable var store: StoreOf<ConversationList>
+    @Bindable var store: StoreOf<ChatConversationList>
 
     @Environment(\.palette) private var palette
 
@@ -105,7 +105,7 @@ struct SideStoryConversationListView: View {
 }
 
 struct ConversationRow: View {
-    let conversation: Conversation
+    let conversation: ChatConversation
 
     @Environment(\.palette) private var palette
 
@@ -156,8 +156,8 @@ struct ConversationRow: View {
 
 #Preview {
     SideStoryConversationListView(
-        store: Store(initialState: ConversationList.State()) {
-            ConversationList()
+        store: Store(initialState: ChatConversationList.State()) {
+            ChatConversationList()
         }
     )
     .environment(\.palette, OpenSpacePalette.resolve(.dark))

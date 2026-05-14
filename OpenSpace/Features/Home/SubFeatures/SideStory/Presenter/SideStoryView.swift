@@ -166,7 +166,7 @@ struct SideStoryView: View {
         palette.isDark ? palette.border : Color(hex: "d9d9d9")
     }
 
-    private var visibleConversations: ArraySlice<Conversation> {
+    private var visibleConversations: ArraySlice<ChatConversation> {
         let conversations = store.conversationList.conversations
         guard shouldCollapseConversations else {
             return conversations[...]
@@ -331,7 +331,7 @@ private struct SidebarActionRow: View {
 }
 
 private struct SidebarConversationRow: View {
-    let conversation: Conversation
+    let conversation: ChatConversation
     let isSelected: Bool
     let onSelect: () -> Void
     let onDelete: () -> Void
