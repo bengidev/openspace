@@ -3,8 +3,7 @@ import SwiftUI
 extension Color {
     init(hex: String) {
         let sanitized = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var value: UInt64 = 0
-        Scanner(string: sanitized).scanHexInt64(&value)
+        let value = UInt64(sanitized, radix: 16) ?? 0
 
         let red: UInt64
         let green: UInt64
