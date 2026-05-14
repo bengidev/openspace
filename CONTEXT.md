@@ -83,42 +83,42 @@ Excluded: shell execution, subprocess spawning, arbitrary filesystem access, and
 
 ### Persistence
 
-- **Storage backend**: Core Data with `NSPersistentCloudKitContainer` for automatic iCloud sync across user's devices.
+- **Storage backend**: SwiftData with `ModelContainer` and iCloud sync capability for automatic sync across user's devices.
 - **Sync scope**: Conversation history, message content, thread hierarchy, and tool access settings sync via iCloud. Provider API keys and user credentials are stored in Keychain (not synced).
 - **Conflict resolution**: Last-write-wins per record with manual merge UI for rare conflicts.
 - **Offline support**: Full read/write offline. Sync happens when connectivity returns.
-- **Migration**: Lightweight Core Data migrations for schema evolution.
+- **Migration**: Schema versioning via SwiftData model container configuration.
 
 ### TCA Architecture (Feature-Based)
 
-`ChatTab` is a **root orchestrator reducer** that composes child feature reducers. Each child owns its own state and action domain. Navigation is driven by state, not by NavigationStack path-based routing.
+`HomeContainer` is a **root orchestrator reducer** that composes child feature reducers. Each child owns its own state and action domain. Navigation is driven by state, not by NavigationStack path-based routing.
 
 | Feature | Responsibility | State |
 |---|---|---|
-| `ConversationList` | List of threads, search, archive, delete | `conversations: IdentifiedArrayOf<ConversationSummary>` |
-| `ThreadEngine` | Single conversation execution: message streaming, tool calling, subagent spawning | `messages: IdentifiedArrayOf<Message>`, `turnState: TurnState`, `subagentLinks: IdentifiedArrayOf<ThreadLink>` |
-| `InputComposer` | Text input, model selection, attachment picker, context mentions | `text: String`, `selectedModel: ModelOption`, `attachments: [Attachment]` |
-| `ToolExecutor` | Receives tool_call from model, resolves access level, executes, returns result | `pendingCalls: IdentifiedArrayOf<ToolCall>`, `approvalQueue: [ToolCall]` |
-| `SubagentOrchestrator` | Spawns child threads, tracks status, merges results back to parent | `children: IdentifiedArrayOf<ChildThreadState>` |
+| `ChatConversationList` | List of threads, search, archive, delete | `conversations: [ChatConversation]` |
+| `MainChat` | Single conversation execution: message streaming, tool calling, subagent spawning | `messages: [ChatMessage]`, `selectedConversation: ChatConversation?` |
+| `InputComposer` | Text input, model selection, attachment picker, context mentions | `draftMessage: String`, `selectedModel: ComposerModelOption`, `attachments: [Attachment]` |
+| `ToolExecutor` | Receives tool_call from model, resolves access level, executes, returns result | `pendingCalls: [ToolCall]`, `approvalQueue: [ToolCall]` |
+| `SubagentOrchestrator` | Spawns child threads, tracks status, merges results back to parent | `children: [ChildThreadState]` |
 | `ChatSettings` | Provider config, API keys, tool access control | `providers: [ProviderConfig]`, `toolAccess: ToolAccessConfig` |
 
-- `ThreadEngine` is **reused** for both parent threads and child thread detail pages. The same reducer, initialized with different `Conversation` state.
-- Child reducers communicate with the parent via **Actions**, not direct mutation. `SubagentOrchestrator` dispatches `ThreadEngine.Action` to child stores.
-- `ChatTab` uses `Scope` and `Reduce` to delegate actions to the correct child feature.
+- `MainChat` is **reused** for both parent threads and child thread detail pages. The same reducer, initialized with different `ChatConversation` state.
+- Child reducers communicate with the parent via **Actions**, not direct mutation. `SubagentOrchestrator` dispatches `MainChat.Action` to child stores.
+- `HomeContainer` uses `Scope` and `Reduce` to delegate actions to the correct child feature.
 
 ### Message Model (Discriminated Union)
 
-`Message` is an enum with associated values:
+`ChatMessage` is an enum with associated values:
 
 ```swift
-enum Message: Equatable, Identifiable {
-    case text(TextMessage)
-    case thinking(ThinkingMessage)
-    case toolCall(ToolCallMessage)
-    case toolResult(ToolResultMessage)
-    case subagentLink(SubagentLinkMessage)
-    case attachment(AttachmentMessage)
-    case system(SystemMessage)
+enum ChatMessage: Equatable, Identifiable, Sendable {
+    case text(ChatTextMessage)
+    case thinking(ChatThinkingMessage)
+    case toolCall(ChatToolCallMessage)
+    case toolResult(ChatToolResultMessage)
+    case subagentLink(ChatSubagentLinkMessage)
+    case attachment(ChatAttachmentMessage)
+    case system(ChatSystemMessage)
 }
 ```
 
@@ -144,24 +144,25 @@ enum Message: Equatable, Identifiable {
 - `ThreadEngine` is **provider-agnostic**. It only knows `APIClient` and `StreamingEvent`.
 - **Model selection** is per-conversation. Once a conversation starts with a model, all messages in that conversation use the same provider/model. Switching models requires starting a new conversation.
 
-### Persistence Schema (Hybrid Normalized)
+### Persistence Schema (SwiftData)
 
-`MessageEntity` is a single Core Data entity with both normalized fields and a JSON payload:
+`ChatMessageRecord` is a SwiftData `@Model` with normalized fields and a JSON payload:
 
 | Field | Type | Purpose | Queryable |
 |---|---|---|---|
-| `messageId` | UUID | Primary key | Yes |
-| `conversationId` | UUID | Foreign key ke conversation | Yes, indexed |
-| `timestamp` | Date | Waktu pembuatan | Yes, indexed |
+| `messageID` | UUID | Primary key | Yes |
+| `conversationID` | UUID | Foreign key to conversation | Yes |
+| `timestamp` | Date | Waktu pembuatan | Yes |
 | `role` | String | `user` / `assistant` / `system` | Yes |
-| `messageType` | String | Discriminator: `text`, `thinking`, `toolCall`, `toolResult`, `subagentLink`, `attachment`, `system` | Yes, indexed |
+| `messageKind` | String | Discriminator: `text`, `thinking`, `toolCall`, `toolResult`, `subagentLink`, `attachment`, `system` | Yes |
 | `status` | String | `.streaming` / `.complete` / `.failed` | Yes |
-| `payloadJSON` | Transformable | JSON-encoded associated value dari Message enum | No |
+| `payloadData` | Data | JSON-encoded associated value dari `ChatMessage` enum | No |
 
-- Hybrid normalized **compatible dengan Core Data, SwiftData, dan iCloud sync** (`NSPersistentCloudKitContainer`).
-- Primitive fields sync seamlessly. `Transformable` sync sebagai CloudKit Asset (limit ~1MB per record; message JSON biasanya <10KB).
-- Query untuk filter, sort, dan fetch conversation history menggunakan normalized fields. Payload JSON hanya dibaca saat rendering atau reconstructing `Message` enum.
-- `ThreadLink` (subagent reference) disimpan sebagai normalized relationship (`parentConversationId`, `childConversationId`) untuk navigasi efisien.
+- `ChatConversationRecord` is a separate `@Model` for conversation metadata (title, modelID, timestamps).
+- `ChatPersistenceMapper` handles domain model <-> record conversion.
+- `ChatMessagePayloadCoder` encodes/decodes enum payloads as JSON with full-precision date round-tripping.
+- Query untuk filter, sort, dan fetch conversation history menggunakan normalized fields. Payload JSON hanya dibaca saat rendering atau reconstructing `ChatMessage` enum.
+- `ThreadLink` (subagent reference) disimpan sebagai normalized relationship via `conversationID` fields untuk navigasi efisien.
 
 ### Provider Key Management (BYOK + Proxy Hybrid)
 
