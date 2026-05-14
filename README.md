@@ -29,11 +29,11 @@ The repository does **not** implement that product yet. The current codebase is 
 
 ## Repository Layout
 
-- [OpenSpace](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpace) contains the app source
-- [OpenSpaceTests](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpaceTests) contains the starter Swift Testing target
-- [OpenSpaceUITests](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/OpenSpaceUITests) contains the starter UI test target
-- [docs/current-state.md](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/docs/current-state.md) documents the repository as it exists today
-- [docs/product-direction.md](/Users/beng/Documents/iOS%20Projects/OpenSpace/OpenSpace/docs/product-direction.md) describes a realistic path toward the intended product
+- `OpenSpace/` contains the app source
+- `OpenSpaceTests/` contains the Swift Testing target
+- `OpenSpaceUITests/` contains the UI test target
+- `docs/DESIGN.md` documents the onboarding visual design system
+- `CONTEXT.md` describes the domain architecture and product direction
 
 ## Getting Started
 
