@@ -57,6 +57,9 @@ struct HomeContainer {
             case .mainChat(.newConversationTapped):
                 state.mainChat.selectedConversation = nil
                 state.mainChat.messages = []
+                state.mainChat.threadEngine.messages = []
+                state.mainChat.threadEngine.streamingStatus = .idle
+                state.mainChat.threadEngine.currentPartialText = ""
                 return .send(.sideStory(.newConversationTapped))
 
             case .mainChat(.conversationCreated(let conversation)):
@@ -64,6 +67,10 @@ struct HomeContainer {
 
             case .mainChat(.conversationSelected(let conversation)):
                 state.sideStory.conversationList.selectedConversation = conversation
+                state.mainChat.messages = []
+                state.mainChat.threadEngine.messages = []
+                state.mainChat.threadEngine.streamingStatus = .idle
+                state.mainChat.threadEngine.currentPartialText = ""
                 return .none
 
             case .mainChat(.messageSent(let message)):
@@ -86,6 +93,10 @@ struct HomeContainer {
 
             case .sideStory(.conversationList(.conversationSelected(let conversation))):
                 state.mainChat.selectedConversation = conversation
+                state.mainChat.messages = []
+                state.mainChat.threadEngine.messages = []
+                state.mainChat.threadEngine.streamingStatus = .idle
+                state.mainChat.threadEngine.currentPartialText = ""
                 if let model = ComposerModelOption.resolve(modelID: conversation.modelID) {
                     state.mainChat.selectedModel = model
                 }
@@ -97,6 +108,9 @@ struct HomeContainer {
             case .sideStory(.newConversationTapped):
                 state.mainChat.selectedConversation = nil
                 state.mainChat.messages = []
+                state.mainChat.threadEngine.messages = []
+                state.mainChat.threadEngine.streamingStatus = .idle
+                state.mainChat.threadEngine.currentPartialText = ""
                 return .none
 
             case .settings(.dismiss):

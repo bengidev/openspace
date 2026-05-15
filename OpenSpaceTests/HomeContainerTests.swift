@@ -34,6 +34,7 @@ struct HomeContainerTests {
         }
         await store.receive(.mainChat(.messagesLoaded([message]))) {
             $0.mainChat.messages = [message]
+            $0.mainChat.threadEngine.messages = [message]
         }
     }
 }
