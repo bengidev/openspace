@@ -17,6 +17,18 @@ struct MainChatThreadView: View {
                     }
                     .listRowBackground(palette.background)
                     .listRowSeparator(.hidden)
+
+                    if store.threadEngine.streamingStatus == .running && store.threadEngine.currentPartialText.isEmpty {
+                        HStack {
+                            ThinkingIndicatorBubble()
+                            Spacer()
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .id("thinking-indicator")
+                        .listRowBackground(palette.background)
+                        .listRowSeparator(.hidden)
+                    }
                 }
                 .listStyle(.plain)
                 .background(palette.background)
@@ -26,6 +38,9 @@ struct MainChatThreadView: View {
                 .onChange(of: store.threadEngine.currentPartialText.count) { _, _ in
                     scrollToLast(proxy: proxy, animate: false)
                 }
+                .onChange(of: store.threadEngine.streamingStatus) { _, _ in
+                    scrollToLast(proxy: proxy, animate: true)
+                }
                 .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { _ in
                     scrollToLast(proxy: proxy, animate: false)
                 }
@@ -34,6 +49,19 @@ struct MainChatThreadView: View {
     }
 
     private func scrollToLast(proxy: ScrollViewProxy, animate: Bool) {
+        let isThinking = store.threadEngine.streamingStatus == .running && store.threadEngine.currentPartialText.isEmpty
+
+        if isThinking {
+            if animate {
+                withAnimation(.easeOut(duration: 0.15)) {
+                    proxy.scrollTo("thinking-indicator", anchor: .bottom)
+                }
+            } else {
+                proxy.scrollTo("thinking-indicator", anchor: .bottom)
+            }
+            return
+        }
+
         if let lastId = store.messages.last?.id {
             if animate {
                 withAnimation(.easeOut(duration: 0.15)) {
