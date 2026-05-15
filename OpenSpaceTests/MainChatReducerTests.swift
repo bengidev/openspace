@@ -59,6 +59,7 @@ struct MainChatReducerTests {
 
         await store.receive(.messagesLoaded([message])) {
             $0.messages = [message]
+            $0.threadEngine.messages = [message]
         }
     }
 
@@ -124,9 +125,13 @@ struct MainChatReducerTests {
             $0.selectedConversation = expectedConversation
         }
         await store.receive(.messageSent(expectedMessage)) {
-            $0.isSending = false
-            $0.messages = [expectedMessage]
             $0.selectedConversation = expectedConversation
+        }
+        await store.receive(.threadEngine(.userMessageSent(expectedMessage))) {
+            $0.threadEngine.messages = [expectedMessage]
+            $0.threadEngine.streamingStatus = .running
+            $0.messages = [expectedMessage]
+            $0.isSending = true
         }
     }
 }

@@ -13,6 +13,7 @@ struct MainChat {
         var messages: [ChatMessage] = []
         var draftMessage = ""
         var isSending = false
+        var threadEngine = ThreadEngine.State()
         var selectedModel: ComposerModelOption = .gpt54
         var reasoningLevel: ComposerReasoningLevel = .high
         var speedMode: ComposerSpeedMode = .standard
@@ -33,6 +34,7 @@ struct MainChat {
         case sendFailed(String)
         case loadMessages(UUID)
         case messagesLoaded([ChatMessage])
+        case threadEngine(ThreadEngine.Action)
         case composerModelSelected(ComposerModelOption)
         case reasoningLevelSelected(ComposerReasoningLevel)
         case speedModeSelected(ComposerSpeedMode)
@@ -47,6 +49,10 @@ struct MainChat {
     }
 
     var body: some Reducer<State, Action> {
+        Scope(state: \.threadEngine, action: \.threadEngine) {
+            ThreadEngine()
+        }
+
         Reduce { state, action in
             switch action {
             case .sidebarToggleTapped, .sidebarDismissed, .newConversationTapped:
@@ -77,10 +83,11 @@ struct MainChat {
                 )
 
                 if let conversation = state.selectedConversation {
-                    return .run { send in
+                    return .run { [message] send in
                         do {
                             try await chatPersistence.saveMessage(message, conversation.id)
                             await send(.messageSent(message))
+                            await send(.threadEngine(.userMessageSent(message)))
                         } catch {
                             await send(.sendFailed(error.localizedDescription))
                         }
@@ -97,20 +104,19 @@ struct MainChat {
                     providerID: selectedModel.providerID
                 )
 
-                return .run { send in
+                return .run { [message, newConversation] send in
                     do {
                         let savedConversation = try await chatPersistence.createConversation(newConversation)
                         await send(.conversationCreated(savedConversation))
                         try await chatPersistence.saveMessage(message, savedConversation.id)
                         await send(.messageSent(message))
+                        await send(.threadEngine(.userMessageSent(message)))
                     } catch {
                         await send(.sendFailed(error.localizedDescription))
                     }
                 }
 
             case .messageSent(let message):
-                state.isSending = false
-                state.messages.append(message)
                 if var conversation = state.selectedConversation {
                     conversation.updatedAt = message.timestamp
                     state.selectedConversation = conversation
@@ -119,6 +125,7 @@ struct MainChat {
 
             case .sendFailed:
                 state.isSending = false
+                state.threadEngine.streamingStatus = .idle
                 return .none
 
             case .loadMessages(let conversationID):
@@ -129,11 +136,15 @@ struct MainChat {
 
             case .messagesLoaded(let messages):
                 state.messages = messages
+                state.threadEngine.messages = messages
                 return .none
 
             case .conversationSelected(let conversation):
                 state.selectedConversation = conversation
                 state.messages = []
+                state.threadEngine.messages = []
+                state.threadEngine.streamingStatus = .idle
+                state.threadEngine.currentPartialText = ""
                 if let model = ComposerModelOption.resolve(modelID: conversation.modelID) {
                     state.selectedModel = model
                 }
@@ -144,6 +155,11 @@ struct MainChat {
 
             case .conversationCreated(let conversation):
                 state.selectedConversation = conversation
+                return .none
+
+            case .threadEngine:
+                state.messages = state.threadEngine.messages
+                state.isSending = state.threadEngine.streamingStatus == .running
                 return .none
 
             case .composerModelSelected(let model):
