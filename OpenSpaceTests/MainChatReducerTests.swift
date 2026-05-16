@@ -14,6 +14,7 @@ struct MainChatReducerTests {
 
         await store.send(.composerModelSelected(.gpt55)) {
             $0.selectedModel = .gpt55
+            $0.threadEngine.providerID = "openai"
         }
 
         await store.send(.reasoningLevelSelected(.medium)) {
@@ -55,6 +56,7 @@ struct MainChatReducerTests {
             $0.selectedConversation = conversation
             $0.messages = []
             $0.selectedModel = .gpt55
+            $0.threadEngine.providerID = conversation.providerID
         }
 
         await store.receive(.messagesLoaded([message])) {
@@ -105,6 +107,9 @@ struct MainChatReducerTests {
         } withDependencies: {
             $0.date.now = timestamp
             $0.uuid = .incrementing
+            var apiClient = APIClient.testValue
+            apiClient.stream = { _ in AsyncStream { $0.finish() } }
+            $0[APIClient.self] = apiClient
             var chatPersistence = ChatPersistenceClient.testValue
             chatPersistence.createConversation = { conversation in
                 #expect(conversation == expectedConversation)
@@ -120,6 +125,7 @@ struct MainChatReducerTests {
         await store.send(.sendMessageTapped) {
             $0.draftMessage = ""
             $0.isSending = true
+            $0.threadEngine.providerID = "openai"
         }
         await store.receive(.conversationCreated(expectedConversation)) {
             $0.selectedConversation = expectedConversation
