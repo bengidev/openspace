@@ -19,6 +19,7 @@ struct ThreadEngine {
         var messages: [ChatMessage] = []
         var streamingStatus: StreamingStatus = .idle
         var currentPartialText: String = ""
+        var providerID: String?
     }
 
     @CasePathable
@@ -40,7 +41,8 @@ struct ThreadEngine {
                 let request = ChatRequest(
                     conversationID: message.id,
                     messages: state.messages,
-                    modelID: "mock"
+                    modelID: "mock",
+                    providerID: state.providerID
                 )
 
                 let stream = apiClient.stream(request)
