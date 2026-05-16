@@ -7,8 +7,8 @@ import Testing
 struct MockStreamingClientTests {
     @Test
     func defaultClientEmitsDeltasAndDone() async throws {
-        let client = MockStreamingClient.default
-        let request = ChatRequest(conversationID: UUID(), messages: [], modelID: "test")
+        let client = MockStreamingClient.defaultClient()
+        let request = ChatRequest(conversationID: UUID(), messages: [], modelID: "test", providerID: nil)
         let stream = client.stream(request: request)
 
         var events: [StreamingEvent] = []
@@ -16,14 +16,14 @@ struct MockStreamingClientTests {
             events.append(event)
         }
 
-        let expectedDeltas = MockStreamingClient.default.deltas.map { StreamingEvent.textDelta($0) }
+        let expectedDeltas = MockStreamingClient.defaultClient().deltas.map { StreamingEvent.textDelta($0) }
         #expect(events == expectedDeltas + [.done])
     }
 
     @Test
     func customClientEmitsCorrectSequence() async throws {
         let client = MockStreamingClient(deltas: ["a", "bc", "d"], delayNanoseconds: 0)
-        let request = ChatRequest(conversationID: UUID(), messages: [], modelID: "test")
+        let request = ChatRequest(conversationID: UUID(), messages: [], modelID: "test", providerID: nil)
         let stream = client.stream(request: request)
 
         var events: [StreamingEvent] = []
