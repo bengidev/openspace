@@ -83,6 +83,8 @@ struct MainChat {
                 )
 
                 if let conversation = state.selectedConversation {
+                    state.threadEngine.providerID = conversation.providerID
+
                     return .run { [message] send in
                         do {
                             try await chatPersistence.saveMessage(message, conversation.id)
@@ -103,6 +105,7 @@ struct MainChat {
                     modelID: selectedModel.rawValue,
                     providerID: selectedModel.providerID
                 )
+                state.threadEngine.providerID = selectedModel.providerID
 
                 return .run { [message, newConversation] send in
                     do {
@@ -145,6 +148,7 @@ struct MainChat {
                 state.threadEngine.messages = []
                 state.threadEngine.streamingStatus = .idle
                 state.threadEngine.currentPartialText = ""
+                state.threadEngine.providerID = conversation.providerID
                 if let model = ComposerModelOption.resolve(modelID: conversation.modelID) {
                     state.selectedModel = model
                 }
@@ -164,6 +168,7 @@ struct MainChat {
 
             case .composerModelSelected(let model):
                 state.selectedModel = model
+                state.threadEngine.providerID = model.providerID
                 if !model.availableSpeedModes.contains(state.speedMode) {
                     state.speedMode = model.availableSpeedModes.first ?? .standard
                 }
