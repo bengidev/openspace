@@ -5,7 +5,7 @@ struct MockStreamingClient: APIClientProtocol, Sendable {
     let delayNanoseconds: UInt64
     let thinkingDelayNanoseconds: UInt64
 
-    init(
+    nonisolated init(
         deltas: [String],
         delayNanoseconds: UInt64,
         thinkingDelayNanoseconds: UInt64 = 0
@@ -35,9 +35,11 @@ struct MockStreamingClient: APIClientProtocol, Sendable {
 }
 
 extension MockStreamingClient {
-    static let `default` = MockStreamingClient(
-        deltas: Array("Hello! I'm a mock assistant.").map(String.init),
-        delayNanoseconds: 40_000_000, // 40ms per char — visible typing effect
-        thinkingDelayNanoseconds: 1_500_000_000 // 1.5s thinking delay before first token
-    )
+    nonisolated static func defaultClient() -> MockStreamingClient {
+        MockStreamingClient(
+            deltas: Array("Hello! I'm a mock assistant.").map(String.init),
+            delayNanoseconds: 40_000_000,
+            thinkingDelayNanoseconds: 1_500_000_000
+        )
+    }
 }
